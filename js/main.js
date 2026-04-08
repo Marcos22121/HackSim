@@ -45,13 +45,21 @@ const gameState = {
     version:  '0.1.0',
     currency: 'Hash',
     balance:  0,
+    cash:     0,
 };
 
-// ─── Hash Display ────────────────────────────────────────────────────────────
+// ─── Displays ────────────────────────────────────────────────────────────
 const hashValueEl = document.getElementById('hash-value');
+const cashValueEl = document.getElementById('cash-value-display'); // Will be inside PallPay window
 
 function updateHashDisplay() {
     hashValueEl.textContent = gameState.balance.toFixed(2);
+}
+
+function updateCashDisplay() {
+    if (cashValueEl) {
+        cashValueEl.textContent = gameState.cash.toFixed(1);
+    }
 }
 
 function addHash(amount) {
@@ -59,6 +67,7 @@ function addHash(amount) {
     updateHashDisplay();
     showHashPopup(amount);
     playSuccessSound();
+    saveGame();
 }
 
 // ─── Hash Earned Popup ───────────────────────────────────────────────────────
@@ -154,6 +163,11 @@ const terminalPanel   = document.getElementById('terminal-panel');
 const terminalTitleBar = document.getElementById('terminal-title-bar');
 const terminalOutput  = document.getElementById('terminal-output');
 const btnTermMax      = document.getElementById('btn-maximize-terminal');
+
+const walletPanel     = document.getElementById('wallet-panel');
+const walletTitleBar  = document.getElementById('wallet-title-bar');
+const btnWalletMax    = document.getElementById('btn-maximize-wallet');
+
 const mainWindowBody  = document.getElementById('main-window-body');
 const windowTaskbar   = document.getElementById('window-taskbar');
 
@@ -246,6 +260,8 @@ function openTerminal() {
     terminalOutput.innerHTML   = '';
     typedTextEl.textContent    = '';
     ghostTextEl.textContent    = '';
+    hashPopupEl.classList.remove('hash-popup-animate'); // prevent replay on re-open
+    hashPopupEl.textContent    = '';
     if (document.activeElement) document.activeElement.blur();
 
     let i = 0;
@@ -258,6 +274,7 @@ function openTerminal() {
             startAmbientStream();
             pickLine();
             activateTyping();
+            saveGame();
         }
     }, 110);
 }
@@ -271,6 +288,7 @@ function closeTerminal() {
     deactivateTyping();
     currentLine = null;
     removeTaskbarTab();
+    saveGame();
 }
 
 // ── Minimize → becomes a tab in the taskbar ───────────────────────────────────
@@ -286,6 +304,7 @@ function minimizeTerminal() {
     terminalState = 'minimized';
     terminalPanel.style.display = 'none';
     addTaskbarTab();
+    saveGame();
 }
 
 function restoreFromMinimize() {
@@ -295,7 +314,10 @@ function restoreFromMinimize() {
     terminalPanel.style.display = 'flex';
     btnTermMax.setAttribute('aria-label', 'Maximize');
     applyNormalGeometry();
+    hashPopupEl.classList.remove('hash-popup-animate'); // prevent replay on restore
+    hashPopupEl.textContent = '';
     if (document.activeElement) document.activeElement.blur();
+    saveGame();
 }
 
 // ── Maximize / Restore toggle ──────────────────────────────────────────────────
@@ -317,6 +339,7 @@ function toggleMaximize() {
         terminalPanel.style.width  = '100%';
         terminalPanel.style.height = '100%';
     }
+    saveGame();
 }
 
 function saveNormalGeometry() {
@@ -339,6 +362,105 @@ function addTaskbarTab() {
 
 function removeTaskbarTab() {
     const tab = document.getElementById('tab-terminal');
+    if (tab) tab.remove();
+}
+
+// ─── Wallet State Machine ─────────────────────────────────────────────────────
+let walletState = 'hidden';
+let walletNormalPos = { top: 60, left: 100, width: 400, height: 300 };
+
+function applyWalletNormalGeometry() {
+    walletPanel.style.top    = walletNormalPos.top    + 'px';
+    walletPanel.style.left   = walletNormalPos.left   + 'px';
+    walletPanel.style.width  = walletNormalPos.width  + 'px';
+    walletPanel.style.height = walletNormalPos.height + 'px';
+}
+
+function openWallet() {
+    if (walletState !== 'hidden') {
+        if (walletState === 'minimized') restoreWalletFromMinimize();
+        return;
+    }
+    walletState = 'normal';
+    walletPanel.classList.remove('is-maximized');
+    walletPanel.style.display = 'flex';
+    btnWalletMax.setAttribute('aria-label', 'Maximize');
+    applyWalletNormalGeometry();
+    updateCashDisplay();
+    if (document.activeElement) document.activeElement.blur();
+    saveGame();
+}
+
+function closeWallet() {
+    walletState = 'hidden';
+    walletPanel.style.display = 'none';
+    walletPanel.classList.remove('is-maximized');
+    removeWalletTaskbarTab();
+    saveGame();
+}
+
+function minimizeWallet() {
+    if (walletState === 'hidden') return;
+    if (walletState === 'normal') saveWalletNormalGeometry();
+    if (walletState === 'maximized') {
+        walletPanel.classList.remove('is-maximized');
+        btnWalletMax.setAttribute('aria-label', 'Maximize');
+    }
+    walletState = 'minimized';
+    walletPanel.style.display = 'none';
+    addWalletTaskbarTab();
+    saveGame();
+}
+
+function restoreWalletFromMinimize() {
+    removeWalletTaskbarTab();
+    walletState = 'normal';
+    walletPanel.classList.remove('is-maximized');
+    walletPanel.style.display = 'flex';
+    btnWalletMax.setAttribute('aria-label', 'Maximize');
+    applyWalletNormalGeometry();
+    if (document.activeElement) document.activeElement.blur();
+    saveGame();
+}
+
+function toggleMaximizeWallet() {
+    if (walletState === 'maximized') {
+        walletState = 'normal';
+        walletPanel.classList.remove('is-maximized');
+        btnWalletMax.setAttribute('aria-label', 'Maximize');
+        applyWalletNormalGeometry();
+    } else if (walletState === 'normal') {
+        saveWalletNormalGeometry();
+        walletState = 'maximized';
+        walletPanel.classList.add('is-maximized');
+        btnWalletMax.setAttribute('aria-label', 'Restore');
+        walletPanel.style.top    = '0';
+        walletPanel.style.left   = '0';
+        walletPanel.style.width  = '100%';
+        walletPanel.style.height = '100%';
+    }
+    saveGame();
+}
+
+function saveWalletNormalGeometry() {
+    walletNormalPos.top    = parseInt(walletPanel.style.top)    || 60;
+    walletNormalPos.left   = parseInt(walletPanel.style.left)   || 100;
+    walletNormalPos.width  = parseInt(walletPanel.style.width)  || 400;
+    walletNormalPos.height = parseInt(walletPanel.style.height) || 300;
+}
+
+function addWalletTaskbarTab() {
+    if (document.getElementById('tab-wallet')) return;
+    const tab = document.createElement('button');
+    tab.id        = 'tab-wallet';
+    tab.className = 'taskbar-tab';
+    tab.textContent = '💳 PallPay';
+    tab.onclick = restoreWalletFromMinimize;
+    windowTaskbar.appendChild(tab);
+}
+
+function removeWalletTaskbarTab() {
+    const tab = document.getElementById('tab-wallet');
     if (tab) tab.remove();
 }
 
@@ -371,7 +493,38 @@ document.addEventListener('mousemove', e => {
     normalPos.top  = newTop;
 });
 
-document.addEventListener('mouseup', () => { dragActive = false; });
+// ─── Drag Logic Wallet ────────────────────────────────────────────────────────
+let dragWalletActive = false;
+let dragWalletOffset = { x: 0, y: 0 };
+
+walletTitleBar.addEventListener('mousedown', e => {
+    if (e.target.tagName === 'BUTTON') return;
+    if (walletState !== 'normal') return;
+    dragWalletActive = true;
+    const rect = walletPanel.getBoundingClientRect();
+    dragWalletOffset.x = e.clientX - rect.left;
+    dragWalletOffset.y = e.clientY - rect.top;
+    e.preventDefault();
+});
+
+document.addEventListener('mousemove', e => {
+    if (!dragWalletActive) return;
+    const par = mainWindowBody.getBoundingClientRect();
+    let newLeft = e.clientX - par.left - dragWalletOffset.x;
+    let newTop = e.clientY - par.top - dragWalletOffset.y;
+    newLeft = Math.max(0, Math.min(newLeft, par.width - walletPanel.offsetWidth));
+    newTop = Math.max(0, Math.min(newTop, par.height - walletPanel.offsetHeight));
+    walletPanel.style.left = newLeft + 'px';
+    walletPanel.style.top = newTop + 'px';
+    walletNormalPos.left = newLeft;
+    walletNormalPos.top = newTop;
+});
+
+document.addEventListener('mouseup', () => { 
+    if (dragActive || dragWalletActive) saveGame();
+    dragActive = false; 
+    dragWalletActive = false;
+});
 
 // ─── Utility Functions ────────────────────────────────────────────────────────
 function rand(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
@@ -389,7 +542,73 @@ function randomUUID() {
     });
 }
 
+// ─── Persistence ──────────────────────────────────────────────────────────────
+
+function saveGame() {
+    const saveData = {
+        gameState,
+        ui: {
+            terminalState,
+            normalPos,
+            walletState,
+            walletNormalPos
+        }
+    };
+    localStorage.setItem('hackOS_save', JSON.stringify(saveData));
+}
+
+function loadGame() {
+    const rawData = localStorage.getItem('hackOS_save');
+    if (!rawData) return;
+
+    try {
+        const data = JSON.parse(rawData);
+        
+        // Restore game data
+        if (data.gameState) {
+            gameState.balance = data.gameState.balance || 0;
+            gameState.cash = data.gameState.cash || 0;
+            updateHashDisplay();
+            updateCashDisplay();
+        }
+
+        // Restore UI data
+        if (data.ui) {
+            normalPos = data.ui.normalPos || normalPos;
+            const savedTermState = data.ui.terminalState;
+
+            walletNormalPos = data.ui.walletNormalPos || walletNormalPos;
+            const savedWalletState = data.ui.walletState;
+
+            // Re-apply terminal state
+            if (savedTermState === 'normal') {
+                openTerminal();
+            } else if (savedTermState === 'maximized') {
+                openTerminal();
+                toggleMaximize();
+            } else if (savedTermState === 'minimized') {
+                openTerminal();
+                minimizeTerminal();
+            }
+
+            // Re-apply wallet state
+            if (savedWalletState === 'normal') {
+                openWallet();
+            } else if (savedWalletState === 'maximized') {
+                openWallet();
+                toggleMaximizeWallet();
+            } else if (savedWalletState === 'minimized') {
+                openWallet();
+                minimizeWallet();
+            }
+        }
+    } catch (e) {
+        console.error("Failed to load game:", e);
+    }
+}
+
 // ─── Init ──────────────────────────────────────────────────────────────────────
+loadGame();
 console.log(`[HackOS] v${gameState.version} initialized. Currency: ${gameState.currency}`);
 
 // ─── Mini Terminal Preview Animation (section card) ───────────────────────────

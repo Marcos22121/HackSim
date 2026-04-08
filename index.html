@@ -50,21 +50,32 @@
                 <!-- ── SECTIONS AREA (icon grid) ── -->
                 <div id="sections-area">
 
-                    <!-- Section: Hack Terminal -->
-                    <div id="section-hack-terminal">
-
-                        <!-- Mini terminal preview (top) -->
-                        <div id="hack-terminal-preview">
-                            <div id="preview-output"></div>
-                            <div id="preview-cursor-line">
-                                <span class="preview-prompt">$&nbsp;</span>
-                                <span class="preview-cursor">█</span>
+                    <!-- Columna izquierda de secciones -->
+                    <div class="sections-column">
+                        
+                        <!-- Section: Hack Terminal -->
+                        <div id="section-hack-terminal">
+                            <!-- Mini terminal preview (top) -->
+                            <div id="hack-terminal-preview">
+                                <div id="preview-output"></div>
+                                <div id="preview-cursor-line">
+                                    <span class="preview-prompt">$&nbsp;</span>
+                                    <span class="preview-cursor">█</span>
+                                </div>
                             </div>
+                            <!-- Label + button (bottom) -->
+                            <div id="hack-terminal-label">Hack Terminal</div>
+                            <button id="btn-open-terminal" onclick="openTerminal()">Open</button>
                         </div>
 
-                        <!-- Label + button (bottom) -->
-                        <div id="hack-terminal-label">Hack Terminal</div>
-                        <button id="btn-open-terminal" onclick="openTerminal()">Open</button>
+                        <!-- Section: Wallet -->
+                        <div id="section-wallet">
+                            <div id="wallet-pallpay-logo-bg">
+                                <span class="logo-pall">Pall</span><span class="logo-pay">Pay</span>
+                            </div>
+                            <div id="wallet-label">Wallet</div>
+                            <button id="btn-open-wallet" onclick="openWallet()">Open</button>
+                        </div>
 
                     </div>
 
@@ -97,6 +108,32 @@
                                 <span id="ghost-text"></span>
                             </div>
 
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ── PALLPAY PANEL (Wallet window - hidden by default) ── -->
+                <div id="wallet-panel" class="window" style="display:none;">
+                    <div class="title-bar" id="wallet-title-bar">
+                        <div class="title-bar-text">PallPay — Secure Wallet</div>
+                        <div class="title-bar-controls">
+                            <button aria-label="Minimize" id="btn-minimize-wallet" onclick="minimizeWallet()"></button>
+                            <button aria-label="Maximize" id="btn-maximize-wallet" onclick="toggleMaximizeWallet()"></button>
+                            <button aria-label="Close"    id="btn-close-wallet"    onclick="closeWallet()"></button>
+                        </div>
+                    </div>
+                    <div class="window-body" id="wallet-body">
+                        <div id="pallpay-content">
+                            <div id="pallpay-logo">
+                                <span class="logo-pall">Pall</span><span class="logo-pay">Pay</span>
+                            </div>
+                            <div id="pallpay-card">
+                                <div class="card-title">Account Balance</div>
+                                <div class="card-value">Cash: $<span id="cash-value-display">0.0</span></div>
+                            </div>
+                            <div id="pallpay-footer">
+                                Secure Transaction Verified
+                            </div>
                         </div>
                     </div>
                 </div>
