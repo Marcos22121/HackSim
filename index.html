@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Hacker Simulator - A cyberpunk hacking game with Windows XP aesthetics">
+    <title>HackOS — Hacker Simulator</title>
+
+    <!-- XP.css — Windows XP UI Library -->
+    <link rel="stylesheet" href="node_modules/xp.css/dist/XP.css">
+
+    <!-- Game Styles -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <!-- Desktop background -->
+    <div id="desktop">
+
+        <!-- Main Game Window — 95% of screen -->
+        <div id="main-window" class="window">
+
+            <!-- Title Bar -->
+            <div class="title-bar" id="main-title-bar">
+                <div class="title-bar-text">HackOS v0.1 — Terminal Interface</div>
+                <div class="title-bar-controls">
+                    <button aria-label="Minimize" id="btn-minimize"></button>
+                    <button aria-label="Maximize" id="btn-maximize"></button>
+                    <button aria-label="Close"    id="btn-close"></button>
+                </div>
+            </div>
+
+            <!-- Window Body -->
+            <div class="window-body" id="main-window-body">
+
+                <!-- ── STATUS BAR: Hash Counter ── -->
+                <div id="game-status-bar">
+                    <div id="hash-display">
+                        <span id="hash-icon">⬡</span>
+                        <span id="hash-label">Hash:</span>
+                        <span id="hash-value">0.00</span>
+                    </div>
+                </div>
+
+                <!-- ── WINDOW TASKBAR: minimized windows appear here ── -->
+                <div id="window-taskbar"></div>
+
+                <!-- ── SECTIONS AREA (icon grid) ── -->
+                <div id="sections-area">
+
+                    <!-- Section: Hack Terminal -->
+                    <div id="section-hack-terminal">
+
+                        <!-- Mini terminal preview (top) -->
+                        <div id="hack-terminal-preview">
+                            <div id="preview-output"></div>
+                            <div id="preview-cursor-line">
+                                <span class="preview-prompt">$&nbsp;</span>
+                                <span class="preview-cursor">█</span>
+                            </div>
+                        </div>
+
+                        <!-- Label + button (bottom) -->
+                        <div id="hack-terminal-label">Hack Terminal</div>
+                        <button id="btn-open-terminal" onclick="openTerminal()">Open</button>
+
+                    </div>
+
+                </div>
+
+                <!-- ── TERMINAL PANEL (hidden by default) ── -->
+                <div id="terminal-panel" class="window" style="display:none;">
+                    <div class="title-bar" id="terminal-title-bar">
+                        <div class="title-bar-text">Hack Terminal — root@hackos</div>
+                        <div class="title-bar-controls">
+                            <button aria-label="Minimize" id="btn-minimize-terminal" onclick="minimizeTerminal()"></button>
+                            <button aria-label="Maximize" id="btn-maximize-terminal" onclick="toggleMaximize()"></button>
+                            <button aria-label="Close"    id="btn-close-terminal"    onclick="closeTerminal()"></button>
+                        </div>
+                    </div>
+                    <div class="window-body" id="terminal-body">
+                        <div id="terminal-screen">
+
+                            <!-- Scrolling hacker output -->
+                            <div id="terminal-output"></div>
+
+                            <!-- Hash earned popup -->
+                            <div id="hash-popup"></div>
+
+                            <!-- Typing input line -->
+                            <div id="terminal-input-line">
+                                <span class="terminal-prompt">root@hackos:~$&nbsp;</span>
+                                <span id="typed-text"></span>
+                                <span id="terminal-cursor">█</span>
+                                <span id="ghost-text"></span>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div><!-- /main-window-body -->
+
+        </div><!-- /main-window -->
+
+    </div><!-- /desktop -->
+
+    <!-- Game Logic -->
+    <script src="js/main.js"></script>
+
+</body>
+
+</html>

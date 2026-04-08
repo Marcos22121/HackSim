@@ -1,0 +1,375 @@
+/* =============================================
+   HackOS — Hacker Simulator
+   Main Stylesheet
+   ============================================= */
+
+/* --- Reset & Base --- */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* --- Desktop Background --- */
+#desktop {
+    width: 100vw;
+    height: 100vh;
+    background-color: #3c3c3c;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+/* --- Main Game Window (95% of screen) --- */
+#main-window {
+    width: 95vw;
+    height: 95vh;
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    max-width: none !important;
+}
+
+/* Title bar — not draggable */
+#main-title-bar {
+    cursor: default !important;
+    user-select: none;
+    flex-shrink: 0;
+}
+
+/* Window body: column layout */
+#main-window-body {
+    flex: 1;
+    overflow: hidden;
+    background-color: #ece9d8;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Disable main window buttons */
+#btn-minimize,
+#btn-maximize,
+#btn-close {
+    cursor: not-allowed;
+}
+
+/* =============================================
+   STATUS BAR — Hash Display
+   ============================================= */
+
+#game-status-bar {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    padding: 3px 10px;
+    background: #d4d0c8;
+    border-bottom: 2px solid;
+    border-color: #808080 #fff #fff #808080;
+    gap: 20px;
+}
+
+#hash-display {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-family: 'Tahoma', 'MS Sans Serif', sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+    color: #000;
+}
+
+#hash-icon  { font-size: 14px; color: #1a6b0a; }
+#hash-label { color: #333; }
+
+#hash-value {
+    font-size: 14px;
+    color: #0a5200;
+    min-width: 48px;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.5px;
+}
+
+/* =============================================
+   WINDOW TASKBAR — minimized windows strip
+   ============================================= */
+
+#window-taskbar {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    padding: 2px 4px;
+    gap: 3px;
+    background: #d4d0c8;
+    border-bottom: 2px solid;
+    border-color: #808080 #fff #fff #808080;
+    min-height: 27px;
+}
+
+/* Each minimized window tab */
+.taskbar-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 1px 10px;
+    min-width: 140px;
+    max-width: 200px;
+    font-family: 'Tahoma', 'MS Sans Serif', sans-serif;
+    font-size: 11px;
+    font-weight: bold;
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* =============================================
+   SECTIONS AREA — Icon grid
+   ============================================= */
+
+#sections-area {
+    flex: 1;
+    display: flex;
+    flex-wrap: wrap;
+    padding: 12px;
+    gap: 10px;
+    align-content: flex-start;
+    overflow: auto;
+}
+
+/* Section card */
+#section-hack-terminal {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    width: 260px;
+    height: 38vh;
+    padding: 8px;
+    background-color: #d4d0c8;
+    border: 2px inset #808080;
+    cursor: default;
+    user-select: none;
+}
+
+/* Mini terminal preview — black panel taking most of the card height */
+#hack-terminal-preview {
+    flex: 1;
+    width: 100%;
+    background-color: #000;
+    border: 1px solid #444;
+    padding: 5px 7px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    font-family: 'Courier New', 'Lucida Console', monospace;
+    font-size: 10px;
+    color: #00ff41;
+    box-sizing: border-box;
+}
+
+#preview-output {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
+
+.preview-line {
+    color: #00cc33;
+    text-shadow: 0 0 4px rgba(0,255,65,0.5);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.35;
+    opacity: 0;
+    animation: previewFadeIn 0.3s ease-in forwards;
+}
+
+@keyframes previewFadeIn {
+    to { opacity: 1; }
+}
+
+#preview-cursor-line {
+    display: flex;
+    align-items: center;
+    margin-top: 3px;
+    flex-shrink: 0;
+}
+
+.preview-prompt  { color: #009922; }
+.preview-cursor  { color: #00ff41; animation: blink 1s step-start infinite; }
+
+#hack-terminal-label {
+    font-family: 'Tahoma', 'MS Sans Serif', sans-serif;
+    font-size: 11px;
+    font-weight: bold;
+    color: #000;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+#btn-open-terminal {
+    min-width: 70px;
+    flex-shrink: 0;
+}
+
+/* =============================================
+   HACK TERMINAL — Panel Window
+   ============================================= */
+
+#terminal-panel {
+    position: absolute;
+    z-index: 10;
+    top: 30px;
+    left: 20px;
+    width: 900px;
+    height: 45vh;
+    display: flex;
+    flex-direction: column;
+    max-width: none !important;
+    /* Smooth size/position transitions */
+    transition: none;
+}
+
+/* Title bar: move cursor when in normal (draggable) state */
+#terminal-title-bar {
+    cursor: move;
+    user-select: none;
+}
+
+/* When maximized, title bar is NOT draggable */
+#terminal-panel.is-maximized #terminal-title-bar {
+    cursor: default;
+}
+
+#terminal-body {
+    flex: 1;
+    padding: 0 !important;
+    background-color: #000 !important;
+    overflow: hidden;
+}
+
+/* Black screen */
+#terminal-screen {
+    width: 100%;
+    height: 100%;
+    background-color: #000;
+    padding: 10px 14px 10px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    font-family: 'Courier New', 'Lucida Console', monospace;
+    font-size: 13px;
+    color: #00ff41;
+    position: relative;
+}
+
+/* Scrolling output */
+#terminal-output {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    scrollbar-width: thin;
+    scrollbar-color: #003300 #000;
+}
+
+#terminal-output::-webkit-scrollbar       { width: 6px; }
+#terminal-output::-webkit-scrollbar-track { background: #000; }
+#terminal-output::-webkit-scrollbar-thumb { background: #003300; }
+
+.terminal-line {
+    color: #00ff41;
+    text-shadow: 0 0 6px rgba(0, 255, 65, 0.6);
+    white-space: pre;
+    line-height: 1.4;
+    animation: fadeInLine 0.15s ease-in;
+}
+
+@keyframes fadeInLine {
+    from { opacity: 0; transform: translateX(-4px); }
+    to   { opacity: 1; transform: translateX(0); }
+}
+
+/* ── TYPING INPUT LINE ── */
+
+#terminal-input-line {
+    display: flex;
+    align-items: center;
+    margin-top: 8px;
+    flex-shrink: 0;
+    border-top: 1px solid #002200;
+    padding-top: 7px;
+    white-space: pre;
+    font-size: 13px;
+}
+
+.terminal-prompt {
+    color: #00cc33;
+    text-shadow: 0 0 5px rgba(0, 200, 50, 0.8);
+    flex-shrink: 0;
+}
+
+/* Characters already typed — bright green */
+#typed-text {
+    color: #00ff41;
+    text-shadow: 0 0 8px rgba(0, 255, 65, 0.9);
+}
+
+/* Characters not yet typed — ghosted */
+#ghost-text {
+    color: rgba(0, 255, 65, 0.35);
+    text-shadow: none;
+}
+
+/* Blinking block cursor */
+#terminal-cursor {
+    color: #00ff41;
+    animation: blink 1s step-start infinite;
+    flex-shrink: 0;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0; }
+}
+
+/* Flash on line completion */
+#typed-text.line-complete-flash {
+    color: #ffffff;
+    text-shadow: 0 0 16px rgba(255, 255, 255, 1);
+    transition: color 0.1s, text-shadow 0.1s;
+}
+
+/* ── HASH POPUP ── */
+
+#hash-popup {
+    position: absolute;
+    bottom: 52px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Courier New', monospace;
+    font-size: 18px;
+    font-weight: bold;
+    color: #00ff41;
+    text-shadow: 0 0 12px rgba(0, 255, 65, 1);
+    pointer-events: none;
+    opacity: 0;
+    z-index: 20;
+}
+
+#hash-popup.hash-popup-animate {
+    animation: popupFloat 1.2s ease-out forwards;
+}
+
+@keyframes popupFloat {
+    0%   { opacity: 1; transform: translateX(-50%) translateY(0); }
+    60%  { opacity: 1; transform: translateX(-50%) translateY(-30px); }
+    100% { opacity: 0; transform: translateX(-50%) translateY(-55px); }
+}
