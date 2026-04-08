@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Hacker Simulator - A cyberpunk hacking game with Windows XP aesthetics">
+    <meta name="description" content="HackOS — A cyberpunk hacker simulator with Windows XP aesthetics">
     <title>HackOS — Hacker Simulator</title>
 
     <!-- XP.css — Windows XP UI Library -->
@@ -16,133 +16,218 @@
 
 <body>
 
-    <!-- Desktop background -->
-    <div id="desktop">
+    <!-- ================================================================
+         LOGIN SCREEN — Blue XP-style login with animated dots
+         ================================================================ -->
+    <div id="login-screen">
+        <div id="login-content">
+            <img id="login-logo" src="assets/logo.png" alt="HackOS Logo">
+            <div id="login-text">
+                <span id="login-label">Logging in</span>
+                <span id="login-dots">
+                    <span class="dot">.</span>
+                    <span class="dot">.</span>
+                    <span class="dot">.</span>
+                </span>
+            </div>
+        </div>
+    </div>
 
-        <!-- Main Game Window — 95% of screen -->
-        <div id="main-window" class="window">
+    <!-- ================================================================
+         XP DESKTOP — Full desktop environment (hidden until login completes)
+         ================================================================ -->
+    <div id="xp-desktop" style="display:none;">
 
-            <!-- Title Bar -->
-            <div class="title-bar" id="main-title-bar">
-                <div class="title-bar-text">HackOS v0.1 — Terminal Interface</div>
-                <div class="title-bar-controls">
-                    <button aria-label="Minimize" id="btn-minimize"></button>
-                    <button aria-label="Maximize" id="btn-maximize"></button>
-                    <button aria-label="Close"    id="btn-close"></button>
-                </div>
+        <!-- ── Desktop Icons ── -->
+        <div id="desktop-icons">
+
+            <div class="desktop-icon" data-app="hackos" id="icon-hackos">
+                <img src="assets/icon-hackos.png" alt="HackOS" draggable="false">
+                <span>HackOS v0.1</span>
             </div>
 
-            <!-- Window Body -->
-            <div class="window-body" id="main-window-body">
+            <div class="desktop-icon" data-app="pallpay" id="icon-pallpay">
+                <img src="assets/icon-pallpay.png" alt="PallPay" draggable="false">
+                <span>PallPay</span>
+            </div>
 
-                <!-- ── STATUS BAR: Hash Counter ── -->
-                <div id="game-status-bar">
-                    <div id="hash-display">
-                        <span id="hash-icon">⬡</span>
-                        <span id="hash-label">Hash:</span>
-                        <span id="hash-value">0.00</span>
+            <div class="desktop-icon" data-app="trash" id="icon-trash">
+                <img src="assets/icon-trash.png" alt="Trash Bin" draggable="false">
+                <span>Trash Bin</span>
+            </div>
+
+        </div>
+
+        <!-- ── Window Container — floating windows live here ── -->
+        <div id="window-container">
+
+            <!-- ════════════════════════════════════════════════════════════
+                 HACKOS WINDOW — The main game app
+                 ════════════════════════════════════════════════════════════ -->
+            <div id="hackos-window" class="window desktop-window" style="display:none;">
+
+                <!-- Title Bar -->
+                <div class="title-bar" id="hackos-title-bar">
+                    <div class="title-bar-text">HackOS v0.1 — Terminal Interface</div>
+                    <div class="title-bar-controls">
+                        <button aria-label="Minimize" id="btn-hackos-minimize"></button>
+                        <button aria-label="Maximize" id="btn-hackos-maximize"></button>
+                        <button aria-label="Close"    id="btn-hackos-close"></button>
                     </div>
                 </div>
 
-                <!-- ── WINDOW TASKBAR: minimized windows appear here ── -->
-                <div id="window-taskbar"></div>
+                <!-- Window Body -->
+                <div class="window-body" id="hackos-window-body">
 
-                <!-- ── SECTIONS AREA (icon grid) ── -->
-                <div id="sections-area">
+                    <!-- ── STATUS BAR: Hash Counter ── -->
+                    <div id="game-status-bar">
+                        <div id="hash-display">
+                            <span id="hash-icon">⬡</span>
+                            <span id="hash-label">Hash:</span>
+                            <span id="hash-value">0.00</span>
+                        </div>
+                    </div>
 
-                    <!-- Columna izquierda de secciones -->
-                    <div class="sections-column">
-                        
-                        <!-- Section: Hack Terminal -->
-                        <div id="section-hack-terminal">
-                            <!-- Mini terminal preview (top) -->
-                            <div id="hack-terminal-preview">
-                                <div id="preview-output"></div>
-                                <div id="preview-cursor-line">
-                                    <span class="preview-prompt">$&nbsp;</span>
-                                    <span class="preview-cursor">█</span>
+                    <!-- ── INTERNAL TASKBAR: minimized sub-windows ── -->
+                    <div id="window-taskbar"></div>
+
+                    <!-- ── SECTIONS AREA (icon grid inside HackOS) ── -->
+                    <div id="sections-area">
+
+                        <!-- Columna izquierda de secciones -->
+                        <div class="sections-column">
+
+                            <!-- Section: Hack Terminal -->
+                            <div id="section-hack-terminal">
+                                <!-- Mini terminal preview (top) -->
+                                <div id="hack-terminal-preview">
+                                    <div id="preview-output"></div>
+                                    <div id="preview-cursor-line">
+                                        <span class="preview-prompt">$&nbsp;</span>
+                                        <span class="preview-cursor">█</span>
+                                    </div>
+                                </div>
+                                <!-- Label + button (bottom) -->
+                                <div id="hack-terminal-label">Hack Terminal</div>
+                                <button id="btn-open-terminal">Open</button>
+                            </div>
+
+                            <!-- Section: Wallet (inside HackOS) -->
+                            <div id="section-wallet">
+                                <div id="wallet-pallpay-logo-bg">
+                                    <span class="logo-pall">Pall</span><span class="logo-pay">Pay</span>
+                                </div>
+                                <div id="wallet-label">Wallet</div>
+                                <button id="btn-open-wallet">Open</button>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- ── TERMINAL PANEL (sub-window inside HackOS) ── -->
+                    <div id="terminal-panel" class="window" style="display:none;">
+                        <div class="title-bar" id="terminal-title-bar">
+                            <div class="title-bar-text">Hack Terminal — root@hackos</div>
+                            <div class="title-bar-controls">
+                                <button aria-label="Minimize" id="btn-minimize-terminal"></button>
+                                <button aria-label="Maximize" id="btn-maximize-terminal"></button>
+                                <button aria-label="Close"    id="btn-close-terminal"></button>
+                            </div>
+                        </div>
+                        <div class="window-body" id="terminal-body">
+                            <div id="terminal-screen">
+                                <!-- Scrolling hacker output -->
+                                <div id="terminal-output"></div>
+                                <!-- Hash earned popup -->
+                                <div id="hash-popup"></div>
+                                <!-- Typing input line -->
+                                <div id="terminal-input-line">
+                                    <span class="terminal-prompt">root@hackos:~$&nbsp;</span>
+                                    <span id="typed-text"></span>
+                                    <span id="terminal-cursor">█</span>
+                                    <span id="ghost-text"></span>
                                 </div>
                             </div>
-                            <!-- Label + button (bottom) -->
-                            <div id="hack-terminal-label">Hack Terminal</div>
-                            <button id="btn-open-terminal" onclick="openTerminal()">Open</button>
-                        </div>
-
-                        <!-- Section: Wallet -->
-                        <div id="section-wallet">
-                            <div id="wallet-pallpay-logo-bg">
-                                <span class="logo-pall">Pall</span><span class="logo-pay">Pay</span>
-                            </div>
-                            <div id="wallet-label">Wallet</div>
-                            <button id="btn-open-wallet" onclick="openWallet()">Open</button>
-                        </div>
-
-                    </div>
-
-                </div>
-
-                <!-- ── TERMINAL PANEL (hidden by default) ── -->
-                <div id="terminal-panel" class="window" style="display:none;">
-                    <div class="title-bar" id="terminal-title-bar">
-                        <div class="title-bar-text">Hack Terminal — root@hackos</div>
-                        <div class="title-bar-controls">
-                            <button aria-label="Minimize" id="btn-minimize-terminal" onclick="minimizeTerminal()"></button>
-                            <button aria-label="Maximize" id="btn-maximize-terminal" onclick="toggleMaximize()"></button>
-                            <button aria-label="Close"    id="btn-close-terminal"    onclick="closeTerminal()"></button>
                         </div>
                     </div>
-                    <div class="window-body" id="terminal-body">
-                        <div id="terminal-screen">
 
-                            <!-- Scrolling hacker output -->
-                            <div id="terminal-output"></div>
-
-                            <!-- Hash earned popup -->
-                            <div id="hash-popup"></div>
-
-                            <!-- Typing input line -->
-                            <div id="terminal-input-line">
-                                <span class="terminal-prompt">root@hackos:~$&nbsp;</span>
-                                <span id="typed-text"></span>
-                                <span id="terminal-cursor">█</span>
-                                <span id="ghost-text"></span>
+                    <!-- ── PALLPAY PANEL (sub-window inside HackOS) ── -->
+                    <div id="wallet-panel" class="window" style="display:none;">
+                        <div class="title-bar" id="wallet-title-bar">
+                            <div class="title-bar-text">PallPay — Secure Wallet</div>
+                            <div class="title-bar-controls">
+                                <button aria-label="Minimize" id="btn-minimize-wallet"></button>
+                                <button aria-label="Maximize" id="btn-maximize-wallet"></button>
+                                <button aria-label="Close"    id="btn-close-wallet"></button>
                             </div>
-
                         </div>
+                        <div class="window-body" id="wallet-body">
+                            <div id="pallpay-content">
+                                <div id="pallpay-logo">
+                                    <span class="logo-pall">Pall</span><span class="logo-pay">Pay</span>
+                                </div>
+                                <div id="pallpay-card">
+                                    <div class="card-title">Account Balance</div>
+                                    <div class="card-value">Cash: $<span id="cash-value-display">0.0</span></div>
+                                </div>
+                                <div id="pallpay-footer">
+                                    Secure Transaction Verified
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div><!-- /hackos-window-body -->
+
+            </div><!-- /hackos-window -->
+
+            <!-- ════════════════════════════════════════════════════════════
+                 PALLPAY DESKTOP WINDOW — Standalone wallet on the desktop
+                 ════════════════════════════════════════════════════════════ -->
+            <div id="pallpay-desktop-window" class="window desktop-window" style="display:none;">
+
+                <div class="title-bar" id="pallpay-desktop-title-bar">
+                    <div class="title-bar-text">PallPay — Secure Wallet</div>
+                    <div class="title-bar-controls">
+                        <button aria-label="Minimize" id="btn-pallpay-desktop-minimize"></button>
+                        <button aria-label="Maximize" id="btn-pallpay-desktop-maximize"></button>
+                        <button aria-label="Close"    id="btn-pallpay-desktop-close"></button>
                     </div>
                 </div>
-
-                <!-- ── PALLPAY PANEL (Wallet window - hidden by default) ── -->
-                <div id="wallet-panel" class="window" style="display:none;">
-                    <div class="title-bar" id="wallet-title-bar">
-                        <div class="title-bar-text">PallPay — Secure Wallet</div>
-                        <div class="title-bar-controls">
-                            <button aria-label="Minimize" id="btn-minimize-wallet" onclick="minimizeWallet()"></button>
-                            <button aria-label="Maximize" id="btn-maximize-wallet" onclick="toggleMaximizeWallet()"></button>
-                            <button aria-label="Close"    id="btn-close-wallet"    onclick="closeWallet()"></button>
+                <div class="window-body" id="pallpay-desktop-body">
+                    <div class="pallpay-content-standalone">
+                        <div class="pallpay-logo-standalone">
+                            <span class="logo-pall">Pall</span><span class="logo-pay">Pay</span>
                         </div>
-                    </div>
-                    <div class="window-body" id="wallet-body">
-                        <div id="pallpay-content">
-                            <div id="pallpay-logo">
-                                <span class="logo-pall">Pall</span><span class="logo-pay">Pay</span>
-                            </div>
-                            <div id="pallpay-card">
-                                <div class="card-title">Account Balance</div>
-                                <div class="card-value">Cash: $<span id="cash-value-display">0.0</span></div>
-                            </div>
-                            <div id="pallpay-footer">
-                                Secure Transaction Verified
-                            </div>
+                        <div class="pallpay-card-standalone">
+                            <div class="card-title">Account Balance</div>
+                            <div class="card-value">Cash: $<span id="cash-value-desktop-display">0.0</span></div>
+                        </div>
+                        <div class="pallpay-footer-standalone">
+                            Secure Transaction Verified
                         </div>
                     </div>
                 </div>
 
-            </div><!-- /main-window-body -->
+            </div><!-- /pallpay-desktop-window -->
 
-        </div><!-- /main-window -->
+        </div><!-- /window-container -->
 
-    </div><!-- /desktop -->
+        <!-- ── XP Taskbar ── -->
+        <div id="xp-taskbar">
+            <button id="start-button">
+                <img src="assets/logo.png" alt="" class="start-logo">
+                <span>Start</span>
+            </button>
+            <div id="taskbar-divider"></div>
+            <div id="taskbar-apps"></div>
+            <div id="system-tray">
+                <span id="system-clock"></span>
+            </div>
+        </div>
+
+    </div><!-- /xp-desktop -->
 
     <!-- Game Logic -->
     <script src="js/main.js"></script>

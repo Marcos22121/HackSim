@@ -1,6 +1,6 @@
 /* =============================================
    HackOS — Hacker Simulator
-   Game Logic Entry Point
+   Game Logic — XP Desktop Edition
    ============================================= */
 
 'use strict';
@@ -29,17 +29,6 @@ document.addEventListener('click', e => {
     if (e.target.tagName === 'BUTTON') playClick();
 });
 
-// ─── Window Button Guards (main window – decorative only) ────────────────────
-const btnMinimize = document.getElementById('btn-minimize');
-const btnMaximize = document.getElementById('btn-maximize');
-const btnClose    = document.getElementById('btn-close');
-
-function blockAction(e) { e.preventDefault(); e.stopPropagation(); }
-
-btnMinimize.addEventListener('click', blockAction);
-btnMaximize.addEventListener('click', blockAction);
-btnClose.addEventListener('click', blockAction);
-
 // ─── Game State ──────────────────────────────────────────────────────────────
 const gameState = {
     version:  '0.1.0',
@@ -49,17 +38,17 @@ const gameState = {
 };
 
 // ─── Displays ────────────────────────────────────────────────────────────
-const hashValueEl = document.getElementById('hash-value');
-const cashValueEl = document.getElementById('cash-value-display'); // Will be inside PallPay window
+const hashValueEl   = document.getElementById('hash-value');
+const cashValueEl   = document.getElementById('cash-value-display');
+const cashDesktopEl = document.getElementById('cash-value-desktop-display');
 
 function updateHashDisplay() {
     hashValueEl.textContent = gameState.balance.toFixed(2);
 }
 
 function updateCashDisplay() {
-    if (cashValueEl) {
-        cashValueEl.textContent = gameState.cash.toFixed(1);
-    }
+    if (cashValueEl)   cashValueEl.textContent   = gameState.cash.toFixed(1);
+    if (cashDesktopEl) cashDesktopEl.textContent  = gameState.cash.toFixed(1);
 }
 
 function addHash(amount) {
@@ -76,12 +65,11 @@ const hashPopupEl = document.getElementById('hash-popup');
 function showHashPopup(amount) {
     hashPopupEl.textContent = `+${amount.toFixed(2)} Hash`;
     hashPopupEl.classList.remove('hash-popup-animate');
-    void hashPopupEl.offsetWidth;           // force reflow to re-trigger animation
+    void hashPopupEl.offsetWidth;
     hashPopupEl.classList.add('hash-popup-animate');
 }
 
 // ─── Code Lines Pool ─────────────────────────────────────────────────────────
-// Each entry: { text, hash }. Future tiers will have harder lines + more hash.
 const codeLines = [
     { text: 'root.hack.id.843',      hash: 0.1 },
     { text: 'ping 192.168.1.1',      hash: 0.1 },
@@ -120,10 +108,10 @@ function pickLine() {
 
 function handleTyping(e) {
     if (!currentLine || !typingActive) return;
-    e.preventDefault();                             // block all browser key defaults
-    if (e.key.length > 1) return;                  // skip modifier keys
+    e.preventDefault();
+    if (e.key.length > 1) return;
 
-    if (e.key !== currentLine.text[typedIndex]) return; // wrong char → nothing
+    if (e.key !== currentLine.text[typedIndex]) return;
 
     typedIndex++;
     typedTextEl.textContent = currentLine.text.slice(0, typedIndex);
@@ -159,17 +147,16 @@ function deactivateTyping() {
 }
 
 // ─── Terminal — DOM refs ──────────────────────────────────────────────────────
-const terminalPanel   = document.getElementById('terminal-panel');
+const terminalPanel    = document.getElementById('terminal-panel');
 const terminalTitleBar = document.getElementById('terminal-title-bar');
-const terminalOutput  = document.getElementById('terminal-output');
-const btnTermMax      = document.getElementById('btn-maximize-terminal');
+const terminalOutput   = document.getElementById('terminal-output');
+const btnTermMax       = document.getElementById('btn-maximize-terminal');
+const hackosWindowBody = document.getElementById('hackos-window-body');
+const windowTaskbar    = document.getElementById('window-taskbar');
 
-const walletPanel     = document.getElementById('wallet-panel');
-const walletTitleBar  = document.getElementById('wallet-title-bar');
-const btnWalletMax    = document.getElementById('btn-maximize-wallet');
-
-const mainWindowBody  = document.getElementById('main-window-body');
-const windowTaskbar   = document.getElementById('window-taskbar');
+const walletPanel      = document.getElementById('wallet-panel');
+const walletTitleBar   = document.getElementById('wallet-title-bar');
+const btnWalletMax     = document.getElementById('btn-maximize-wallet');
 
 let terminalInterval = null;
 
@@ -227,15 +214,10 @@ function stopAmbientStream() {
     terminalInterval = null;
 }
 
-// ─── Window State Machine ─────────────────────────────────────────────────────
-// States: 'hidden' | 'normal' | 'maximized' | 'minimized'
+// ─── Sub-Window State Machine (Terminal inside HackOS) ───────────────────────
 let terminalState = 'hidden';
-
-// Saved normal geometry (updated while dragging or before maximizing)
-// Matches the CSS defaults: width:900px, height:45vh, top:30px, left:20px
 let normalPos = { top: 30, left: 20, width: 900, height: Math.round(window.innerHeight * 0.45) };
 
-// Apply normal position/size to the panel
 function applyNormalGeometry() {
     terminalPanel.style.top    = normalPos.top    + 'px';
     terminalPanel.style.left   = normalPos.left   + 'px';
@@ -243,14 +225,11 @@ function applyNormalGeometry() {
     terminalPanel.style.height = normalPos.height + 'px';
 }
 
-// ── Open (from section button) ────────────────────────────────────────────────
 function openTerminal() {
     if (terminalState !== 'hidden') {
-        // If minimized, just restore it
         if (terminalState === 'minimized') restoreFromMinimize();
         return;
     }
-
     terminalState = 'normal';
     terminalPanel.classList.remove('is-maximized');
     terminalPanel.style.display = 'flex';
@@ -260,7 +239,7 @@ function openTerminal() {
     terminalOutput.innerHTML   = '';
     typedTextEl.textContent    = '';
     ghostTextEl.textContent    = '';
-    hashPopupEl.classList.remove('hash-popup-animate'); // prevent replay on re-open
+    hashPopupEl.classList.remove('hash-popup-animate');
     hashPopupEl.textContent    = '';
     if (document.activeElement) document.activeElement.blur();
 
@@ -279,7 +258,6 @@ function openTerminal() {
     }, 110);
 }
 
-// ── Close ─────────────────────────────────────────────────────────────────────
 function closeTerminal() {
     terminalState = 'hidden';
     terminalPanel.style.display = 'none';
@@ -287,49 +265,43 @@ function closeTerminal() {
     stopAmbientStream();
     deactivateTyping();
     currentLine = null;
-    removeTaskbarTab();
+    removeInternalTaskbarTab('tab-terminal');
     saveGame();
 }
 
-// ── Minimize → becomes a tab in the taskbar ───────────────────────────────────
 function minimizeTerminal() {
     if (terminalState === 'hidden') return;
-    // Save position if currently normal
     if (terminalState === 'normal') saveNormalGeometry();
-    // If maximized, restore button label for later
     if (terminalState === 'maximized') {
         terminalPanel.classList.remove('is-maximized');
         btnTermMax.setAttribute('aria-label', 'Maximize');
     }
     terminalState = 'minimized';
     terminalPanel.style.display = 'none';
-    addTaskbarTab();
+    addInternalTaskbarTab('tab-terminal', '>_ Hack Terminal', restoreFromMinimize);
     saveGame();
 }
 
 function restoreFromMinimize() {
-    removeTaskbarTab();
+    removeInternalTaskbarTab('tab-terminal');
     terminalState = 'normal';
     terminalPanel.classList.remove('is-maximized');
     terminalPanel.style.display = 'flex';
     btnTermMax.setAttribute('aria-label', 'Maximize');
     applyNormalGeometry();
-    hashPopupEl.classList.remove('hash-popup-animate'); // prevent replay on restore
+    hashPopupEl.classList.remove('hash-popup-animate');
     hashPopupEl.textContent = '';
     if (document.activeElement) document.activeElement.blur();
     saveGame();
 }
 
-// ── Maximize / Restore toggle ──────────────────────────────────────────────────
 function toggleMaximize() {
     if (terminalState === 'maximized') {
-        // → Restore to normal
         terminalState = 'normal';
         terminalPanel.classList.remove('is-maximized');
         btnTermMax.setAttribute('aria-label', 'Maximize');
         applyNormalGeometry();
     } else if (terminalState === 'normal') {
-        // → Maximize
         saveNormalGeometry();
         terminalState = 'maximized';
         terminalPanel.classList.add('is-maximized');
@@ -349,23 +321,7 @@ function saveNormalGeometry() {
     normalPos.height = parseInt(terminalPanel.style.height) || 440;
 }
 
-// ─── Taskbar Tab ──────────────────────────────────────────────────────────────
-function addTaskbarTab() {
-    if (document.getElementById('tab-terminal')) return;
-    const tab = document.createElement('button');
-    tab.id        = 'tab-terminal';
-    tab.className = 'taskbar-tab';
-    tab.textContent = '>_ Hack Terminal';
-    tab.onclick = restoreFromMinimize;
-    windowTaskbar.appendChild(tab);
-}
-
-function removeTaskbarTab() {
-    const tab = document.getElementById('tab-terminal');
-    if (tab) tab.remove();
-}
-
-// ─── Wallet State Machine ─────────────────────────────────────────────────────
+// ─── Sub-Window: Wallet inside HackOS ─────────────────────────────────────────
 let walletState = 'hidden';
 let walletNormalPos = { top: 60, left: 100, width: 400, height: 300 };
 
@@ -395,7 +351,7 @@ function closeWallet() {
     walletState = 'hidden';
     walletPanel.style.display = 'none';
     walletPanel.classList.remove('is-maximized');
-    removeWalletTaskbarTab();
+    removeInternalTaskbarTab('tab-wallet');
     saveGame();
 }
 
@@ -408,12 +364,12 @@ function minimizeWallet() {
     }
     walletState = 'minimized';
     walletPanel.style.display = 'none';
-    addWalletTaskbarTab();
+    addInternalTaskbarTab('tab-wallet', '💳 PallPay', restoreWalletFromMinimize);
     saveGame();
 }
 
 function restoreWalletFromMinimize() {
-    removeWalletTaskbarTab();
+    removeInternalTaskbarTab('tab-wallet');
     walletState = 'normal';
     walletPanel.classList.remove('is-maximized');
     walletPanel.style.display = 'flex';
@@ -449,82 +405,510 @@ function saveWalletNormalGeometry() {
     walletNormalPos.height = parseInt(walletPanel.style.height) || 300;
 }
 
-function addWalletTaskbarTab() {
-    if (document.getElementById('tab-wallet')) return;
+// ─── Internal Taskbar Tabs (inside HackOS window) ─────────────────────────────
+function addInternalTaskbarTab(id, label, restoreFn) {
+    if (document.getElementById(id)) return;
     const tab = document.createElement('button');
-    tab.id        = 'tab-wallet';
+    tab.id        = id;
     tab.className = 'taskbar-tab';
-    tab.textContent = '💳 PallPay';
-    tab.onclick = restoreWalletFromMinimize;
+    tab.textContent = label;
+    tab.onclick   = restoreFn;
     windowTaskbar.appendChild(tab);
 }
 
-function removeWalletTaskbarTab() {
-    const tab = document.getElementById('tab-wallet');
+function removeInternalTaskbarTab(id) {
+    const tab = document.getElementById(id);
     if (tab) tab.remove();
 }
 
-// ─── Drag Logic ───────────────────────────────────────────────────────────────
+// ─── Wire up sub-window button events ─────────────────────────────────────────
+document.getElementById('btn-open-terminal').addEventListener('click', openTerminal);
+document.getElementById('btn-minimize-terminal').addEventListener('click', minimizeTerminal);
+document.getElementById('btn-maximize-terminal').addEventListener('click', toggleMaximize);
+document.getElementById('btn-close-terminal').addEventListener('click', closeTerminal);
+
+document.getElementById('btn-open-wallet').addEventListener('click', openWallet);
+document.getElementById('btn-minimize-wallet').addEventListener('click', minimizeWallet);
+document.getElementById('btn-maximize-wallet').addEventListener('click', toggleMaximizeWallet);
+document.getElementById('btn-close-wallet').addEventListener('click', closeWallet);
+
+// ─── Sub-Window Drag Logic ────────────────────────────────────────────────────
 let dragActive = false;
+let dragTarget = null;
+let dragState  = null;
+let dragNormal = null;
 let dragOffset = { x: 0, y: 0 };
 
-terminalTitleBar.addEventListener('mousedown', e => {
-    if (e.target.tagName === 'BUTTON') return;   // don't drag when clicking buttons
-    if (terminalState !== 'normal') return;       // no drag when maximized/minimized
-    dragActive   = true;
-    const rect   = terminalPanel.getBoundingClientRect();
+function startSubDrag(e, panel, state, normalPosRef) {
+    if (e.target.tagName === 'BUTTON') return;
+    if (state !== 'normal') return;
+    dragActive = true;
+    dragTarget = panel;
+    dragState  = state;
+    dragNormal = normalPosRef;
+    const rect = panel.getBoundingClientRect();
     dragOffset.x = e.clientX - rect.left;
     dragOffset.y = e.clientY - rect.top;
     e.preventDefault();
-});
+}
+
+terminalTitleBar.addEventListener('mousedown', e => startSubDrag(e, terminalPanel, terminalState, normalPos));
+walletTitleBar.addEventListener('mousedown', e => startSubDrag(e, walletPanel, walletState, walletNormalPos));
 
 document.addEventListener('mousemove', e => {
-    if (!dragActive) return;
-    const par    = mainWindowBody.getBoundingClientRect();
-    let newLeft  = e.clientX - par.left - dragOffset.x;
-    let newTop   = e.clientY - par.top  - dragOffset.y;
-    // Clamp inside the main window body
-    newLeft = Math.max(0, Math.min(newLeft, par.width  - terminalPanel.offsetWidth));
-    newTop  = Math.max(0, Math.min(newTop,  par.height - terminalPanel.offsetHeight));
-    terminalPanel.style.left = newLeft + 'px';
-    terminalPanel.style.top  = newTop  + 'px';
-    // Keep normalPos in sync so restore goes back to dragged position
-    normalPos.left = newLeft;
-    normalPos.top  = newTop;
+    if (!dragActive || !dragTarget) return;
+
+    // Determine parent bounds
+    let par;
+    if (dragTarget === terminalPanel || dragTarget === walletPanel) {
+        par = hackosWindowBody.getBoundingClientRect();
+    } else {
+        par = windowContainer.getBoundingClientRect();
+    }
+
+    let newLeft = e.clientX - par.left - dragOffset.x;
+    let newTop  = e.clientY - par.top  - dragOffset.y;
+    newLeft = Math.max(0, Math.min(newLeft, par.width  - dragTarget.offsetWidth));
+    newTop  = Math.max(0, Math.min(newTop,  par.height - dragTarget.offsetHeight));
+
+    dragTarget.style.left = newLeft + 'px';
+    dragTarget.style.top  = newTop  + 'px';
+
+    if (dragNormal) {
+        dragNormal.left = newLeft;
+        dragNormal.top  = newTop;
+    }
 });
 
-// ─── Drag Logic Wallet ────────────────────────────────────────────────────────
-let dragWalletActive = false;
-let dragWalletOffset = { x: 0, y: 0 };
+document.addEventListener('mouseup', () => {
+    if (dragActive) saveGame();
+    dragActive = false;
+    dragTarget = null;
+    dragState  = null;
+    dragNormal = null;
+});
 
-walletTitleBar.addEventListener('mousedown', e => {
+// ═══════════════════════════════════════════════════════════════════════════════
+//  XP DESKTOP — Window Manager
+// ═══════════════════════════════════════════════════════════════════════════════
+
+const loginScreen    = document.getElementById('login-screen');
+const xpDesktop      = document.getElementById('xp-desktop');
+const windowContainer= document.getElementById('window-container');
+const taskbarApps    = document.getElementById('taskbar-apps');
+const systemClock    = document.getElementById('system-clock');
+
+// ─── Desktop Windows Registry ────────────────────────────────────────────────
+// Each app: { id, windowEl, titleBarEl, state, normalPos, taskbarTabEl }
+const desktopWindows = {};
+let topZIndex = 100;
+
+function registerDesktopWindow(appId, windowEl, titleBarEl, defaultPos) {
+    desktopWindows[appId] = {
+        id: appId,
+        windowEl,
+        titleBarEl,
+        state: 'hidden',
+        normalPos: { ...defaultPos },
+        taskbarTabEl: null,
+    };
+}
+
+function focusDesktopWindow(appId) {
+    topZIndex++;
+    const win = desktopWindows[appId];
+    if (!win) return;
+    // Remove focused from all
+    Object.values(desktopWindows).forEach(w => w.windowEl.classList.remove('focused'));
+    win.windowEl.classList.add('focused');
+    win.windowEl.style.zIndex = topZIndex;
+}
+
+function openDesktopWindow(appId) {
+    const win = desktopWindows[appId];
+    if (!win) return;
+
+    if (win.state === 'minimized') {
+        restoreDesktopWindow(appId);
+        return;
+    }
+    if (win.state !== 'hidden') {
+        focusDesktopWindow(appId);
+        return;
+    }
+
+    win.state = 'normal';
+    win.windowEl.classList.remove('is-maximized');
+    win.windowEl.style.display = 'flex';
+    applyDesktopWindowGeometry(appId);
+    focusDesktopWindow(appId);
+    addDesktopTaskbarTab(appId);
+
+    // App-specific init
+    if (appId === 'hackos') {
+        // Load saved sub-window states if any
+    }
+    if (appId === 'pallpay-desktop') {
+        updateCashDisplay();
+    }
+
+    saveGame();
+}
+
+function closeDesktopWindow(appId) {
+    const win = desktopWindows[appId];
+    if (!win) return;
+
+    // App-specific cleanup
+    if (appId === 'hackos') {
+        closeTerminal();
+        closeWallet();
+    }
+
+    win.state = 'hidden';
+    win.windowEl.style.display = 'none';
+    win.windowEl.classList.remove('is-maximized');
+    removeDesktopTaskbarTab(appId);
+    saveGame();
+}
+
+function minimizeDesktopWindow(appId) {
+    const win = desktopWindows[appId];
+    if (!win || win.state === 'hidden') return;
+
+    if (win.state === 'normal') saveDesktopWindowGeometry(appId);
+    if (win.state === 'maximized') {
+        win.windowEl.classList.remove('is-maximized');
+    }
+
+    win.state = 'minimized';
+    win.windowEl.style.display = 'none';
+    updateDesktopTaskbarTab(appId);
+    saveGame();
+}
+
+function restoreDesktopWindow(appId) {
+    const win = desktopWindows[appId];
+    if (!win) return;
+
+    win.state = 'normal';
+    win.windowEl.classList.remove('is-maximized');
+    win.windowEl.style.display = 'flex';
+    applyDesktopWindowGeometry(appId);
+    focusDesktopWindow(appId);
+    updateDesktopTaskbarTab(appId);
+    saveGame();
+}
+
+function toggleMaximizeDesktopWindow(appId) {
+    const win = desktopWindows[appId];
+    if (!win) return;
+
+    if (win.state === 'maximized') {
+        win.state = 'normal';
+        win.windowEl.classList.remove('is-maximized');
+        applyDesktopWindowGeometry(appId);
+    } else if (win.state === 'normal') {
+        saveDesktopWindowGeometry(appId);
+        win.state = 'maximized';
+        win.windowEl.classList.add('is-maximized');
+        win.windowEl.style.top    = '0';
+        win.windowEl.style.left   = '0';
+        win.windowEl.style.width  = '100%';
+        win.windowEl.style.height = '100%';
+    }
+    focusDesktopWindow(appId);
+    saveGame();
+}
+
+function applyDesktopWindowGeometry(appId) {
+    const win = desktopWindows[appId];
+    if (!win) return;
+    win.windowEl.style.top    = win.normalPos.top    + 'px';
+    win.windowEl.style.left   = win.normalPos.left   + 'px';
+    win.windowEl.style.width  = win.normalPos.width  + 'px';
+    win.windowEl.style.height = win.normalPos.height + 'px';
+}
+
+function saveDesktopWindowGeometry(appId) {
+    const win = desktopWindows[appId];
+    if (!win) return;
+    win.normalPos.top    = parseInt(win.windowEl.style.top)    || win.normalPos.top;
+    win.normalPos.left   = parseInt(win.windowEl.style.left)   || win.normalPos.left;
+    win.normalPos.width  = parseInt(win.windowEl.style.width)  || win.normalPos.width;
+    win.normalPos.height = parseInt(win.windowEl.style.height) || win.normalPos.height;
+}
+
+// ─── Desktop Taskbar Tabs ─────────────────────────────────────────────────────
+const appTabConfig = {
+    'hackos':           { label: 'HackOS v0.1',  icon: './assets/icon-hackos.png' },
+    'pallpay-desktop':  { label: 'PallPay',      icon: './assets/icon-pallpay.png' },
+};
+
+function addDesktopTaskbarTab(appId) {
+    const cfg = appTabConfig[appId];
+    if (!cfg) return;
+    if (document.getElementById('dtab-' + appId)) return;
+
+    const tab = document.createElement('button');
+    tab.id        = 'dtab-' + appId;
+    tab.className = 'taskbar-app-tab active';
+    tab.innerHTML = `<img src="${cfg.icon}" alt=""><span>${cfg.label}</span>`;
+    tab.onclick   = () => {
+        const win = desktopWindows[appId];
+        if (win.state === 'minimized') {
+            restoreDesktopWindow(appId);
+        } else {
+            focusDesktopWindow(appId);
+        }
+    };
+    taskbarApps.appendChild(tab);
+}
+
+function removeDesktopTaskbarTab(appId) {
+    const tab = document.getElementById('dtab-' + appId);
+    if (tab) tab.remove();
+}
+
+function updateDesktopTaskbarTab(appId) {
+    const tab = document.getElementById('dtab-' + appId);
+    if (!tab) return;
+    const win = desktopWindows[appId];
+    if (win.state === 'minimized') {
+        tab.classList.remove('active');
+    } else {
+        tab.classList.add('active');
+    }
+}
+
+// ─── Desktop Window Drag Logic ────────────────────────────────────────────────
+let desktopDragActive = false;
+let desktopDragAppId  = null;
+let desktopDragOffset = { x: 0, y: 0 };
+
+function initDesktopDrag(appId, e) {
+    const win = desktopWindows[appId];
     if (e.target.tagName === 'BUTTON') return;
-    if (walletState !== 'normal') return;
-    dragWalletActive = true;
-    const rect = walletPanel.getBoundingClientRect();
-    dragWalletOffset.x = e.clientX - rect.left;
-    dragWalletOffset.y = e.clientY - rect.top;
+    if (win.state !== 'normal') return;
+    desktopDragActive = true;
+    desktopDragAppId  = appId;
+    const rect = win.windowEl.getBoundingClientRect();
+    desktopDragOffset.x = e.clientX - rect.left;
+    desktopDragOffset.y = e.clientY - rect.top;
+    focusDesktopWindow(appId);
     e.preventDefault();
-});
+}
 
 document.addEventListener('mousemove', e => {
-    if (!dragWalletActive) return;
-    const par = mainWindowBody.getBoundingClientRect();
-    let newLeft = e.clientX - par.left - dragWalletOffset.x;
-    let newTop = e.clientY - par.top - dragWalletOffset.y;
-    newLeft = Math.max(0, Math.min(newLeft, par.width - walletPanel.offsetWidth));
-    newTop = Math.max(0, Math.min(newTop, par.height - walletPanel.offsetHeight));
-    walletPanel.style.left = newLeft + 'px';
-    walletPanel.style.top = newTop + 'px';
-    walletNormalPos.left = newLeft;
-    walletNormalPos.top = newTop;
+    if (!desktopDragActive || !desktopDragAppId) return;
+    const win = desktopWindows[desktopDragAppId];
+    const par = windowContainer.getBoundingClientRect();
+
+    let newLeft = e.clientX - par.left - desktopDragOffset.x;
+    let newTop  = e.clientY - par.top  - desktopDragOffset.y;
+    newLeft = Math.max(0, Math.min(newLeft, par.width  - win.windowEl.offsetWidth));
+    newTop  = Math.max(0, Math.min(newTop,  par.height - win.windowEl.offsetHeight));
+
+    win.windowEl.style.left = newLeft + 'px';
+    win.windowEl.style.top  = newTop  + 'px';
+    win.normalPos.left = newLeft;
+    win.normalPos.top  = newTop;
 });
 
-document.addEventListener('mouseup', () => { 
-    if (dragActive || dragWalletActive) saveGame();
-    dragActive = false; 
-    dragWalletActive = false;
+document.addEventListener('mouseup', () => {
+    if (desktopDragActive) saveGame();
+    desktopDragActive = false;
+    desktopDragAppId  = null;
 });
+
+// ─── Register Desktop Windows ─────────────────────────────────────────────────
+const hackosWindow  = document.getElementById('hackos-window');
+const hackosTitleBar = document.getElementById('hackos-title-bar');
+registerDesktopWindow('hackos', hackosWindow, hackosTitleBar,
+    { top: 40, left: 60, width: Math.round(window.innerWidth * 0.85), height: Math.round(window.innerHeight * 0.80) });
+
+const pallpayDesktopWindow   = document.getElementById('pallpay-desktop-window');
+const pallpayDesktopTitleBar = document.getElementById('pallpay-desktop-title-bar');
+registerDesktopWindow('pallpay-desktop', pallpayDesktopWindow, pallpayDesktopTitleBar,
+    { top: 80, left: 200, width: 420, height: 320 });
+
+// Wire up title bar drag
+hackosTitleBar.addEventListener('mousedown', e => initDesktopDrag('hackos', e));
+pallpayDesktopTitleBar.addEventListener('mousedown', e => initDesktopDrag('pallpay-desktop', e));
+
+// Wire up window control buttons
+document.getElementById('btn-hackos-minimize').addEventListener('click', () => minimizeDesktopWindow('hackos'));
+document.getElementById('btn-hackos-maximize').addEventListener('click', () => toggleMaximizeDesktopWindow('hackos'));
+document.getElementById('btn-hackos-close').addEventListener('click',    () => closeDesktopWindow('hackos'));
+
+document.getElementById('btn-pallpay-desktop-minimize').addEventListener('click', () => minimizeDesktopWindow('pallpay-desktop'));
+document.getElementById('btn-pallpay-desktop-maximize').addEventListener('click', () => toggleMaximizeDesktopWindow('pallpay-desktop'));
+document.getElementById('btn-pallpay-desktop-close').addEventListener('click',    () => closeDesktopWindow('pallpay-desktop'));
+
+// Click on window body to focus
+hackosWindow.addEventListener('mousedown', () => focusDesktopWindow('hackos'));
+pallpayDesktopWindow.addEventListener('mousedown', () => focusDesktopWindow('pallpay-desktop'));
+
+// ─── Desktop Icons — Double Click ─────────────────────────────────────────────
+let lastClickTime = 0;
+let lastClickTarget = null;
+
+document.getElementById('desktop-icons').addEventListener('click', e => {
+    const icon = e.target.closest('.desktop-icon');
+    if (!icon) return;
+
+    // Select icon
+    document.querySelectorAll('.desktop-icon').forEach(i => i.classList.remove('selected'));
+    icon.classList.add('selected');
+
+    // Double-click detection (300ms window)
+    const now = Date.now();
+    if (lastClickTarget === icon && (now - lastClickTime) < 400) {
+        const app = icon.dataset.app;
+        if (app === 'hackos')  openDesktopWindow('hackos');
+        if (app === 'pallpay') openDesktopWindow('pallpay-desktop');
+        // 'trash' does nothing
+        lastClickTime = 0;
+        lastClickTarget = null;
+    } else {
+        lastClickTime = now;
+        lastClickTarget = icon;
+    }
+});
+
+// Deselect icons when clicking on desktop background
+xpDesktop.addEventListener('click', e => {
+    if (e.target === xpDesktop || e.target.id === 'desktop-icons') {
+        document.querySelectorAll('.desktop-icon').forEach(i => i.classList.remove('selected'));
+    }
+});
+
+// ─── System Clock ─────────────────────────────────────────────────────────────
+function updateClock() {
+    const now = new Date();
+    const h   = now.getHours();
+    const m   = String(now.getMinutes()).padStart(2, '0');
+    const ampm = h >= 12 ? 'PM' : 'AM';
+    const h12  = h % 12 || 12;
+    systemClock.textContent = `${h12}:${m} ${ampm}`;
+}
+
+updateClock();
+setInterval(updateClock, 30000); // update every 30 seconds
+
+// ═══════════════════════════════════════════════════════════════════════════════
+//  LOGIN SCREEN
+// ═══════════════════════════════════════════════════════════════════════════════
+
+function startLoginSequence() {
+    // Show login screen for ~3 seconds, then transition to desktop
+    setTimeout(() => {
+        loginScreen.classList.add('fade-out');
+
+        setTimeout(() => {
+            loginScreen.style.display = 'none';
+            xpDesktop.style.display   = 'flex';
+            // Try to play startup sound
+            try {
+                const startupSound = new Audio('./SFX/startup.mp3');
+                startupSound.volume = 0.5;
+                startupSound.play().catch(() => {});
+            } catch (_) {}
+        }, 800); // matches CSS transition duration
+    }, 3000);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+//  PERSISTENCE
+// ═══════════════════════════════════════════════════════════════════════════════
+
+function saveGame() {
+    const windowStates = {};
+    for (const [appId, win] of Object.entries(desktopWindows)) {
+        windowStates[appId] = {
+            state: win.state,
+            normalPos: { ...win.normalPos },
+        };
+    }
+
+    const saveData = {
+        gameState,
+        desktopWindows: windowStates,
+        subWindows: {
+            terminalState,
+            normalPos,
+            walletState,
+            walletNormalPos,
+        },
+    };
+    localStorage.setItem('hackOS_save', JSON.stringify(saveData));
+}
+
+function loadGame() {
+    const rawData = localStorage.getItem('hackOS_save');
+    if (!rawData) return;
+
+    try {
+        const data = JSON.parse(rawData);
+
+        // Restore game data
+        if (data.gameState) {
+            gameState.balance = data.gameState.balance || 0;
+            gameState.cash    = data.gameState.cash || 0;
+            updateHashDisplay();
+            updateCashDisplay();
+        }
+
+        // Restore desktop window states
+        if (data.desktopWindows) {
+            for (const [appId, saved] of Object.entries(data.desktopWindows)) {
+                const win = desktopWindows[appId];
+                if (!win) continue;
+                if (saved.normalPos) win.normalPos = { ...saved.normalPos };
+
+                if (saved.state === 'normal') {
+                    openDesktopWindow(appId);
+                } else if (saved.state === 'maximized') {
+                    openDesktopWindow(appId);
+                    toggleMaximizeDesktopWindow(appId);
+                } else if (saved.state === 'minimized') {
+                    openDesktopWindow(appId);
+                    minimizeDesktopWindow(appId);
+                }
+            }
+        }
+
+        // Restore sub-window states (inside HackOS)
+        if (data.subWindows) {
+            normalPos = data.subWindows.normalPos || normalPos;
+            walletNormalPos = data.subWindows.walletNormalPos || walletNormalPos;
+
+            const savedTermState = data.subWindows.terminalState;
+            if (savedTermState === 'normal') {
+                openTerminal();
+            } else if (savedTermState === 'maximized') {
+                openTerminal();
+                toggleMaximize();
+            } else if (savedTermState === 'minimized') {
+                openTerminal();
+                minimizeTerminal();
+            }
+
+            const savedWalletState = data.subWindows.walletState;
+            if (savedWalletState === 'normal') {
+                openWallet();
+            } else if (savedWalletState === 'maximized') {
+                openWallet();
+                toggleMaximizeWallet();
+            } else if (savedWalletState === 'minimized') {
+                openWallet();
+                minimizeWallet();
+            }
+        }
+    } catch (e) {
+        console.error("Failed to load game:", e);
+    }
+}
 
 // ─── Utility Functions ────────────────────────────────────────────────────────
 function rand(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
@@ -542,78 +926,14 @@ function randomUUID() {
     });
 }
 
-// ─── Persistence ──────────────────────────────────────────────────────────────
-
-function saveGame() {
-    const saveData = {
-        gameState,
-        ui: {
-            terminalState,
-            normalPos,
-            walletState,
-            walletNormalPos
-        }
-    };
-    localStorage.setItem('hackOS_save', JSON.stringify(saveData));
-}
-
-function loadGame() {
-    const rawData = localStorage.getItem('hackOS_save');
-    if (!rawData) return;
-
-    try {
-        const data = JSON.parse(rawData);
-        
-        // Restore game data
-        if (data.gameState) {
-            gameState.balance = data.gameState.balance || 0;
-            gameState.cash = data.gameState.cash || 0;
-            updateHashDisplay();
-            updateCashDisplay();
-        }
-
-        // Restore UI data
-        if (data.ui) {
-            normalPos = data.ui.normalPos || normalPos;
-            const savedTermState = data.ui.terminalState;
-
-            walletNormalPos = data.ui.walletNormalPos || walletNormalPos;
-            const savedWalletState = data.ui.walletState;
-
-            // Re-apply terminal state
-            if (savedTermState === 'normal') {
-                openTerminal();
-            } else if (savedTermState === 'maximized') {
-                openTerminal();
-                toggleMaximize();
-            } else if (savedTermState === 'minimized') {
-                openTerminal();
-                minimizeTerminal();
-            }
-
-            // Re-apply wallet state
-            if (savedWalletState === 'normal') {
-                openWallet();
-            } else if (savedWalletState === 'maximized') {
-                openWallet();
-                toggleMaximizeWallet();
-            } else if (savedWalletState === 'minimized') {
-                openWallet();
-                minimizeWallet();
-            }
-        }
-    } catch (e) {
-        console.error("Failed to load game:", e);
-    }
-}
-
 // ─── Init ──────────────────────────────────────────────────────────────────────
+startLoginSequence();
 loadGame();
 console.log(`[HackOS] v${gameState.version} initialized. Currency: ${gameState.currency}`);
 
-// ─── Mini Terminal Preview Animation (section card) ───────────────────────────
+// ─── Mini Terminal Preview Animation (section card inside HackOS) ─────────────
 const previewOutput  = document.getElementById('preview-output');
-const PREVIEW_MAX    = 8; // max visible lines in the tiny panel
+const PREVIEW_MAX    = 8;
 
 const previewLines = [
     '> root.hack.id.843',
@@ -638,7 +958,6 @@ function addPreviewLine() {
     line.textContent = previewLines[previewIdx % previewLines.length];
     previewIdx++;
     previewOutput.appendChild(line);
-    // Keep only the last PREVIEW_MAX lines
     while (previewOutput.childElementCount > PREVIEW_MAX) {
         previewOutput.removeChild(previewOutput.firstChild);
     }

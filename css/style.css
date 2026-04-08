@@ -1,6 +1,6 @@
 /* =============================================
    HackOS — Hacker Simulator
-   Main Stylesheet
+   Main Stylesheet — XP Desktop Edition
    ============================================= */
 
 /* --- Reset & Base --- */
@@ -10,41 +10,230 @@
     padding: 0;
 }
 
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    font-family: 'Tahoma', 'MS Sans Serif', sans-serif;
+}
+
 button {
     cursor: pointer;
 }
 
-/* --- Desktop Background --- */
-#desktop {
-    width: 100vw;
-    height: 100vh;
-    background-color: #3c3c3c;
+/* =============================================
+   LOGIN SCREEN
+   ============================================= */
+
+#login-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: linear-gradient(180deg, #0052a5 0%, #003380 50%, #001a4d 100%);
     display: flex;
     align-items: center;
     justify-content: center;
-    overflow: hidden;
+    transition: opacity 0.8s ease-out;
 }
 
-/* --- Main Game Window (95% of screen) --- */
-#main-window {
-    width: 95vw;
-    height: 95vh;
+#login-screen.fade-out {
+    opacity: 0;
+    pointer-events: none;
+}
+
+#login-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 28px;
+}
+
+#login-logo {
+    width: 120px;
+    height: 120px;
+    object-fit: contain;
+    filter: drop-shadow(0 0 20px rgba(0, 200, 255, 0.4));
+    animation: logoPulse 2s ease-in-out infinite;
+}
+
+@keyframes logoPulse {
+    0%, 100% { transform: scale(1); filter: drop-shadow(0 0 20px rgba(0, 200, 255, 0.4)); }
+    50%      { transform: scale(1.04); filter: drop-shadow(0 0 30px rgba(0, 200, 255, 0.6)); }
+}
+
+#login-text {
+    display: flex;
+    align-items: baseline;
+    gap: 2px;
+    font-family: 'Trebuchet MS', 'Tahoma', sans-serif;
+    font-size: 22px;
+    font-weight: 400;
+    color: #fff;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+    letter-spacing: 0.5px;
+}
+
+#login-dots {
+    display: inline-flex;
+    gap: 1px;
+    min-width: 24px;
+}
+
+#login-dots .dot {
+    opacity: 0;
+    font-size: 22px;
+    font-weight: bold;
+    animation: dotFade 1.5s ease-in-out infinite;
+}
+
+#login-dots .dot:nth-child(1) { animation-delay: 0s; }
+#login-dots .dot:nth-child(2) { animation-delay: 0.3s; }
+#login-dots .dot:nth-child(3) { animation-delay: 0.6s; }
+
+@keyframes dotFade {
+    0%, 100% { opacity: 0; }
+    30%, 70% { opacity: 1; }
+}
+
+/* =============================================
+   XP DESKTOP
+   ============================================= */
+
+#xp-desktop {
+    position: fixed;
+    inset: 0;
+    background-color: #3a6ea5;
+    background-image: url('../assets/wallpaper.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: flex;
+    flex-direction: column;
+}
+
+/* =============================================
+   DESKTOP ICONS
+   ============================================= */
+
+#desktop-icons {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    padding: 16px 12px;
+    gap: 8px;
+    pointer-events: none; /* let clicks pass through to window-container */
     position: relative;
     z-index: 1;
+}
+
+.desktop-icon {
+    pointer-events: all;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    width: 80px;
+    padding: 6px 4px;
+    gap: 4px;
+    cursor: default;
+    user-select: none;
+    border: 1px solid transparent;
+    border-radius: 3px;
+    transition: background-color 0.1s;
+}
+
+.desktop-icon img {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+    image-rendering: auto;
+    pointer-events: none;
+}
+
+.desktop-icon span {
+    font-size: 11px;
+    color: #fff;
+    text-align: center;
+    line-height: 1.25;
+    text-shadow:
+        1px 1px 2px rgba(0, 0, 0, 0.9),
+        -1px -1px 2px rgba(0, 0, 0, 0.5);
+    word-break: break-word;
+    pointer-events: none;
+}
+
+/* Single click → selected */
+.desktop-icon.selected {
+    background-color: rgba(49, 106, 197, 0.45);
+    border-color: rgba(49, 106, 197, 0.7);
+}
+
+.desktop-icon:active {
+    background-color: rgba(49, 106, 197, 0.55);
+}
+
+/* =============================================
+   WINDOW CONTAINER — floating windows area
+   ============================================= */
+
+#window-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 36px; /* room for taskbar */
+    z-index: 10;
+    pointer-events: none; /* let clicks pass to desktop icons */
+}
+
+/* Desktop floating windows */
+.desktop-window {
+    pointer-events: all;
+    position: absolute;
     display: flex;
     flex-direction: column;
     max-width: none !important;
+    box-shadow: 2px 4px 16px rgba(0, 0, 0, 0.45);
+    transition: none;
 }
 
-/* Title bar — not draggable */
-#main-title-bar {
-    cursor: default !important;
+/* Focused window gets higher z-index (applied via JS) */
+.desktop-window.focused {
+    z-index: 100;
+}
+
+/* =============================================
+   HACKOS WINDOW — Main game application
+   ============================================= */
+
+#hackos-window {
+    top: 40px;
+    left: 60px;
+    width: 85vw;
+    height: 80vh;
+}
+
+#hackos-window.is-maximized {
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+}
+
+#hackos-title-bar {
+    cursor: move;
     user-select: none;
     flex-shrink: 0;
 }
 
+#hackos-window.is-maximized #hackos-title-bar {
+    cursor: default;
+}
+
 /* Window body: column layout */
-#main-window-body {
+#hackos-window-body {
     flex: 1;
     overflow: hidden;
     background-color: #ece9d8;
@@ -53,15 +242,215 @@ button {
     flex-direction: column;
 }
 
-/* Disable main window buttons */
-#btn-minimize,
-#btn-maximize,
-#btn-close {
-    cursor: not-allowed;
+/* =============================================
+   PALLPAY DESKTOP WINDOW — Standalone wallet
+   ============================================= */
+
+#pallpay-desktop-window {
+    top: 80px;
+    left: 200px;
+    width: 420px;
+    height: 320px;
+}
+
+#pallpay-desktop-window.is-maximized {
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+}
+
+#pallpay-desktop-title-bar {
+    cursor: move;
+    user-select: none;
+    flex-shrink: 0;
+}
+
+#pallpay-desktop-window.is-maximized #pallpay-desktop-title-bar {
+    cursor: default;
+}
+
+#pallpay-desktop-body {
+    flex: 1;
+    overflow: hidden;
+    background-color: #fff !important;
+    padding: 0 !important;
+}
+
+.pallpay-content-standalone {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background-color: #f7f7f7;
+    height: 100%;
+}
+
+.pallpay-logo-standalone {
+    font-family: "Trebuchet MS", sans-serif;
+    font-size: 32px;
+    font-weight: bold;
+    font-style: italic;
+    margin-bottom: 25px;
+}
+
+.pallpay-card-standalone {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    width: 100%;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    text-align: center;
+}
+
+.pallpay-footer-standalone {
+    margin-top: auto;
+    font-size: 10px;
+    color: #999;
+    border-top: 1px solid #eee;
+    padding-top: 10px;
+    width: 100%;
+    text-align: center;
 }
 
 /* =============================================
-   STATUS BAR — Hash Display
+   XP TASKBAR
+   ============================================= */
+
+#xp-taskbar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 36px;
+    z-index: 500;
+    display: flex;
+    align-items: stretch;
+    background: linear-gradient(180deg, #3168d5 0%, #1842a3 3%, #2b5cd7 5%, #1a44a0 50%, #1640a0 95%, #102e8a 100%);
+    border-top: 2px solid #0c3faa;
+    box-shadow: 0 -1px 4px rgba(0, 0, 0, 0.3);
+    font-family: 'Tahoma', 'MS Sans Serif', sans-serif;
+}
+
+/* Start Button */
+#start-button {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 12px 2px 6px;
+    margin: 2px 2px;
+    border: none;
+    border-radius: 0 8px 8px 0;
+    background: linear-gradient(180deg, #3d9b2f 0%, #39891f 40%, #287214 100%);
+    color: #fff;
+    font-family: 'Trebuchet MS', 'Tahoma', sans-serif;
+    font-size: 13px;
+    font-weight: bold;
+    font-style: italic;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.3),
+        inset 0 -1px 0 rgba(0,0,0,0.15),
+        1px 0 2px rgba(0,0,0,0.3);
+    flex-shrink: 0;
+    min-width: 100px;
+}
+
+#start-button:hover {
+    background: linear-gradient(180deg, #4aaf38 0%, #42992a 40%, #308a1e 100%);
+}
+
+#start-button:active {
+    background: linear-gradient(180deg, #2d7a1d 0%, #266d15 40%, #1d5d0e 100%);
+}
+
+.start-logo {
+    width: 22px;
+    height: 22px;
+    object-fit: contain;
+    filter: brightness(1.2);
+}
+
+/* Divider after start button */
+#taskbar-divider {
+    width: 2px;
+    margin: 3px 2px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.25) 50%, rgba(255,255,255,0.1) 100%);
+    flex-shrink: 0;
+}
+
+/* App tabs container */
+#taskbar-apps {
+    flex: 1;
+    display: flex;
+    align-items: stretch;
+    padding: 2px 4px;
+    gap: 3px;
+    overflow: hidden;
+}
+
+/* Individual taskbar app tab */
+.taskbar-app-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 2px 10px;
+    min-width: 140px;
+    max-width: 200px;
+    font-size: 11px;
+    font-weight: bold;
+    color: #fff;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.4);
+    background: linear-gradient(180deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.05) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 2px;
+    cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex-shrink: 0;
+}
+
+.taskbar-app-tab:hover {
+    background: linear-gradient(180deg, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0.1) 100%);
+}
+
+.taskbar-app-tab.active {
+    background: linear-gradient(180deg, rgba(255,255,255,0.08) 0%, rgba(0,0,0,0.1) 100%);
+    border-color: rgba(0, 0, 0, 0.2);
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+}
+
+.taskbar-app-tab img {
+    width: 16px;
+    height: 16px;
+    object-fit: contain;
+}
+
+/* System tray / Clock */
+#system-tray {
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    margin-left: auto;
+    flex-shrink: 0;
+    background: linear-gradient(180deg, #0f8de8 0%, #0b68b5 50%, #0961a8 100%);
+    border-left: 2px solid rgba(255,255,255,0.15);
+}
+
+#system-clock {
+    font-size: 11px;
+    color: #fff;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.3px;
+}
+
+/* =============================================
+   STATUS BAR — Hash Display (inside HackOS)
    ============================================= */
 
 #game-status-bar {
@@ -98,7 +487,7 @@ button {
 }
 
 /* =============================================
-   WINDOW TASKBAR — minimized windows strip
+   INTERNAL WINDOW TASKBAR — minimized sub-windows inside HackOS
    ============================================= */
 
 #window-taskbar {
@@ -131,7 +520,7 @@ button {
 }
 
 /* =============================================
-   SECTIONS AREA — Icon grid
+   SECTIONS AREA — Icon grid inside HackOS
    ============================================= */
 
 #sections-area {
@@ -199,9 +588,9 @@ button {
     font-family: 'Tahoma', 'MS Sans Serif', sans-serif;
     font-size: 13px;
     font-weight: bold;
-    color: #444; /* Un poco mas suave */
+    color: #444;
     z-index: 1;
-    margin-top: 15px; /* Dejar espacio para el logo arriba */
+    margin-top: 15px;
 }
 
 #btn-open-wallet {
@@ -275,7 +664,7 @@ button {
 }
 
 /* =============================================
-   HACK TERMINAL — Panel Window
+   HACK TERMINAL — Panel Window (sub-window)
    ============================================= */
 
 #terminal-panel {
@@ -288,17 +677,14 @@ button {
     display: flex;
     flex-direction: column;
     max-width: none !important;
-    /* Smooth size/position transitions */
     transition: none;
 }
 
-/* Title bar: move cursor when in normal (draggable) state */
 #terminal-title-bar, #wallet-title-bar {
     cursor: move;
     user-select: none;
 }
 
-/* When maximized, title bar is NOT draggable */
 #terminal-panel.is-maximized #terminal-title-bar,
 #wallet-panel.is-maximized #wallet-title-bar {
     cursor: default;
@@ -314,7 +700,7 @@ button {
 #wallet-body { background-color: #fff !important; }
 
 /* =============================================
-   PALLPAY — Window Content
+   PALLPAY — Internal Window Content (inside HackOS)
    ============================================= */
 
 #wallet-panel {
@@ -346,8 +732,8 @@ button {
     margin-bottom: 25px;
 }
 
-.logo-pall { color: #003087; } /* PayPal Dark Blue */
-.logo-pay  { color: #009cde; } /* PayPal Light Blue */
+.logo-pall { color: #003087; }
+.logo-pay  { color: #009cde; }
 
 #pallpay-card {
     background-color: #fff;

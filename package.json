@@ -1,5 +1,11 @@
 {
   "dependencies": {
     "xp.css": "^0.2.6"
+  },
+  "scripts": {
+    "dev": "vite"
+  },
+  "devDependencies": {
+    "vite": "^8.0.7"
   }
 }
