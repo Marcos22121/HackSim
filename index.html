@@ -175,188 +175,155 @@
                         </div>
 
                     </div>
-
-                    <!-- ── TERMINAL PANEL (sub-window inside HackOS) ── -->
-                    <div id="terminal-panel" class="window" style="display:none;">
-                        <div class="title-bar" id="terminal-title-bar">
-                            <div class="title-bar-text">Hack Terminal — root@bluecode</div>
-                            <div class="title-bar-controls">
-                                <button aria-label="Minimize" id="btn-minimize-terminal"></button>
-                                <button aria-label="Maximize" id="btn-maximize-terminal"></button>
-                                <button aria-label="Close"    id="btn-close-terminal"></button>
-                            </div>
-                        </div>
-                        <div class="window-body" id="terminal-body">
-                            <div id="terminal-screen">
-                                <!-- Scrolling hacker output -->
-                                <div id="terminal-output"></div>
-                                <!-- Hash earned popup -->
-                                <div id="hash-popup"></div>
-                                <!-- Typing input line -->
-                                <div id="terminal-input-line">
-                                    <span class="terminal-prompt">root@bluecode:~$&nbsp;</span>
-                                    <span id="typed-text"></span>
-                                    <span id="terminal-cursor">█</span>
-                                    <span id="ghost-text"></span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- ── PALLPAY PANEL (sub-window inside HackOS) ── -->
-                    <div id="wallet-panel" class="window" style="display:none;">
-                        <div class="title-bar" id="wallet-title-bar">
-                            <div class="title-bar-text">PallPay — Secure Wallet</div>
-                            <div class="title-bar-controls">
-                                <button aria-label="Minimize" id="btn-minimize-wallet"></button>
-                                <button aria-label="Maximize" id="btn-maximize-wallet"></button>
-                                <button aria-label="Close"    id="btn-close-wallet"></button>
-                            </div>
-                        </div>
-                        <div class="window-body" id="wallet-body" style="padding:0; display:flex; flex-direction:column; background:#fff; height:100%; overflow:hidden;">
-                            <!-- Reusing the new PallPay structure -->
-                            <div class="pallpay-app-container" data-instance="internal" style="display:flex; flex-direction:column; height:100%;">
-                                <!-- PallPay Navbar -->
-                                <div style="background:#0070ba; color:#fff; padding:8px 12px; display:flex; justify-content:space-between; align-items:center;">
-                                    <div style="display:flex; align-items:center; gap:6px;">
-                                        <img src="assets/icon-pallpay.png" width="20" height="20" alt="">
-                                        <span style="font-weight:bold; font-size:14px;">PallPay</span>
-                                    </div>
-                                    <div style="width:24px; height:24px; background:#005ea6; border:1px solid #5aa9e6; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:bold;">B</div>
-                                </div>
-                                <!-- Dummy Menu -->
-                                <div class="pp-tabs" style="background:#f5f7fa; border-bottom:1px solid #ddd; padding:4px 12px; display:flex; gap:10px; font-size:10px; color:#666;">
-                                    <span class="pp-tab active" data-target="summary" style="cursor:pointer; color:#0070ba; font-weight:bold;">Summary</span>
-                                    <span class="pp-tab" data-target="activity" style="cursor:pointer;">Activity</span>
-                                    <span class="pp-tab" data-target="send" style="cursor:pointer;">Send</span>
-                                    <span class="pp-tab" data-target="help" style="cursor:pointer;">Help</span>
-                                </div>
-                                <!-- Content Area -->
-                                <div class="pp-content-area" style="flex:1; overflow-y:auto; padding:15px; position:relative;">
-                                    <!-- Summary -->
-                                    <div class="pp-section section-summary">
-                                        <div style="background:#fff; border-radius:6px; border:1px solid #e0e0e0; padding:15px; box-shadow:0 1px 3px rgba(0,0,0,0.05); margin-bottom:15px;">
-                                            <div style="font-size:10px; color:#666; font-family:'Trebuchet MS', sans-serif;">
-                                                <span class="logo-pall" style="font-style:italic; font-weight:bold;">Pall</span><span class="logo-pay" style="font-style:italic; font-weight:bold;">Pay</span> balance
-                                            </div>
-                                            <div style="font-size:24px; color:#333; margin:5px 0;">$<span class="cash-sync-internal">0.00</span></div>
-                                        </div>
-                                        <h5 style="margin:0 0 8px 0; font-size:11px; color:#333;">Recent Activity</h5>
-                                        <div class="pp-activity-short" style="display:flex; flex-direction:column; gap:8px;"></div>
-                                    </div>
-                                    <!-- Other sections hidden by default in CSS or JS toggle -->
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- ── DECODIFY PANEL (sub-window inside HackOS) ── -->
-                    <div id="decodify-panel" class="window" style="display:none;">
-                        <div class="title-bar" id="decodify-title-bar">
-                            <div class="title-bar-text">Hash Decodifier v1.0</div>
-                            <div class="title-bar-controls">
-                                <button aria-label="Minimize" id="btn-minimize-decodify"></button>
-                                <button aria-label="Maximize" id="btn-maximize-decodify"></button>
-                                <button aria-label="Close"    id="btn-close-decodify"></button>
-                            </div>
-                        </div>
-                        <div class="window-body" id="decodify-body">
-                            <div id="decodify-content" style="position: relative;">
-
-                                <div id="decodify-header">
-                                    <h3>Hash to Cash Converter</h3>
-                                    <p>Securely decrypt your mined Hashes into usable PallPay Cash.</p>
-                                    <div class="exchange-rate">Exchange Rate: 1.00 Hash = $1.50 Cash</div>
-                                </div>
-                                
-                                <div id="decodify-form">
-                                    <div class="field-row">
-                                        <label for="decodify-amount">Hashes to decode (Min 1):</label>
-                                        <input type="number" id="decodify-amount" min="1" step="0.01" placeholder="0.00">
-                                    </div>
-                                    <div class="projected-payout">Projected Payout: $<span id="projected-cash">0.00</span></div>
-                                </div>
-
-                                <div id="decodify-process-area">
-                                    <div class="progress-bar-container">
-                                        <div id="decodify-progress-bar"></div>
-                                    </div>
-                                    <div id="decodify-status-text">Status: Idle. Waiting for input.</div>
-                                </div>
-
-                                <div id="decodify-actions">
-                                    <button id="btn-start-decodify">Start Decoding</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    </div>
-
-                    <div id="launder-panel" class="window desktop-window" style="display:none; z-index: 100; position:absolute; width:380px;">
-                        <div class="title-bar" id="launder-title-bar" style="background: linear-gradient(90deg, #d33c3c, #9c2b2b);">
-                            <div class="title-bar-text">OnionWeb - Digital Money Launderer</div>
-                            <div class="title-bar-controls">
-                                <button aria-label="Minimize" id="btn-minimize-launder"></button>
-                                <button aria-label="Maximize" id="btn-maximize-launder"></button>
-                                <button aria-label="Close"    id="btn-close-launder"></button>
-                            </div>
-                        </div>
-                        <div class="window-body" id="launder-body" style="padding:0; display: flex; flex-direction: column; background:#ece9d8;">
-                            <!-- Red Pastel Header Banner -->
-                            <div style="background:#f2dede; padding:10px; border-bottom:1px solid #ebccd1; display:flex; align-items:center; gap:12px;">
-                                <img src="assets/icon-darknet.svg" style="width:32px; height:32px; filter: drop-shadow(0 0 2px rgba(255,0,0,0.2));" alt="">
-                                <div>
-                                    <h4 style="margin: 0; color:#a94442; font-size:13px;">ONIONWEB LAUNDERING SERVICE</h4>
-                                    <p style="margin: 0; font-size:10px; color:#a94442; opacity:0.8;">Secure. Untraceable. Encrypted.</p>
-                                </div>
-                            </div>
-
-                            <div style="padding:15px;">
-                                <fieldset style="padding: 10px; margin-bottom: 15px; border: 1px solid #ebccd1;">
-                                    <legend style="color:#a94442; font-weight:bold; font-size:11px; padding:0 5px;">Funds Overview</legend>
-                                    <div style="display:flex; justify-content:space-between; margin-bottom:8px; font-size:12px;">
-                                        <span style="color:#666;">Marked (Dirty):</span>
-                                        <span style="color:#d00; font-weight:bold;">$<span id="launder-dirty-balance">0.00</span></span>
-                                    </div>
-                                    <div style="display:flex; justify-content:space-between; font-size:12px;">
-                                        <span style="color:#666;">Retained (Clean):</span>
-                                        <span style="color:#00a000; font-weight:bold;">$<span id="launder-clean-balance">0.00</span></span>
-                                    </div>
-                                </fieldset>
-
-                                <div style="margin-bottom: 15px; background: #fff; padding: 12px; border: 1px solid #ccc; box-shadow: inset 1px 1px 2px #eee;">
-                                    <p style="font-size:11px; color:#555; margin-bottom:10px; border-bottom:1px solid #f2f2f2; padding-bottom:5px;">MIXER STATUS</p>
-                                    <button id="btn-launder-process" style="width: 100%; margin-bottom: 10px; height:28px;">Process Marked Funds (10% Fee)</button>
-                                    <div class="progress-bar-container" style="height:16px;">
-                                        <div id="launder-progress-bar" style="height:100%; width:0%; background: repeating-linear-gradient(90deg, #d9534f, #d9534f 12px, transparent 12px, transparent 14px);"></div>
-                                    </div>
-                                    <p id="launder-status" style="font-size:10px; text-align:center; margin-top:5px; height:12px; color:#a94442;">Status: Active & Secure.</p>
-                                </div>
-
-                                <button id="btn-launder-transfer" style="width: 100%; font-weight: bold; height:32px;" disabled>Push Clean Money to PallPay</button>
-                            </div>
-                        </div>
-                    </div>
-
                 </div><!-- /hackos-window-body -->
-
             </div><!-- /hackos-window -->
 
-            <!-- ════════════════════════════════════════════════════════════
-                 PALLPAY DESKTOP WINDOW — Standalone wallet on the desktop
-                 ════════════════════════════════════════════════════════════ -->
-            <div id="pallpay-desktop-window" class="window desktop-window" style="display:none;">
-
-                <div class="title-bar" id="pallpay-desktop-title-bar">
-                    <div class="title-bar-text">PallPay — Secure Wallet</div>
+            <!-- ── TERMINAL WINDOW ── -->
+            <div id="terminal-window" class="window desktop-window" style="display:none; z-index: 100; width: 900px; height: 450px;">
+                <div class="title-bar" id="terminal-title-bar">
+                    <div class="title-bar-text">Hack Terminal — root@bluecode</div>
                     <div class="title-bar-controls">
-                        <button aria-label="Minimize" id="btn-pallpay-desktop-minimize"></button>
-                        <button aria-label="Maximize" id="btn-pallpay-desktop-maximize"></button>
-                        <button aria-label="Close"    id="btn-pallpay-desktop-close"></button>
+                        <button aria-label="Minimize" id="btn-terminal-minimize"></button>
+                        <button aria-label="Maximize" id="btn-terminal-maximize"></button>
+                        <button aria-label="Close"    id="btn-terminal-close"></button>
                     </div>
                 </div>
-                <div class="window-body" id="pallpay-desktop-body" style="padding:0; display:flex; flex-direction:column; background:#fff; height:100%; overflow:hidden;">
-                    <div class="pallpay-app-container" data-instance="desktop" style="display:flex; flex-direction:column; height:100%;">
+                <div class="window-body" id="terminal-body">
+                    <div id="terminal-screen">
+                        <div id="terminal-output"></div>
+                        <div id="hash-popup"></div>
+                        <div id="terminal-input-line">
+                            <span class="terminal-prompt">root@bluecode:~$&nbsp;</span>
+                            <span id="typed-text"></span>
+                            <span id="terminal-cursor">█</span>
+                            <span id="ghost-text"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── DECODIFY WINDOW ── -->
+            <div id="decodify-window" class="window desktop-window" style="display:none; z-index: 100; width: 380px; height: 400px;">
+                <div class="title-bar" id="decodify-title-bar">
+                    <div class="title-bar-text">Hash Decodifier v1.0</div>
+                    <div class="title-bar-controls">
+                        <button aria-label="Minimize" id="btn-decodify-minimize"></button>
+                        <button aria-label="Maximize" id="btn-decodify-maximize"></button>
+                        <button aria-label="Close"    id="btn-decodify-close"></button>
+                    </div>
+                </div>
+                <div class="window-body" id="decodify-body">
+                    <div id="decodify-content" style="position: relative;">
+                        <div id="decodify-header">
+                            <h3>Hash to Cash Converter</h3>
+                            <p>Securely decrypt your mined Hashes into usable PallPay Cash.</p>
+                            <div class="exchange-rate">Exchange Rate: 1.00 Hash = $1.50 Cash</div>
+                        </div>
+                        <div id="decodify-form">
+                            <div class="field-row">
+                                <label for="decodify-amount">Hashes to decode (Min 1):</label>
+                                <input type="number" id="decodify-amount" min="1" step="0.01" placeholder="0.00">
+                            </div>
+                            <div class="projected-payout">Projected Payout: $<span id="projected-cash">0.00</span></div>
+                        </div>
+                        <div id="decodify-process-area">
+                            <div class="progress-bar-container">
+                                <div id="decodify-progress-bar"></div>
+                            </div>
+                            <div id="decodify-status-text">Status: Idle. Waiting for input.</div>
+                        </div>
+                        <div id="decodify-actions">
+                            <button id="btn-start-decodify">Start Decoding</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── ONIONWEB WINDOW ── -->
+            <div id="onionweb-window" class="window desktop-window" style="display:none; z-index: 100; width:380px;">
+                <div class="title-bar" id="onionweb-title-bar" style="background: linear-gradient(90deg, #d33c3c, #9c2b2b);">
+                    <div class="title-bar-text">OnionWeb - Digital Money Launderer</div>
+                    <div class="title-bar-controls">
+                        <button aria-label="Minimize" id="btn-onionweb-minimize"></button>
+                        <button aria-label="Maximize" id="btn-onionweb-maximize"></button>
+                        <button aria-label="Close"    id="btn-onionweb-close"></button>
+                    </div>
+                </div>
+                <div class="window-body" id="onionweb-body" style="padding:0; display: flex; flex-direction: column; background:#ece9d8; height: 100%;">
+                    <div style="background:#f2dede; padding:10px; border-bottom:1px solid #ebccd1; display:flex; align-items:center; gap:12px;">
+                        <img src="assets/icon-darknet.svg" style="width:32px; height:32px; filter: drop-shadow(0 0 2px rgba(255,0,0,0.2));" alt="">
+                        <div>
+                            <h4 style="margin: 0; color:#a94442; font-size:13px;">ONIONWEB LAUNDERING SERVICE</h4>
+                            <p style="margin: 0; font-size:10px; color:#a94442; opacity:0.8;">Secure. Untraceable. Encrypted.</p>
+                        </div>
+                    </div>
+                    <div style="padding:15px; flex:1; overflow-y:auto;">
+                        <fieldset style="padding: 10px; margin-bottom: 15px; border: 1px solid #ebccd1;">
+                            <legend style="color:#a94442; font-weight:bold; font-size:11px; padding:0 5px;">Funds Overview</legend>
+                            <div style="display:flex; justify-content:space-between; margin-bottom:8px; font-size:12px;">
+                                <span style="color:#666;">Marked (Dirty):</span>
+                                <span style="color:#d00; font-weight:bold;">$<span id="launder-dirty-balance">0.00</span></span>
+                            </div>
+                            <div style="display:flex; justify-content:space-between; font-size:12px;">
+                                <span style="color:#666;">Retained (Clean):</span>
+                                <span style="color:#00a000; font-weight:bold;">$<span id="launder-clean-balance">0.00</span></span>
+                            </div>
+                        </fieldset>
+                        <div style="margin-bottom: 15px; background: #fff; padding: 12px; border: 1px solid #ccc; box-shadow: inset 1px 1px 2px #eee;">
+                            <p style="font-size:11px; color:#555; margin-bottom:10px; border-bottom:1px solid #f2f2f2; padding-bottom:5px;">MIXER STATUS</p>
+                            <button id="btn-launder-process" style="width: 100%; margin-bottom: 10px; height:28px;">Process Marked Funds (10% Fee)</button>
+                            <div class="progress-bar-container" style="height:16px;">
+                                <div id="launder-progress-bar" style="height:100%; width:0%; background: repeating-linear-gradient(90deg, #d9534f, #d9534f 12px, transparent 12px, transparent 14px);"></div>
+                            </div>
+                            <p id="launder-status" style="font-size:10px; text-align:center; margin-top:5px; height:12px; color:#a94442;">Status: Active & Secure.</p>
+                        </div>
+                        <button id="btn-launder-transfer" style="width: 100%; font-weight: bold; height:32px;" disabled>Push Clean Money to PallPay</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── DARKNET BROWSER WINDOW ── -->
+            <div id="darknet-window" class="window desktop-window" style="display:none; z-index: 100; width: 800px; height: 600px;">
+                <div class="title-bar" id="darknet-title-bar" style="background: linear-gradient(90deg, #333333, #000000);">
+                    <div class="title-bar-text">Dark Net Web Browser v0.9</div>
+                    <div class="title-bar-controls">
+                        <button aria-label="Minimize" id="btn-darknet-minimize"></button>
+                        <button aria-label="Maximize" id="btn-darknet-maximize"></button>
+                        <button aria-label="Close"    id="btn-darknet-close"></button>
+                    </div>
+                </div>
+                <div class="window-body" id="darknet-body" style="padding:0; display:flex; flex-direction:column; background:#111; height:100%; overflow:hidden;">
+                    <!-- Dark Net Toolbar -->
+                    <div class="darknet-toolbar" style="background:#222; padding:8px 12px; display:flex; align-items:center; gap:10px; border-bottom:1px solid #444;">
+                        <span style="color:#f00; font-family:monospace; font-weight:bold; font-size:14px; margin-right:5px;">[ONION]</span>
+                        <div style="flex:1; background:#000; border:1px solid #666; padding:4px 8px; display:flex; align-items:center;">
+                            <input type="text" id="darknet-url-bar" value="http://gateway.darknet" style="flex:1; background:transparent; border:none; color:#cfcfcf; font-family:monospace; font-size:13px; outline:none;">
+                        </div>
+                        <button id="btn-darknet-go" style="background:#d33c3c; color:#fff; border:none; padding:4px 15px; font-weight:bold; cursor:pointer;">GO</button>
+                    </div>
+                    <!-- Browser Contents -->
+                    <div id="darknet-content" style="flex:1; overflow-y:auto; background:#000; color:#fff; font-family:monospace; padding:15px; position:relative;">
+                        <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; padding-top:40px;">
+                            <img src="assets/icon-darknet.svg" width="120" style="filter: drop-shadow(0 0 10px rgba(255,0,0,0.5));" alt="">
+                            <h1 style="color:#d33c3c; font-size:32px; margin-top:20px; text-shadow:2px 2px #000;">THE DARK NET</h1>
+                            <p style="color:#888; font-size:14px;">Browse the undetectable web. Your identity is hidden.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── PALLPAY WINDOW ── -->
+            <div id="pallpay-window" class="window desktop-window" style="display:none; z-index: 105; width:620px; height:550px;">
+                <div class="title-bar" id="pallpay-title-bar">
+                    <div class="title-bar-text">PallPay — Secure Wallet</div>
+                    <div class="title-bar-controls">
+                        <button aria-label="Minimize" id="btn-pallpay-minimize"></button>
+                        <button aria-label="Maximize" id="btn-pallpay-maximize"></button>
+                        <button aria-label="Close"    id="btn-pallpay-close"></button>
+                    </div>
+                </div>
+                <div class="window-body" id="pallpay-body" style="padding:0; display:flex; flex-direction:column; background:#fff; height:100%; overflow:hidden;">
+                    <div class="pallpay-app-container" style="display:flex; flex-direction:column; height:100%;">
                         <!-- PallPay Navbar -->
                         <div style="background:#0070ba; color:#fff; padding:10px 15px; display:flex; justify-content:space-between; align-items:center;">
                             <div style="display:flex; align-items:center; gap:8px;">
@@ -368,44 +335,36 @@
                                 <div style="width:28px; height:28px; background:#005ea6; border:2px solid #5aa9e6; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:bold;">B</div>
                             </div>
                         </div>
-
-                        <!-- Dummy Menu -->
-                        <div class="pp-tabs" style="background:#f5f7fa; border-bottom:1px solid #ddd; padding:5px 15px; display:flex; gap:15px; font-size:11px; color:#666;">
-                            <span class="pp-tab active" data-target="summary" style="cursor:pointer; color:#0070ba; font-weight:bold;">Summary</span>
+                        <!-- Tabs -->
+                        <div class="pp-tabs" style="background:#f5f7fa; border-bottom:1px solid #ddd; padding:4px 20px; display:flex; gap:25px; font-size:12px; color:#666;">
+                            <span class="pp-tab active" data-target="summary" style="cursor:pointer; color:#0070ba; font-weight:bold; border-bottom:2px solid #0070ba;">Summary</span>
                             <span class="pp-tab" data-target="activity" style="cursor:pointer;">Activity</span>
-                            <span class="pp-tab" data-target="send" style="cursor:pointer;">Send & Request</span>
-                            <span class="pp-tab" data-target="wallet" style="cursor:pointer;">Wallet</span>
+                            <span class="pp-tab" data-target="send" style="cursor:pointer;">Send</span>
                             <span class="pp-tab" data-target="help" style="cursor:pointer;">Help</span>
                         </div>
-
-                        <div class="pp-content-area" style="flex:1; overflow-y:auto; padding:20px; position:relative;">
-                            <!-- SECTION: SUMMARY -->
+                        <!-- Content -->
+                        <div class="pp-content-area" style="flex:1; overflow-y:auto; padding:25px;">
                             <div class="pp-section section-summary">
                                 <div style="background:#fff; border-radius:8px; border:1px solid #e0e0e0; padding:20px; box-shadow:0 2px 5px rgba(0,0,0,0.05); margin-bottom:20px;">
                                     <div style="font-size:12px; color:#666; margin-bottom:5px; font-family:'Trebuchet MS', sans-serif;">
                                         <span class="logo-pall" style="font-style:italic; font-weight:bold;">Pall</span><span class="logo-pay" style="font-style:italic; font-weight:bold;">Pay</span> balance
                                     </div>
-                                    <div style="font-size:32px; font-weight:lighter; color:#333; margin-bottom:20px;">
-                                        $<span class="cash-sync-desktop">0.00</span>
-                                    </div>
+                                    <div style="font-size:32px; color:#333; margin-bottom:10px;">$<span class="cash-sync-internal">0.00</span></div>
                                     <div style="display:flex; gap:10px;">
                                         <button class="pp-btn" style="background:#0070ba; color:#fff; border:none; padding:8px 20px; border-radius:20px; font-weight:bold; font-size:12px; cursor:pointer;">Transfer Funds</button>
-                                        <button class="pp-btn" style="background:transparent; color:#0070ba; border:1px solid #0070ba; padding:8px 20px; border-radius:20px; font-weight:bold; font-size:12px; cursor:pointer;">Request</button>
                                     </div>
                                 </div>
                                 <h4 style="margin:0 0 10px 0; font-size:13px; color:#333;">Recent Activity</h4>
                                 <div class="pp-activity-short" style="display:flex; flex-direction:column; gap:10px;"></div>
                             </div>
                         </div>
-
                         <div style="background:#f7f8f9; padding:8px 15px; font-size:10px; color:#999; border-top:1px solid #eee; display:flex; justify-content:space-between;">
                             <span>© 1999-2026 PallPay Inc.</span>
                             <span>Secure Connection Locked</span>
                         </div>
                     </div>
                 </div>
-
-            </div><!-- /pallpay-desktop-window -->
+            </div>
 
             <!-- ════════════════════════════════════════════════════════════
                  TOPMAIL WINDOW
@@ -847,7 +806,7 @@
                             <img src="assets/icon-documents.svg" width="28">
                             <span style="font-size:11px;">My Documents</span>
                         </div>
-                        <div class="start-menu-item" onclick="openDesktopWindow('pallpay-desktop'); updatePallPayActivity(); closeStartMenu();">
+                        <div class="start-menu-item" onclick="openDesktopWindow('pallpay'); updatePallPayActivity(); closeStartMenu();">
                             <img src="assets/icon-pallpay.png" width="28">
                             <span style="font-size:11px;">PallPay Wallet</span>
                         </div>

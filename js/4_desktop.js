@@ -48,7 +48,7 @@ function openDesktopWindow(appId) {
     focusDesktopWindow(appId);
     addDesktopTaskbarTab(appId);
 
-    if (appId === 'pallpay-desktop') {
+    if (appId === 'pallpay') {
         if (typeof updateCashDisplay === 'function') updateCashDisplay();
     }
 
@@ -60,10 +60,14 @@ function closeDesktopWindow(appId) {
     if (!win) return;
 
     if (appId === 'hackos') {
-        if (typeof closeTerminal === 'function') closeTerminal();
-        if (typeof closeWallet === 'function') closeWallet();
-        if (typeof closeDecodify === 'function') closeDecodify();
-        if (typeof closeLaunder === 'function') closeLaunder();
+        // No longer need to close internal sub-windows specifically
+        // as they are independent standalone windows now.
+    }
+
+    // App-specific cleanup on close
+    if (appId === 'terminal') {
+        if (typeof stopAmbientStream === 'function') stopAmbientStream();
+        if (typeof deactivateTyping === 'function') deactivateTyping();
     }
 
     win.state = 'hidden';
@@ -143,10 +147,15 @@ function saveDesktopWindowGeometry(appId) {
 // ─── Desktop Taskbar Tabs ─────────────────────────────────────────────────────
 const appTabConfig = {
     'hackos':           { label: 'BlueCode v0.1',  icon: './assets/icon-hackos.png' },
-    'pallpay-desktop':  { label: 'PallPay',      icon: './assets/icon-pallpay.png' },
+    'pallpay':          { label: 'PallPay',      icon: './assets/icon-pallpay.png' },
+    'terminal':         { label: 'H. Terminal',   icon: './assets/icon-terminal.png' },
+    'decodify':         { label: 'Decodifier',    icon: './assets/icon-hackos.png' },
+    'onionweb':         { label: 'OnionWeb',      icon: './assets/icon-darknet.svg' },
+    'darknet':          { label: 'Dark Net',      icon: './assets/icon-darknet.svg' },
     'topmail':          { label: 'TopMail',      icon: './assets/icon-topmail.svg' },
     'documents':        { label: 'Documents',    icon: './assets/icon-documents.svg' },
     'notepad':          { label: 'Notepad',      icon: './assets/icon-documents.svg' },
+    'bluemium':         { label: 'Bluemium',      icon: './assets/icon-bluemium.png' },
 };
 
 function addDesktopTaskbarTab(appId) {
@@ -185,32 +194,14 @@ function updateDesktopTaskbarTab(appId) {
     }
 }
 
-// ─── Drag Logic (Mixed) ────────────────────────────────────────────────────────
-var dragActive = false;
-var dragTarget = null;
-var dragState  = null;
-var dragNormal = null;
-var dragOffset = { x: 0, y: 0 };
-
-function startSubDrag(e, panel, state, normalPosRef) {
-    if (e.target.tagName === 'BUTTON') return;
-    if (state !== 'normal') return;
-    dragActive = true;
-    dragTarget = panel;
-    dragState  = state;
-    dragNormal = normalPosRef;
-    const rect = panel.getBoundingClientRect();
-    dragOffset.x = e.clientX - rect.left;
-    dragOffset.y = e.clientY - rect.top;
-    e.preventDefault();
-}
-
+// ─── Drag Logic ────────────────────────────────────────────────────────────────
 var desktopDragActive = false;
 var desktopDragAppId  = null;
 var desktopDragOffset = { x: 0, y: 0 };
 
 function initDesktopDrag(appId, e) {
     const win = desktopWindows[appId];
+    if (!win) return;
     if (e.target.tagName === 'BUTTON') return;
     if (win.state !== 'normal') return;
     desktopDragActive = true;
@@ -223,18 +214,6 @@ function initDesktopDrag(appId, e) {
 }
 
 document.addEventListener('mousemove', e => {
-    // Internal sub-window drag
-    if (dragActive && dragTarget) {
-        let par = hackosWindowBody.getBoundingClientRect();
-        let newLeft = e.clientX - par.left - dragOffset.x;
-        let newTop  = e.clientY - par.top  - dragOffset.y;
-        newLeft = Math.max(0, Math.min(newLeft, par.width  - dragTarget.offsetWidth));
-        newTop  = Math.max(0, Math.min(newTop,  par.height - dragTarget.offsetHeight));
-        dragTarget.style.left = newLeft + 'px';
-        dragTarget.style.top  = newTop  + 'px';
-        if (dragNormal) { dragNormal.left = newLeft; dragNormal.top = newTop; }
-    }
-    // Desktop window drag
     if (desktopDragActive && desktopDragAppId) {
         const win = desktopWindows[desktopDragAppId];
         const par = windowContainer.getBoundingClientRect();
@@ -250,13 +229,9 @@ document.addEventListener('mousemove', e => {
 });
 
 document.addEventListener('mouseup', () => {
-    if (dragActive || desktopDragActive) {
+    if (desktopDragActive) {
         if (typeof saveGame === 'function') saveGame();
     }
-    dragActive = false;
-    dragTarget = null;
-    dragState  = null;
-    dragNormal = null;
     desktopDragActive = false;
     desktopDragAppId  = null;
 });
@@ -271,13 +246,40 @@ if (hackosWindow && hackosTitleBar) {
     hackosWindow.addEventListener('mousedown', () => focusDesktopWindow('hackos'));
 }
 
-const pallpayDesktopWindow   = document.getElementById('pallpay-desktop-window');
-const pallpayDesktopTitleBar = document.getElementById('pallpay-desktop-title-bar');
-if (pallpayDesktopWindow && pallpayDesktopTitleBar) {
-    registerDesktopWindow('pallpay-desktop', pallpayDesktopWindow, pallpayDesktopTitleBar,
+const pallpayWindow   = document.getElementById('pallpay-window');
+const pallpayTitleBar = document.getElementById('pallpay-title-bar');
+if (pallpayWindow && pallpayTitleBar) {
+    registerDesktopWindow('pallpay', pallpayWindow, pallpayTitleBar,
         { top: 80, left: 200, width: 620, height: 550 });
-    pallpayDesktopTitleBar.addEventListener('mousedown', e => initDesktopDrag('pallpay-desktop', e));
-    pallpayDesktopWindow.addEventListener('mousedown', () => focusDesktopWindow('pallpay-desktop'));
+    pallpayTitleBar.addEventListener('mousedown', e => initDesktopDrag('pallpay', e));
+    pallpayWindow.addEventListener('mousedown', () => focusDesktopWindow('pallpay'));
+}
+
+const terminalWindow   = document.getElementById('terminal-window');
+const terminalTitleBar = document.getElementById('terminal-title-bar');
+if (terminalWindow && terminalTitleBar) {
+    registerDesktopWindow('terminal', terminalWindow, terminalTitleBar,
+        { top: 100, left: 100, width: 900, height: 450 });
+    terminalTitleBar.addEventListener('mousedown', e => initDesktopDrag('terminal', e));
+    terminalWindow.addEventListener('mousedown', () => focusDesktopWindow('terminal'));
+}
+
+const decodifyWindow   = document.getElementById('decodify-window');
+const decodifyTitleBar = document.getElementById('decodify-title-bar');
+if (decodifyWindow && decodifyTitleBar) {
+    registerDesktopWindow('decodify', decodifyWindow, decodifyTitleBar,
+        { top: 120, left: 300, width: 380, height: 400 });
+    decodifyTitleBar.addEventListener('mousedown', e => initDesktopDrag('decodify', e));
+    decodifyWindow.addEventListener('mousedown', () => focusDesktopWindow('decodify'));
+}
+
+const onionwebWindow   = document.getElementById('onionweb-window');
+const onionwebTitleBar = document.getElementById('onionweb-title-bar');
+if (onionwebWindow && onionwebTitleBar) {
+    registerDesktopWindow('onionweb', onionwebWindow, onionwebTitleBar,
+        { top: 140, left: 350, width: 380, height: 450 });
+    onionwebTitleBar.addEventListener('mousedown', e => initDesktopDrag('onionweb', e));
+    onionwebWindow.addEventListener('mousedown', () => focusDesktopWindow('onionweb'));
 }
 
 const topmailWindow   = document.getElementById('topmail-window');
@@ -339,24 +341,24 @@ if (bluemiumWindow && bluemiumTitleBar) {
     bluemiumTitleBar.addEventListener('dblclick', () => toggleMaximizeDesktopWindow('bluemium'));
 }
 
-// Internal window drag wiring (needs items from terminal.js and finanzas.js)
-const terminalTitleBar = document.getElementById('terminal-title-bar');
-if (terminalTitleBar) terminalTitleBar.addEventListener('mousedown', e => startSubDrag(e, terminalPanel, terminalState, normalPos));
-const walletTitleBarInternal = document.getElementById('wallet-title-bar');
-if (walletTitleBarInternal) walletTitleBarInternal.addEventListener('mousedown', e => startSubDrag(e, walletPanel, walletState, walletNormalPos));
-const decodifyTitleBarInternal = document.getElementById('decodify-title-bar');
-if (decodifyTitleBarInternal) decodifyTitleBarInternal.addEventListener('mousedown', e => startSubDrag(e, decodifyPanel, decodifyState, decodifyNormalPos));
-const launderTitleBarInternal = document.getElementById('launder-title-bar');
-if (launderTitleBarInternal) launderTitleBarInternal.addEventListener('mousedown', e => startSubDrag(e, launderPanel, launderState, launderNormalPos));
 
 // ─── Control Buttons ──────────────────────────────────────────────────────────
 const controlMap = {
     'hackos-minimize':  () => minimizeDesktopWindow('hackos'),
     'hackos-maximize':  () => toggleMaximizeDesktopWindow('hackos'),
     'hackos-close':     () => closeDesktopWindow('hackos'),
-    'pallpay-desktop-minimize': () => minimizeDesktopWindow('pallpay-desktop'),
-    'pallpay-desktop-maximize': () => toggleMaximizeDesktopWindow('pallpay-desktop'),
-    'pallpay-desktop-close':    () => closeDesktopWindow('pallpay-desktop'),
+    'pallpay-minimize': () => minimizeDesktopWindow('pallpay'),
+    'pallpay-maximize': () => toggleMaximizeDesktopWindow('pallpay'),
+    'pallpay-close':    () => closeDesktopWindow('pallpay'),
+    'terminal-minimize': () => minimizeDesktopWindow('terminal'),
+    'terminal-maximize': () => toggleMaximizeDesktopWindow('terminal'),
+    'terminal-close':    () => closeDesktopWindow('terminal'),
+    'decodify-minimize': () => minimizeDesktopWindow('decodify'),
+    'decodify-maximize': () => toggleMaximizeDesktopWindow('decodify'),
+    'decodify-close':    () => closeDesktopWindow('decodify'),
+    'onionweb-minimize': () => minimizeDesktopWindow('onionweb'),
+    'onionweb-maximize': () => toggleMaximizeDesktopWindow('onionweb'),
+    'onionweb-close':    () => closeDesktopWindow('onionweb'),
     'topmail-minimize': () => minimizeDesktopWindow('topmail'),
     'topmail-maximize': () => toggleMaximizeDesktopWindow('topmail'),
     'topmail-close':    () => closeDesktopWindow('topmail'),
@@ -366,9 +368,9 @@ const controlMap = {
     'minimize-notepad':   () => minimizeDesktopWindow('notepad'),
     'maximize-notepad':   () => toggleMaximizeDesktopWindow('notepad'),
     'close-notepad':      () => closeDesktopWindow('notepad'),
-    'minimize-darknet':   () => minimizeDesktopWindow('darknet'),
-    'maximize-darknet':   () => toggleMaximizeDesktopWindow('darknet'),
-    'close-darknet':      () => closeDesktopWindow('darknet'),
+    'darknet-minimize':   () => minimizeDesktopWindow('darknet'),
+    'darknet-maximize':   () => toggleMaximizeDesktopWindow('darknet'),
+    'darknet-close':      () => closeDesktopWindow('darknet'),
     'bluemium-minimize':  () => minimizeDesktopWindow('bluemium'),
     'bluemium-maximize':  () => toggleMaximizeDesktopWindow('bluemium'),
     'bluemium-close':     () => closeDesktopWindow('bluemium'),
@@ -394,15 +396,17 @@ if (desktopIconsArea) {
         const now = Date.now();
         if (lastClickTarget === icon && (now - lastClickTime) < 400) {
             const app = icon.dataset.app;
-            if (app === 'hackos')  openDesktopWindow('hackos');
-            if (app === 'pallpay') { openDesktopWindow('pallpay-desktop'); if (typeof updatePallPayActivity === 'function') updatePallPayActivity(); }
+            if (app === 'hackos') openDesktopWindow('hackos');
+            if (app === 'terminal') { openDesktopWindow('terminal'); if (typeof openTerminal === 'function') openTerminal(); }
+            if (app === 'pallpay') { openDesktopWindow('pallpay'); if (typeof updatePallPayActivity === 'function') updatePallPayActivity(); }
             if (app === 'topmail') openDesktopWindow('topmail');
             if (app === 'documents') { openDesktopWindow('documents'); if (typeof renderDocumentsList === 'function') renderDocumentsList(); }
             if (app === 'darknet') { 
                 openDesktopWindow('darknet'); 
                 if (typeof receiveDarkNetMail === 'function') receiveDarkNetMail(); 
             }
-            if (app === 'darknet')   openDesktopWindow('darknet');
+            if (app === 'onionweb') openDesktopWindow('onionweb');
+            if (app === 'decodify') openDesktopWindow('decodify');
             if (app === 'bluemium')  { openDesktopWindow('bluemium'); if (typeof browserNavigateTo === 'function') browserNavigateTo('newtab'); }
             lastClickTime = 0;
             lastClickTarget = null;

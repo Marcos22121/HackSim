@@ -12,11 +12,11 @@ const taskbarApps       = document.getElementById('taskbar-apps');
 const systemClock       = document.getElementById('system-clock');
 const windowTaskbar     = document.getElementById('window-taskbar');
 
-// Panels
-const terminalPanel     = document.getElementById('terminal-panel');
-const walletPanel       = document.getElementById('wallet-panel');
-const decodifyPanel     = document.getElementById('decodify-panel');
-const launderPanel      = document.getElementById('launder-panel');
+// Windows
+const terminalPanel     = document.getElementById('terminal-window');
+const walletPanel       = document.getElementById('pallpay-window');
+const decodifyPanel     = document.getElementById('decodify-window');
+const launderPanel      = document.getElementById('onionweb-window');
 const hackosWindowBody  = document.getElementById('hackos-window-body');
 
 // ─── Click Sound (all buttons) ───────────────────────────────────────────────
@@ -190,17 +190,7 @@ function saveGame() {
     const saveData = {
         gameState,
         inboxEmails: typeof inboxEmails !== 'undefined' ? inboxEmails : [],
-        desktopWindows: windowStates,
-        ui: {
-            terminalState: typeof terminalState !== 'undefined' ? terminalState : 'hidden',
-            normalPos: typeof normalPos !== 'undefined' ? normalPos : null,
-            walletState: typeof walletState !== 'undefined' ? walletState : 'hidden',
-            walletNormalPos: typeof walletNormalPos !== 'undefined' ? walletNormalPos : null,
-            decodifyState: typeof decodifyState !== 'undefined' ? decodifyState : 'hidden',
-            decodifyNormalPos: typeof decodifyNormalPos !== 'undefined' ? decodifyNormalPos : null,
-            launderState: typeof launderState !== 'undefined' ? launderState : 'hidden',
-            launderNormalPos: typeof launderNormalPos !== 'undefined' ? launderNormalPos : null
-        },
+        desktopWindows: windowStates
     };
     localStorage.setItem('hackOS_save', JSON.stringify(saveData));
 }
@@ -268,50 +258,7 @@ function loadGame() {
             }
         }
 
-        // Restore sub-window states (inside HackOS)
-        if (data.ui) {
-            // These would need to be in global scope to be assigned
-            if (typeof normalPos !== 'undefined') window.normalPos = data.ui.normalPos || normalPos;
-            if (typeof walletNormalPos !== 'undefined') window.walletNormalPos = data.ui.walletNormalPos || walletNormalPos;
-            if (typeof decodifyNormalPos !== 'undefined') window.decodifyNormalPos = data.ui.decodifyNormalPos || decodifyNormalPos;
-            if (typeof launderNormalPos !== 'undefined') window.launderNormalPos = data.ui.launderNormalPos || launderNormalPos;
-
-            const savedTermState = data.ui.terminalState;
-            if (savedTermState === 'normal') {
-                if (typeof openTerminal === 'function') openTerminal();
-            } else if (savedTermState === 'maximized') {
-                if (typeof openTerminal === 'function') { openTerminal(); if (typeof toggleMaximize === 'function') toggleMaximize(); }
-            } else if (savedTermState === 'minimized') {
-                 if (typeof openTerminal === 'function') { openTerminal(); if (typeof minimizeTerminal === 'function') minimizeTerminal(); }
-            }
-
-            const savedWalletState = data.ui.walletState;
-            if (savedWalletState === 'normal') {
-                if (typeof openWallet === 'function') openWallet();
-            } else if (savedWalletState === 'maximized') {
-                if (typeof openWallet === 'function') { openWallet(); if (typeof toggleMaximizeWallet === 'function') toggleMaximizeWallet(); }
-            } else if (savedWalletState === 'minimized') {
-                if (typeof openWallet === 'function') { openWallet(); if (typeof minimizeWallet === 'function') minimizeWallet(); }
-            }
-            
-            const savedDecodifyState = data.ui.decodifyState;
-            if (savedDecodifyState === 'normal') {
-                if (typeof openDecodify === 'function') openDecodify();
-            } else if (savedDecodifyState === 'maximized') {
-                if (typeof openDecodify === 'function') { openDecodify(); if (typeof toggleMaximizeDecodify === 'function') toggleMaximizeDecodify(); }
-            } else if (savedDecodifyState === 'minimized') {
-                if (typeof openDecodify === 'function') { openDecodify(); if (typeof minimizeDecodify === 'function') minimizeDecodify(); }
-            }
-            
-            const savedLaunderState = data.ui.launderState;
-            if (savedLaunderState === 'normal') {
-                if (typeof openLaunder === 'function') openLaunder();
-            } else if (savedLaunderState === 'maximized') {
-                if (typeof openLaunder === 'function') { openLaunder(); if (typeof toggleMaximizeLaunder === 'function') toggleMaximizeLaunder(); }
-            } else if (savedLaunderState === 'minimized') {
-                if (typeof openLaunder === 'function') { openLaunder(); if (typeof minimizeLaunder === 'function') minimizeLaunder(); }
-            }
-        }
+        // Sub-windows have been merged natively into desktopWindows!
     } catch (e) {
         console.error("Failed to load game:", e);
     }

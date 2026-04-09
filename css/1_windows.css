@@ -72,34 +72,34 @@
 }
 
 /* =============================================
-   PALLPAY DESKTOP WINDOW — Standalone wallet
+   PALLPAY WINDOW — Standalone wallet
    ============================================= */
 
-#pallpay-desktop-window {
+#pallpay-window {
     top: 80px;
     left: 200px;
     width: 420px;
     height: 320px;
 }
 
-#pallpay-desktop-window.is-maximized {
+#pallpay-window.is-maximized {
     top: 0 !important;
     left: 0 !important;
     width: 100% !important;
     height: 100% !important;
 }
 
-#pallpay-desktop-title-bar {
+#pallpay-title-bar {
     cursor: move;
     user-select: none;
     flex-shrink: 0;
 }
 
-#pallpay-desktop-window.is-maximized #pallpay-desktop-title-bar {
+#pallpay-window.is-maximized #pallpay-title-bar {
     cursor: default;
 }
 
-#pallpay-desktop-body {
+#pallpay-body {
     flex: 1;
     overflow: hidden;
     background-color: #fff !important;
@@ -107,39 +107,34 @@
 }
 
 /* =============================================
-   HACK TERMINAL — Panel Window (sub-window)
+   STANDALONE WINDOWS — Terminal, Decodify, OnionWeb
    ============================================= */
 
-#terminal-panel {
-    position: absolute;
-    z-index: 10;
-    top: 30px;
-    left: 20px;
-    width: 900px;
-    height: 45vh;
+#terminal-window,
+#decodify-window,
+#onionweb-window {
     display: flex;
     flex-direction: column;
     max-width: none !important;
     transition: none;
 }
 
-#terminal-title-bar, #wallet-title-bar, #decodify-title-bar, #launder-title-bar, #notepad-title-bar, #calc-title-bar, #topmail-title-bar, #documents-title-bar {
+#terminal-title-bar, #pallpay-title-bar, #decodify-title-bar, #onionweb-title-bar, #notepad-title-bar, #calc-title-bar, #topmail-title-bar, #documents-title-bar {
     cursor: move;
     user-select: none;
 }
 
-#terminal-panel.is-maximized #terminal-title-bar,
-#wallet-panel.is-maximized #wallet-title-bar,
-#decodify-panel.is-maximized #decodify-title-bar {
+#terminal-window.is-maximized #terminal-title-bar,
+#decodify-window.is-maximized #decodify-title-bar,
+#onionweb-window.is-maximized #onionweb-title-bar {
     cursor: default;
 }
 
-#terminal-body, #wallet-body, #decodify-body {
+#terminal-body, #pallpay-body, #decodify-body, #onionweb-body {
     flex: 1;
     padding: 0 !important;
     overflow: hidden;
 }
 
 #terminal-body { background-color: #000 !important; }
-#wallet-body { background-color: #fff !important; }
 #decodify-body { background-color: #ece9d8 !important; }

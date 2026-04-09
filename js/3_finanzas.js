@@ -5,307 +5,50 @@
 'use strict';
 
 // ─── DOM References ──────────────────────────────────────────────────────────
-const walletTitleBar   = document.getElementById('wallet-title-bar');
-const btnWalletMax     = document.getElementById('btn-maximize-wallet');
-
-const decodifyTitleBar = document.getElementById('decodify-title-bar');
-const btnDecodifyMax   = document.getElementById('btn-maximize-decodify');
-
-const launderTitleBar  = document.getElementById('launder-title-bar');
-const btnLaunderMax    = document.getElementById('btn-maximize-launder');
+// (Panels are now referenced from 0_state.js as -window elements)
 
 // ─── Sub-Window: Wallet ─────────────────────────────────────────
-var walletState = 'hidden';
-var walletNormalPos = { top: 60, left: 100, width: 400, height: 300 };
-
-function applyWalletNormalGeometry() {
-    if (!walletPanel) return;
-    walletPanel.style.top    = walletNormalPos.top    + 'px';
-    walletPanel.style.left   = walletNormalPos.left   + 'px';
-    walletPanel.style.width  = walletNormalPos.width  + 'px';
-    walletPanel.style.height = walletNormalPos.height + 'px';
-}
-
 function openWallet() {
-    if (walletState !== 'hidden') {
-        if (walletState === 'minimized') restoreWalletFromMinimize();
-        return;
-    }
-    walletState = 'normal';
-    if (walletPanel) {
-        walletPanel.classList.remove('is-maximized');
-        walletPanel.style.display = 'flex';
-        if (btnWalletMax) btnWalletMax.setAttribute('aria-label', 'Maximize');
-        applyWalletNormalGeometry();
-    }
-    if (typeof updateCashDisplay === 'function') updateCashDisplay();
-    if (document.activeElement) document.activeElement.blur();
-    if (typeof saveGame === 'function') saveGame();
+    if (typeof openDesktopWindow === 'function') openDesktopWindow('pallpay');
+    updatePallPayActivity();
 }
 
 function closeWallet() {
-    walletState = 'hidden';
-    if (walletPanel) {
-        walletPanel.style.display = 'none';
-        walletPanel.classList.remove('is-maximized');
-    }
-    if (typeof removeInternalTaskbarTab === 'function') removeInternalTaskbarTab('tab-wallet');
-    if (typeof saveGame === 'function') saveGame();
+    if (typeof closeDesktopWindow === 'function') closeDesktopWindow('pallpay');
 }
 
 function minimizeWallet() {
-    if (walletState === 'hidden') return;
-    if (walletState === 'normal') saveWalletNormalGeometry();
-    if (walletState === 'maximized') {
-        if (walletPanel) walletPanel.classList.remove('is-maximized');
-        if (btnWalletMax) btnWalletMax.setAttribute('aria-label', 'Maximize');
-    }
-    walletState = 'minimized';
-    if (walletPanel) walletPanel.style.display = 'none';
-    if (typeof addInternalTaskbarTab === 'function') {
-        addInternalTaskbarTab('tab-wallet', '💳 PallPay', restoreWalletFromMinimize);
-    }
-    if (typeof saveGame === 'function') saveGame();
+    if (typeof minimizeDesktopWindow === 'function') minimizeDesktopWindow('pallpay');
 }
 
-function restoreWalletFromMinimize() {
-    if (typeof removeInternalTaskbarTab === 'function') removeInternalTaskbarTab('tab-wallet');
-    walletState = 'normal';
-    if (walletPanel) {
-        walletPanel.classList.remove('is-maximized');
-        walletPanel.style.display = 'flex';
-        if (btnWalletMax) btnWalletMax.setAttribute('aria-label', 'Maximize');
-        applyWalletNormalGeometry();
-    }
-    if (document.activeElement) document.activeElement.blur();
-    if (typeof saveGame === 'function') saveGame();
-}
-
-function toggleMaximizeWallet() {
-    if (walletState === 'maximized') {
-        walletState = 'normal';
-        if (walletPanel) {
-            walletPanel.classList.remove('is-maximized');
-            if (btnWalletMax) btnWalletMax.setAttribute('aria-label', 'Maximize');
-            applyWalletNormalGeometry();
-        }
-    } else if (walletState === 'normal') {
-        saveWalletNormalGeometry();
-        walletState = 'maximized';
-        if (walletPanel) {
-            walletPanel.classList.add('is-maximized');
-            if (btnWalletMax) btnWalletMax.setAttribute('aria-label', 'Restore');
-            walletPanel.style.top    = '0';
-            walletPanel.style.left   = '0';
-            walletPanel.style.width  = '100%';
-            walletPanel.style.height = '100%';
-        }
-    }
-    if (typeof saveGame === 'function') saveGame();
-}
-
-function saveWalletNormalGeometry() {
-    if (!walletPanel) return;
-    walletNormalPos.top    = parseInt(walletPanel.style.top)    || 60;
-    walletNormalPos.left   = parseInt(walletPanel.style.left)   || 100;
-    walletNormalPos.width  = parseInt(walletPanel.style.width)  || 400;
-    walletNormalPos.height = parseInt(walletPanel.style.height) || 300;
-}
 
 // ─── Sub-Window: Decodify ───────────────────────────────────────
-var decodifyState = 'hidden';
-var decodifyNormalPos = { top: 70, left: 450, width: 380, height: 400 };
-
-function applyDecodifyNormalGeometry() {
-    if (!decodifyPanel) return;
-    decodifyPanel.style.top    = decodifyNormalPos.top    + 'px';
-    decodifyPanel.style.left   = decodifyNormalPos.left   + 'px';
-    decodifyPanel.style.width  = decodifyNormalPos.width  + 'px';
-    decodifyPanel.style.height = decodifyNormalPos.height + 'px';
-}
-
 function openDecodify() {
-    if (decodifyState !== 'hidden') {
-        if (decodifyState === 'minimized') restoreDecodifyFromMinimize();
-        return;
-    }
-    decodifyState = 'normal';
-    if (decodifyPanel) {
-        decodifyPanel.classList.remove('is-maximized');
-        decodifyPanel.style.display = 'flex';
-        if (btnDecodifyMax) btnDecodifyMax.setAttribute('aria-label', 'Maximize');
-        applyDecodifyNormalGeometry();
-    }
-    if (document.activeElement) document.activeElement.blur();
-    if (typeof saveGame === 'function') saveGame();
+    if (typeof openDesktopWindow === 'function') openDesktopWindow('decodify');
 }
 
 function closeDecodify() {
-    decodifyState = 'hidden';
-    if (decodifyPanel) {
-        decodifyPanel.style.display = 'none';
-        decodifyPanel.classList.remove('is-maximized');
-    }
-    if (typeof removeInternalTaskbarTab === 'function') removeInternalTaskbarTab('tab-decodify');
-    if (typeof saveGame === 'function') saveGame();
+    if (typeof closeDesktopWindow === 'function') closeDesktopWindow('decodify');
 }
 
 function minimizeDecodify() {
-    if (decodifyState === 'hidden') return;
-    if (decodifyState === 'normal') saveDecodifyNormalGeometry();
-    if (decodifyState === 'maximized') {
-        if (decodifyPanel) decodifyPanel.classList.remove('is-maximized');
-        if (btnDecodifyMax) btnDecodifyMax.setAttribute('aria-label', 'Maximize');
-    }
-    decodifyState = 'minimized';
-    if (decodifyPanel) decodifyPanel.style.display = 'none';
-    if (typeof addInternalTaskbarTab === 'function') {
-        addInternalTaskbarTab('tab-decodify', '🔐 Decodifier', restoreDecodifyFromMinimize);
-    }
-    if (typeof saveGame === 'function') saveGame();
+    if (typeof minimizeDesktopWindow === 'function') minimizeDesktopWindow('decodify');
 }
 
-function restoreDecodifyFromMinimize() {
-    if (typeof removeInternalTaskbarTab === 'function') removeInternalTaskbarTab('tab-decodify');
-    decodifyState = 'normal';
-    if (decodifyPanel) {
-        decodifyPanel.classList.remove('is-maximized');
-        decodifyPanel.style.display = 'flex';
-        if (btnDecodifyMax) btnDecodifyMax.setAttribute('aria-label', 'Maximize');
-        applyDecodifyNormalGeometry();
-    }
-    if (document.activeElement) document.activeElement.blur();
-    if (typeof saveGame === 'function') saveGame();
-}
-
-function toggleMaximizeDecodify() {
-    if (decodifyState === 'maximized') {
-        decodifyState = 'normal';
-        if (decodifyPanel) {
-            decodifyPanel.classList.remove('is-maximized');
-            if (btnDecodifyMax) btnDecodifyMax.setAttribute('aria-label', 'Maximize');
-            applyDecodifyNormalGeometry();
-        }
-    } else if (decodifyState === 'normal') {
-        saveDecodifyNormalGeometry();
-        decodifyState = 'maximized';
-        if (decodifyPanel) {
-            decodifyPanel.classList.add('is-maximized');
-            if (btnDecodifyMax) btnDecodifyMax.setAttribute('aria-label', 'Restore');
-            decodifyPanel.style.top    = '0';
-            decodifyPanel.style.left   = '0';
-            decodifyPanel.style.width  = '100%';
-            decodifyPanel.style.height = '100%';
-        }
-    }
-    if (typeof saveGame === 'function') saveGame();
-}
-
-function saveDecodifyNormalGeometry() {
-    if (!decodifyPanel) return;
-    decodifyNormalPos.top    = parseInt(decodifyPanel.style.top)    || 70;
-    decodifyNormalPos.left   = parseInt(decodifyPanel.style.left)   || 450;
-    decodifyNormalPos.width  = parseInt(decodifyPanel.style.width)  || 380;
-    decodifyNormalPos.height = parseInt(decodifyPanel.style.height) || 400;
-}
 
 // ─── Sub-Window: Launder ───────────────────────────────────────
-var launderState = 'hidden';
-var launderNormalPos = { top: 120, left: 370, width: 400, height: 420 };
-
-function applyLaunderNormalGeometry() {
-    if (!launderPanel) return;
-    launderPanel.style.top    = launderNormalPos.top    + 'px';
-    launderPanel.style.left   = launderNormalPos.left   + 'px';
-    launderPanel.style.width  = launderNormalPos.width  + 'px';
-    launderPanel.style.height = launderNormalPos.height + 'px';
-}
-
 function openLaunder() {
-    if (launderState !== 'hidden') {
-        if (launderState === 'minimized') restoreLaunderFromMinimize();
-        return;
-    }
-    launderState = 'normal';
-    if (launderPanel) {
-        launderPanel.classList.remove('is-maximized');
-        launderPanel.style.display = 'flex';
-        if (btnLaunderMax) btnLaunderMax.setAttribute('aria-label', 'Maximize');
-        applyLaunderNormalGeometry();
-    }
-    if (typeof updateLaunderDisplay === 'function') updateLaunderDisplay();
-    if (document.activeElement) document.activeElement.blur();
-    if (typeof saveGame === 'function') saveGame();
+    if (typeof openDesktopWindow === 'function') openDesktopWindow('onionweb');
 }
 
 function closeLaunder() {
-    launderState = 'hidden';
-    if (launderPanel) {
-        launderPanel.style.display = 'none';
-        launderPanel.classList.remove('is-maximized');
-    }
-    if (typeof removeInternalTaskbarTab === 'function') removeInternalTaskbarTab('tab-launder');
-    if (typeof saveGame === 'function') saveGame();
+    if (typeof closeDesktopWindow === 'function') closeDesktopWindow('onionweb');
 }
 
 function minimizeLaunder() {
-    if (launderState === 'hidden') return;
-    if (launderState === 'normal') saveLaunderNormalGeometry();
-    if (launderState === 'maximized') {
-        if (launderPanel) launderPanel.classList.remove('is-maximized');
-        if (btnLaunderMax) btnLaunderMax.setAttribute('aria-label', 'Maximize');
-    }
-    launderState = 'minimized';
-    if (launderPanel) launderPanel.style.display = 'none';
-    if (typeof addInternalTaskbarTab === 'function') {
-        addInternalTaskbarTab('tab-launder', 'OnionWash', restoreLaunderFromMinimize);
-    }
-    if (typeof saveGame === 'function') saveGame();
+    if (typeof minimizeDesktopWindow === 'function') minimizeDesktopWindow('onionweb');
 }
 
-function restoreLaunderFromMinimize() {
-    if (typeof removeInternalTaskbarTab === 'function') removeInternalTaskbarTab('tab-launder');
-    launderState = 'normal';
-    if (launderPanel) {
-        launderPanel.classList.remove('is-maximized');
-        launderPanel.style.display = 'flex';
-        if (btnLaunderMax) btnLaunderMax.setAttribute('aria-label', 'Maximize');
-        applyLaunderNormalGeometry();
-    }
-    if (document.activeElement) document.activeElement.blur();
-    if (typeof saveGame === 'function') saveGame();
-}
-
-function toggleMaximizeLaunder() {
-    if (launderState === 'maximized') {
-        launderState = 'normal';
-        if (launderPanel) {
-            launderPanel.classList.remove('is-maximized');
-            if (btnLaunderMax) btnLaunderMax.setAttribute('aria-label', 'Maximize');
-            applyLaunderNormalGeometry();
-        }
-    } else if (launderState === 'normal') {
-        saveLaunderNormalGeometry();
-        launderState = 'maximized';
-        if (launderPanel) {
-            launderPanel.classList.add('is-maximized');
-            if (btnLaunderMax) btnLaunderMax.setAttribute('aria-label', 'Restore');
-            launderPanel.style.top    = '0';
-            launderPanel.style.left   = '0';
-            launderPanel.style.width  = '100%';
-            launderPanel.style.height = '100%';
-        }
-    }
-    if (typeof saveGame === 'function') saveGame();
-}
-
-function saveLaunderNormalGeometry() {
-    if (!launderPanel) return;
-    launderNormalPos.top    = parseInt(launderPanel.style.top)    || 120;
-    launderNormalPos.left   = parseInt(launderPanel.style.left)   || 370;
-    launderNormalPos.width  = parseInt(launderPanel.style.width)  || 400;
-    launderNormalPos.height = parseInt(launderPanel.style.height) || 420;
-}
 
 // ─── Decoding Logic ───────────────────────────────────────────────────────────
 const decodifyAmountInput = document.getElementById('decodify-amount');
@@ -391,22 +134,7 @@ function completeDecoding(hashAmount) {
     }, 4000);
 }
 
-// ─── Internal Taskbar Tabs (inside HackOS window) ─────────────────────────────
-function addInternalTaskbarTab(id, label, restoreFn) {
-    if (!windowTaskbar) return;
-    if (document.getElementById(id)) return;
-    const tab = document.createElement('button');
-    tab.id        = id;
-    tab.className = 'taskbar-tab';
-    tab.textContent = label;
-    tab.onclick   = restoreFn;
-    windowTaskbar.appendChild(tab);
-}
 
-function removeInternalTaskbarTab(id) {
-    const tab = document.getElementById(id);
-    if (tab) tab.remove();
-}
 
 // ─── Launder Panel Logic ──────────────────────────────────────────────────────────
 var isLaundering = false;
@@ -620,7 +348,7 @@ function initPallPayTabs() {
 
 function renderPallPaySection(container, section) {
     if (section === 'summary') {
-        const isDesktop = container.closest('#pallpay-desktop-window') !== null;
+        const isDesktop = container.closest('#pallpay-window') !== null;
         container.innerHTML = `
             <div class="pp-section section-summary">
                 <div style="background:#fff; border-radius:8px; border:1px solid #e0e0e0; padding:20px; box-shadow:0 2px 5px rgba(0,0,0,0.05); margin-bottom:20px;">
@@ -628,7 +356,7 @@ function renderPallPaySection(container, section) {
                         <span class="logo-pall" style="font-style:italic; font-weight:bold;">Pall</span><span class="logo-pay" style="font-style:italic; font-weight:bold;">Pay</span> balance
                     </div>
                     <div style="font-size:${isDesktop ? '32px' : '24px'}; color:#333; margin-bottom:${isDesktop ? '20px' : '10px'};">
-                        $<span class="${isDesktop ? 'cash-sync-desktop' : 'cash-sync-internal'}">${gameState.cash.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
+                        $<span class="cash-sync-internal">${gameState.cash.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
                     </div>
                     <div style="display:flex; gap:10px;">
                         <button class="pp-btn" style="background:#0070ba; color:#fff; border:none; padding:8px 20px; border-radius:20px; font-weight:bold; font-size:12px; cursor:pointer;">Transfer Funds</button>
@@ -674,29 +402,14 @@ function renderPallPaySection(container, section) {
 // ─── Wiring ──────────────────────────────────────────────────────────────────
 const btnOpenWallet = document.getElementById('btn-open-wallet');
 if (btnOpenWallet) btnOpenWallet.addEventListener('click', openWallet);
-const btnMinWallet = document.getElementById('btn-minimize-wallet');
-if (btnMinWallet) btnMinWallet.addEventListener('click', minimizeWallet);
-if (btnWalletMax) btnWalletMax.addEventListener('click', toggleMaximizeWallet);
-const btnCloseWallet = document.getElementById('btn-close-wallet');
-if (btnCloseWallet) btnCloseWallet.addEventListener('click', closeWallet);
 
 const btnOpenDec = document.getElementById('btn-open-decodify');
 if (btnOpenDec) btnOpenDec.addEventListener('click', openDecodify);
-const btnMinDec = document.getElementById('btn-minimize-decodify');
-if (btnMinDec) btnMinDec.addEventListener('click', minimizeDecodify);
-if (btnDecodifyMax) btnDecodifyMax.addEventListener('click', toggleMaximizeDecodify);
-const btnCloseDec = document.getElementById('btn-close-decodify');
-if (btnCloseDec) btnCloseDec.addEventListener('click', closeDecodify);
 
 if (btnStartDecodify) btnStartDecodify.addEventListener('click', startDecodingSequence);
 
 const btnOpenLaunder = document.getElementById('btn-open-launder');
 if (btnOpenLaunder) btnOpenLaunder.addEventListener('click', openLaunder);
-const btnMinLaunder = document.getElementById('btn-minimize-launder');
-if (btnMinLaunder) btnMinLaunder.addEventListener('click', minimizeLaunder);
-if (btnLaunderMax) btnLaunderMax.addEventListener('click', toggleMaximizeLaunder);
-const btnCloseLaunder = document.getElementById('btn-close-launder');
-if (btnCloseLaunder) btnCloseLaunder.addEventListener('click', closeLaunder);
 
 const btnProcessLaunder = document.getElementById('btn-launder-process');
 if (btnProcessLaunder) btnProcessLaunder.addEventListener('click', startLaunderSequence);

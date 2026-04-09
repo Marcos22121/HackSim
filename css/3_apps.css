@@ -233,17 +233,8 @@
    PALLPAY — Internal Window Content (inside HackOS)
    ============================================= */
 
-#wallet-panel {
-    position: absolute;
-    z-index: 11;
-    top: 60px;
-    left: 100px;
-    width: 520px;
-    height: 460px;
-    display: flex;
-    flex-direction: column;
-    max-width: none !important;
-}
+/* PallPay window is now a standalone desktop window */
+
 
 #pallpay-content {
     display: flex;
@@ -303,17 +294,8 @@
    DECODIFY — Hash to Cash Converter Console
    ============================================= */
 
-#decodify-panel {
-    position: absolute;
-    z-index: 12;
-    top: 70px;
-    left: 450px;
-    width: 380px;
-    height: 400px;
-    display: flex;
-    flex-direction: column;
-    max-width: none !important;
-}
+/* Decodify window is now a standalone desktop window */
+
 
 #decodify-content {
     display: flex;
@@ -506,11 +488,8 @@
     border: 1px solid rgba(49, 106, 197, 0.5) !important;
 }
 
-#launder-panel {
-    position: absolute;
-    display: flex;
-    flex-direction: column;
-}
+/* OnionWeb/launder window is now a standalone desktop window */
+
 
 /* Red XP progress bar override for launder */
 #launder-progress-bar {
@@ -526,11 +505,8 @@
     transform: translate(-50%, -50%);
 }
 
-#launder-panel {
-    position: absolute;
-    display: flex;
-    flex-direction: column;
-}
+/* (duplicate removed) */
+
 
 /* --- PallPay App Styles --- */
 .pp-nav-item:hover {

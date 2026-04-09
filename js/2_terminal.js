@@ -20,6 +20,7 @@ const codeLines = [
     { text: 'chmod 777 run.sh',      hash: 0.5 },
 ];
 
+// terminalPanel already declared in 0_state.js
 const typedTextEl = document.getElementById('typed-text');
 const ghostTextEl = document.getElementById('ghost-text');
 const hashPopupEl = document.getElementById('hash-popup');
@@ -166,139 +167,48 @@ function stopAmbientStream() {
     terminalInterval = null;
 }
 
-// ─── Sub-Window State Machine (Terminal inside HackOS) ───────────────────────
-const btnTermMax = document.getElementById('btn-maximize-terminal');
+// State handled by 4_desktop.js registry
 
-var terminalState = 'hidden';
-var normalPos = { top: 30, left: 20, width: 900, height: Math.round(window.innerHeight * 0.45) };
-
-function applyNormalGeometry() {
-    if (!terminalPanel) return;
-    terminalPanel.style.top    = normalPos.top    + 'px';
-    terminalPanel.style.left   = normalPos.left   + 'px';
-    terminalPanel.style.width  = normalPos.width  + 'px';
-    terminalPanel.style.height = normalPos.height + 'px';
-}
 
 function openTerminal() {
-    if (terminalState !== 'hidden') {
-        if (terminalState === 'minimized') restoreFromMinimize();
-        return;
-    }
-    terminalState = 'normal';
-    if (terminalPanel) {
-        terminalPanel.classList.remove('is-maximized');
-        terminalPanel.style.display = 'flex';
-        if (btnTermMax) btnTermMax.setAttribute('aria-label', 'Maximize');
-        applyNormalGeometry();
+    if (typeof openDesktopWindow === 'function') {
+        openDesktopWindow('terminal');
     }
 
-    if (terminalOutput) terminalOutput.innerHTML = '';
-    if (typedTextEl) typedTextEl.textContent = '';
-    if (ghostTextEl) ghostTextEl.textContent = '';
-    if (hashPopupEl) {
-        hashPopupEl.classList.remove('hash-popup-animate');
-        hashPopupEl.textContent = '';
+    if (terminalOutput && terminalOutput.innerHTML === '') {
+        // Only run boot sequence once or if cleared
+        let i = 0;
+        const seq = getBootSequence();
+        const bootTimer = setInterval(() => {
+            if (i < seq.length) {
+                addTerminalLine(seq[i++]);
+            } else {
+                clearInterval(bootTimer);
+                startAmbientStream();
+                pickLine();
+                activateTyping();
+            }
+        }, 110);
+    } else {
+        activateTyping();
     }
-    if (document.activeElement) document.activeElement.blur();
-
-    let i = 0;
-    const seq = getBootSequence();
-    const bootTimer = setInterval(() => {
-        if (i < seq.length) {
-            addTerminalLine(seq[i++]);
-        } else {
-            clearInterval(bootTimer);
-            startAmbientStream();
-            pickLine();
-            activateTyping();
-            if (typeof saveGame === 'function') saveGame();
-        }
-    }, 110);
 }
 
 function closeTerminal() {
-    terminalState = 'hidden';
-    if (terminalPanel) {
-        terminalPanel.style.display = 'none';
-        terminalPanel.classList.remove('is-maximized');
+    if (typeof closeDesktopWindow === 'function') {
+        closeDesktopWindow('terminal');
     }
     stopAmbientStream();
     deactivateTyping();
     currentLine = null;
-    if (typeof removeInternalTaskbarTab === 'function') removeInternalTaskbarTab('tab-terminal');
-    if (typeof saveGame === 'function') saveGame();
 }
 
 function minimizeTerminal() {
-    if (terminalState === 'hidden') return;
-    if (terminalState === 'normal') saveNormalGeometry();
-    if (terminalState === 'maximized') {
-        if (terminalPanel) terminalPanel.classList.remove('is-maximized');
-        if (btnTermMax) btnTermMax.setAttribute('aria-label', 'Maximize');
+    if (typeof minimizeDesktopWindow === 'function') {
+        minimizeDesktopWindow('terminal');
     }
-    terminalState = 'minimized';
-    if (terminalPanel) terminalPanel.style.display = 'none';
-    if (typeof addInternalTaskbarTab === 'function') {
-        addInternalTaskbarTab('tab-terminal', '>_ Hack Terminal', restoreFromMinimize);
-    }
-    if (typeof saveGame === 'function') saveGame();
-}
-
-function restoreFromMinimize() {
-    if (typeof removeInternalTaskbarTab === 'function') removeInternalTaskbarTab('tab-terminal');
-    terminalState = 'normal';
-    if (terminalPanel) {
-        terminalPanel.classList.remove('is-maximized');
-        terminalPanel.style.display = 'flex';
-        if (btnTermMax) btnTermMax.setAttribute('aria-label', 'Maximize');
-        applyNormalGeometry();
-    }
-    if (hashPopupEl) {
-        hashPopupEl.classList.remove('hash-popup-animate');
-        hashPopupEl.textContent = '';
-    }
-    if (document.activeElement) document.activeElement.blur();
-    if (typeof saveGame === 'function') saveGame();
-}
-
-function toggleMaximize() {
-    if (terminalState === 'maximized') {
-        terminalState = 'normal';
-        if (terminalPanel) {
-            terminalPanel.classList.remove('is-maximized');
-            if (btnTermMax) btnTermMax.setAttribute('aria-label', 'Maximize');
-            applyNormalGeometry();
-        }
-    } else if (terminalState === 'normal') {
-        saveNormalGeometry();
-        terminalState = 'maximized';
-        if (terminalPanel) {
-            terminalPanel.classList.add('is-maximized');
-            if (btnTermMax) btnTermMax.setAttribute('aria-label', 'Restore');
-            terminalPanel.style.top    = '0';
-            terminalPanel.style.left   = '0';
-            terminalPanel.style.width  = '100%';
-            terminalPanel.style.height = '100%';
-        }
-    }
-    if (typeof saveGame === 'function') saveGame();
-}
-
-function saveNormalGeometry() {
-    if (!terminalPanel) return;
-    normalPos.top    = parseInt(terminalPanel.style.top)    || 40;
-    normalPos.left   = parseInt(terminalPanel.style.left)   || 20;
-    normalPos.width  = parseInt(terminalPanel.style.width)  || 720;
-    normalPos.height = parseInt(terminalPanel.style.height) || 440;
 }
 
 // ─── Events ──────────────────────────────────────────────────────────────────
 const btnOpenTerm = document.getElementById('btn-open-terminal');
-const btnMinTerm = document.getElementById('btn-minimize-terminal');
-const btnCloseTerm = document.getElementById('btn-close-terminal');
-
 if (btnOpenTerm) btnOpenTerm.addEventListener('click', openTerminal);
-if (btnMinTerm) btnMinTerm.addEventListener('click', minimizeTerminal);
-if (btnTermMax) btnTermMax.addEventListener('click', toggleMaximize);
-if (btnCloseTerm) btnCloseTerm.addEventListener('click', closeTerminal);
