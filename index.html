@@ -123,6 +123,22 @@
 
                         </div>
 
+                        <!-- Columna derecha de secciones (pegada a la pared) -->
+                        <div class="sections-column right-panel">
+                            
+                            <!-- Section: Decodify Hashes -->
+                            <div id="section-decodify">
+                                <!-- Mini decodify preview (top) -->
+                                <div id="decodify-preview-screen">
+                                    <div id="decodify-hex-output"></div>
+                                    <div class="decode-overlay-scanline"></div>
+                                </div>
+                                <div id="decodify-label">Decodify Hashes</div>
+                                <button id="btn-open-decodify">Open</button>
+                            </div>
+
+                        </div>
+
                     </div>
 
                     <!-- ── TERMINAL PANEL (sub-window inside HackOS) ── -->
@@ -173,6 +189,47 @@
                                 </div>
                                 <div id="pallpay-footer">
                                     Secure Transaction Verified
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ── DECODIFY PANEL (sub-window inside HackOS) ── -->
+                    <div id="decodify-panel" class="window" style="display:none;">
+                        <div class="title-bar" id="decodify-title-bar">
+                            <div class="title-bar-text">Hash Decodifier v1.0</div>
+                            <div class="title-bar-controls">
+                                <button aria-label="Minimize" id="btn-minimize-decodify"></button>
+                                <button aria-label="Maximize" id="btn-maximize-decodify"></button>
+                                <button aria-label="Close"    id="btn-close-decodify"></button>
+                            </div>
+                        </div>
+                        <div class="window-body" id="decodify-body">
+                            <div id="decodify-content" style="position: relative;">
+
+                                <div id="decodify-header">
+                                    <h3>Hash to Cash Converter</h3>
+                                    <p>Securely decrypt your mined Hashes into usable PallPay Cash.</p>
+                                    <div class="exchange-rate">Exchange Rate: 1.00 Hash = $1.50 Cash</div>
+                                </div>
+                                
+                                <div id="decodify-form">
+                                    <div class="field-row">
+                                        <label for="decodify-amount">Hashes to decode (Min 1):</label>
+                                        <input type="number" id="decodify-amount" min="1" step="0.01" placeholder="0.00">
+                                    </div>
+                                    <div class="projected-payout">Projected Payout: $<span id="projected-cash">0.00</span></div>
+                                </div>
+
+                                <div id="decodify-process-area">
+                                    <div class="progress-bar-container">
+                                        <div id="decodify-progress-bar"></div>
+                                    </div>
+                                    <div id="decodify-status-text">Status: Idle. Waiting for input.</div>
+                                </div>
+
+                                <div id="decodify-actions">
+                                    <button id="btn-start-decodify">Start Decoding</button>
                                 </div>
                             </div>
                         </div>

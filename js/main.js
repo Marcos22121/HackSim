@@ -13,7 +13,7 @@ function playClick() {
     clickSound.play().catch(() => {});
 }
 
-// ─── Hash Success Sounds ──────────────────────────────────────────────────────
+// ─── Hash Success & Cash Sounds ───────────────────────────────────────────────────
 const successSounds = [
     new Audio('./SFX/terminal/success2.mp3'),
     new Audio('./SFX/terminal/success3.mp3'),
@@ -23,6 +23,13 @@ function playSuccessSound() {
     const snd = successSounds[Math.floor(Math.random() * successSounds.length)];
     snd.currentTime = 0;
     snd.play().catch(() => {});
+}
+
+const cashSound = new Audio('./SFX/cash.mp3');
+
+function playCashSound() {
+    cashSound.currentTime = 0;
+    cashSound.play().catch(() => {});
 }
 
 document.addEventListener('click', e => {
@@ -157,6 +164,10 @@ const windowTaskbar    = document.getElementById('window-taskbar');
 const walletPanel      = document.getElementById('wallet-panel');
 const walletTitleBar   = document.getElementById('wallet-title-bar');
 const btnWalletMax     = document.getElementById('btn-maximize-wallet');
+
+const decodifyPanel    = document.getElementById('decodify-panel');
+const decodifyTitleBar = document.getElementById('decodify-title-bar');
+const btnDecodifyMax   = document.getElementById('btn-maximize-decodify');
 
 let terminalInterval = null;
 
@@ -405,6 +416,169 @@ function saveWalletNormalGeometry() {
     walletNormalPos.height = parseInt(walletPanel.style.height) || 300;
 }
 
+// ─── Sub-Window: Decodify inside HackOS ───────────────────────────────────────
+let decodifyState = 'hidden';
+let decodifyNormalPos = { top: 70, left: 450, width: 380, height: 400 };
+
+function applyDecodifyNormalGeometry() {
+    decodifyPanel.style.top    = decodifyNormalPos.top    + 'px';
+    decodifyPanel.style.left   = decodifyNormalPos.left   + 'px';
+    decodifyPanel.style.width  = decodifyNormalPos.width  + 'px';
+    decodifyPanel.style.height = decodifyNormalPos.height + 'px';
+}
+
+function openDecodify() {
+    if (decodifyState !== 'hidden') {
+        if (decodifyState === 'minimized') restoreDecodifyFromMinimize();
+        return;
+    }
+    decodifyState = 'normal';
+    decodifyPanel.classList.remove('is-maximized');
+    decodifyPanel.style.display = 'flex';
+    btnDecodifyMax.setAttribute('aria-label', 'Maximize');
+    applyDecodifyNormalGeometry();
+    if (document.activeElement) document.activeElement.blur();
+    saveGame();
+}
+
+function closeDecodify() {
+    decodifyState = 'hidden';
+    decodifyPanel.style.display = 'none';
+    decodifyPanel.classList.remove('is-maximized');
+    removeInternalTaskbarTab('tab-decodify');
+    saveGame();
+}
+
+function minimizeDecodify() {
+    if (decodifyState === 'hidden') return;
+    if (decodifyState === 'normal') saveDecodifyNormalGeometry();
+    if (decodifyState === 'maximized') {
+        decodifyPanel.classList.remove('is-maximized');
+        btnDecodifyMax.setAttribute('aria-label', 'Maximize');
+    }
+    decodifyState = 'minimized';
+    decodifyPanel.style.display = 'none';
+    addInternalTaskbarTab('tab-decodify', '🔐 Decodifier', restoreDecodifyFromMinimize);
+    saveGame();
+}
+
+function restoreDecodifyFromMinimize() {
+    removeInternalTaskbarTab('tab-decodify');
+    decodifyState = 'normal';
+    decodifyPanel.classList.remove('is-maximized');
+    decodifyPanel.style.display = 'flex';
+    btnDecodifyMax.setAttribute('aria-label', 'Maximize');
+    applyDecodifyNormalGeometry();
+    if (document.activeElement) document.activeElement.blur();
+    saveGame();
+}
+
+function toggleMaximizeDecodify() {
+    if (decodifyState === 'maximized') {
+        decodifyState = 'normal';
+        decodifyPanel.classList.remove('is-maximized');
+        btnDecodifyMax.setAttribute('aria-label', 'Maximize');
+        applyDecodifyNormalGeometry();
+    } else if (decodifyState === 'normal') {
+        saveDecodifyNormalGeometry();
+        decodifyState = 'maximized';
+        decodifyPanel.classList.add('is-maximized');
+        btnDecodifyMax.setAttribute('aria-label', 'Restore');
+        decodifyPanel.style.top    = '0';
+        decodifyPanel.style.left   = '0';
+        decodifyPanel.style.width  = '100%';
+        decodifyPanel.style.height = '100%';
+    }
+    saveGame();
+}
+
+function saveDecodifyNormalGeometry() {
+    decodifyNormalPos.top    = parseInt(decodifyPanel.style.top)    || 70;
+    decodifyNormalPos.left   = parseInt(decodifyPanel.style.left)   || 450;
+    decodifyNormalPos.width  = parseInt(decodifyPanel.style.width)  || 380;
+    decodifyNormalPos.height = parseInt(decodifyPanel.style.height) || 400;
+}
+
+// ─── Decoding Logic ───────────────────────────────────────────────────────────
+const decodifyAmountInput = document.getElementById('decodify-amount');
+const projectedCashOutput = document.getElementById('projected-cash');
+const decodifyProgressBar = document.getElementById('decodify-progress-bar');
+const decodifyStatusText  = document.getElementById('decodify-status-text');
+const btnStartDecodify    = document.getElementById('btn-start-decodify');
+
+let isDecoding = false;
+let decodifyTimer = null;
+
+decodifyAmountInput.addEventListener('input', () => {
+    if(isDecoding) return;
+    const val = parseFloat(decodifyAmountInput.value) || 0;
+    const proj = (val * 1.5).toFixed(2);
+    projectedCashOutput.textContent = proj;
+});
+
+function startDecodingSequence() {
+    if(isDecoding) return;
+    const val = parseFloat(decodifyAmountInput.value);
+    
+    if(isNaN(val) || val < 1) {
+        decodifyStatusText.textContent = "Error: Minimum 1 Hash required.";
+        return;
+    }
+    if (val > gameState.balance) {
+        decodifyStatusText.textContent = "Error: Insufficient Hashes in inventory.";
+        return;
+    }
+
+    // Deduct hash and start
+    addHash(-val);
+    isDecoding = true;
+    decodifyAmountInput.disabled = true;
+    btnStartDecodify.disabled = true;
+    decodifyProgressBar.style.width = '0%';
+    decodifyStatusText.textContent = `Target locked. Decoding process started...`;
+
+    const totalTime = 45000; // 45 seconds
+    const intervalTime = 100;
+    let elapsedTime = 0;
+
+    decodifyTimer = setInterval(() => {
+        elapsedTime += intervalTime;
+        const progress = Math.min((elapsedTime / totalTime) * 100, 100);
+        decodifyProgressBar.style.width = `${progress}%`;
+        
+        if(elapsedTime % 1000 === 0) {
+            const left = Math.ceil((totalTime - elapsedTime)/1000);
+            decodifyStatusText.textContent = `Decoding in progress... ~${left}s remaining.`;
+        }
+
+        if(elapsedTime >= totalTime) {
+            clearInterval(decodifyTimer);
+            decodifyTimer = null;
+            completeDecoding(val);
+        }
+    }, intervalTime);
+}
+
+function completeDecoding(hashAmount) {
+    playCashSound();
+    const cashGained = hashAmount * 1.5;
+    gameState.cash += cashGained;
+    updateCashDisplay();
+    saveGame();
+    
+    decodifyStatusText.textContent = `Success! $${cashGained.toFixed(2)} Cash transferred to PallPay.`;
+    decodifyProgressBar.style.width = '100%';
+    
+    setTimeout(() => {
+        isDecoding = false;
+        decodifyAmountInput.disabled = false;
+        btnStartDecodify.disabled = false;
+        decodifyProgressBar.style.width = '0%';
+        decodifyAmountInput.value = '';
+        projectedCashOutput.textContent = '0.00';
+    }, 4000);
+}
+
 // ─── Internal Taskbar Tabs (inside HackOS window) ─────────────────────────────
 function addInternalTaskbarTab(id, label, restoreFn) {
     if (document.getElementById(id)) return;
@@ -432,6 +606,13 @@ document.getElementById('btn-minimize-wallet').addEventListener('click', minimiz
 document.getElementById('btn-maximize-wallet').addEventListener('click', toggleMaximizeWallet);
 document.getElementById('btn-close-wallet').addEventListener('click', closeWallet);
 
+document.getElementById('btn-open-decodify').addEventListener('click', openDecodify);
+document.getElementById('btn-minimize-decodify').addEventListener('click', minimizeDecodify);
+document.getElementById('btn-maximize-decodify').addEventListener('click', toggleMaximizeDecodify);
+document.getElementById('btn-close-decodify').addEventListener('click', closeDecodify);
+
+document.getElementById('btn-start-decodify').addEventListener('click', startDecodingSequence);
+
 // ─── Sub-Window Drag Logic ────────────────────────────────────────────────────
 let dragActive = false;
 let dragTarget = null;
@@ -454,13 +635,14 @@ function startSubDrag(e, panel, state, normalPosRef) {
 
 terminalTitleBar.addEventListener('mousedown', e => startSubDrag(e, terminalPanel, terminalState, normalPos));
 walletTitleBar.addEventListener('mousedown', e => startSubDrag(e, walletPanel, walletState, walletNormalPos));
+decodifyTitleBar.addEventListener('mousedown', e => startSubDrag(e, decodifyPanel, decodifyState, decodifyNormalPos));
 
 document.addEventListener('mousemove', e => {
     if (!dragActive || !dragTarget) return;
 
     // Determine parent bounds
     let par;
-    if (dragTarget === terminalPanel || dragTarget === walletPanel) {
+    if (dragTarget === terminalPanel || dragTarget === walletPanel || dragTarget === decodifyPanel) {
         par = hackosWindowBody.getBoundingClientRect();
     } else {
         par = windowContainer.getBoundingClientRect();
@@ -559,10 +741,10 @@ function closeDesktopWindow(appId) {
     const win = desktopWindows[appId];
     if (!win) return;
 
-    // App-specific cleanup
     if (appId === 'hackos') {
         closeTerminal();
         closeWallet();
+        closeDecodify();
     }
 
     win.state = 'hidden';
@@ -848,11 +1030,13 @@ function saveGame() {
     const saveData = {
         gameState,
         desktopWindows: windowStates,
-        subWindows: {
+        ui: {
             terminalState,
             normalPos,
             walletState,
             walletNormalPos,
+            decodifyState,
+            decodifyNormalPos
         },
     };
     localStorage.setItem('hackOS_save', JSON.stringify(saveData));
@@ -893,11 +1077,12 @@ function loadGame() {
         }
 
         // Restore sub-window states (inside HackOS)
-        if (data.subWindows) {
-            normalPos = data.subWindows.normalPos || normalPos;
-            walletNormalPos = data.subWindows.walletNormalPos || walletNormalPos;
+        if (data.ui) {
+            normalPos = data.ui.normalPos || normalPos;
+            walletNormalPos = data.ui.walletNormalPos || walletNormalPos;
+            decodifyNormalPos = data.ui.decodifyNormalPos || decodifyNormalPos;
 
-            const savedTermState = data.subWindows.terminalState;
+            const savedTermState = data.ui.terminalState;
             if (savedTermState === 'normal') {
                 openTerminal();
             } else if (savedTermState === 'maximized') {
@@ -908,7 +1093,7 @@ function loadGame() {
                 minimizeTerminal();
             }
 
-            const savedWalletState = data.subWindows.walletState;
+            const savedWalletState = data.ui.walletState;
             if (savedWalletState === 'normal') {
                 openWallet();
             } else if (savedWalletState === 'maximized') {
@@ -917,6 +1102,17 @@ function loadGame() {
             } else if (savedWalletState === 'minimized') {
                 openWallet();
                 minimizeWallet();
+            }
+            
+            const savedDecodifyState = data.ui.decodifyState;
+            if (savedDecodifyState === 'normal') {
+                openDecodify();
+            } else if (savedDecodifyState === 'maximized') {
+                openDecodify();
+                toggleMaximizeDecodify();
+            } else if (savedDecodifyState === 'minimized') {
+                openDecodify();
+                minimizeDecodify();
             }
         }
     } catch (e) {
@@ -980,3 +1176,37 @@ function addPreviewLine() {
 // Prime with a few lines immediately, then stream
 for (let i = 0; i < 4; i++) addPreviewLine();
 setInterval(addPreviewLine, 1400);
+
+// ─── Mini Decodify Preview Animation (Hex scramble) ────────────────────────────
+const decodifyHexOutput = document.getElementById('decodify-hex-output');
+const DECODIFY_MAX_LINES = 10;
+let decodifyOffset = 0x0000;
+
+function addDecodifyHexLine() {
+    if (!decodifyHexOutput) return; // safeguard if element is hidden/missing
+
+    const line = document.createElement('div');
+    line.className = 'hex-line';
+    
+    // Generate an offset like 0x00A0
+    const offsetStr = '0x' + decodifyOffset.toString(16).toUpperCase().padStart(4, '0');
+    decodifyOffset += 8;
+    if (decodifyOffset > 0xFFFF) decodifyOffset = 0;
+    
+    // Generate 4 blocks of 2 random hex chars
+    let dataStr = '';
+    for(let i = 0; i < 4; i++) {
+        dataStr += randomHex(2).toUpperCase() + ' ';
+    }
+    
+    line.innerHTML = `<span class="offset">${offsetStr}</span><span class="data">${dataStr}</span>`;
+    
+    decodifyHexOutput.appendChild(line);
+    while (decodifyHexOutput.childElementCount > DECODIFY_MAX_LINES) {
+        decodifyHexOutput.removeChild(decodifyHexOutput.firstChild);
+    }
+}
+
+// Prime the hex screen and set extremely fast interval for "decoding" effect
+for (let i = 0; i < DECODIFY_MAX_LINES; i++) addDecodifyHexLine();
+setInterval(addDecodifyHexLine, 120);
