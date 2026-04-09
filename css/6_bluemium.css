@@ -1,0 +1,503 @@
+/* =============================================
+   BlueCode — Hacker Simulator
+   6_bluemium.css - Browser & PC Shop Styles
+   ============================================= */
+
+/* ─── BROWSER SHELL ────────────────────────────────────────────────────────── */
+
+.bluemium-menubar {
+    display: flex;
+    align-items: center;
+    background: #ece9d8;
+    border-bottom: 1px solid #b0a898;
+    padding: 1px 4px;
+    gap: 0;
+    flex-shrink: 0;
+}
+
+.bluemium-menu-item {
+    padding: 2px 8px;
+    font-size: 11px;
+    font-family: 'Tahoma', 'MS Sans Serif', sans-serif;
+    color: #000;
+    cursor: pointer;
+    border: 1px solid transparent;
+    user-select: none;
+}
+
+.bluemium-menu-item:hover {
+    background: #316ac5;
+    color: #fff;
+    border-color: #316ac5;
+}
+
+.bluemium-toolbar {
+    display: flex;
+    align-items: center;
+    background: linear-gradient(180deg, #f0efec 0%, #dbd9d1 100%);
+    border-bottom: 1px solid #b5b0a8;
+    padding: 3px 5px;
+    gap: 3px;
+    flex-shrink: 0;
+}
+
+.bluemium-nav-btn {
+    width: 26px;
+    height: 26px;
+    background: linear-gradient(180deg, #f5f4f1 0%, #dbd8d0 100%);
+    border: 1px solid #999;
+    border-radius: 2px;
+    font-size: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.5);
+    color: #1a5296;
+    font-weight: bold;
+    flex-shrink: 0;
+}
+
+.bluemium-nav-btn:hover {
+    background: linear-gradient(180deg, #e4eeff 0%, #c8d8f8 100%);
+    border-color: #316ac5;
+}
+
+.bluemium-nav-btn:active {
+    background: linear-gradient(180deg, #c8d8f8 0%, #e4eeff 100%);
+    box-shadow: inset 1px 1px 2px rgba(0,0,0,0.2);
+}
+
+.bluemium-nav-btn:disabled {
+    opacity: 0.4;
+    cursor: default;
+}
+
+.bluemium-address-bar {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    background: #fff;
+    border: 2px inset #999;
+    padding: 0 5px;
+    height: 24px;
+    gap: 5px;
+}
+
+.bluemium-favicon {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+}
+
+.bluemium-url-field {
+    flex: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-family: 'Tahoma', sans-serif;
+    font-size: 11px;
+    color: #000080;
+    padding: 0;
+}
+
+.bluemium-go-btn {
+    padding: 2px 10px;
+    height: 24px;
+    background: linear-gradient(180deg, #f5f4f1 0%, #d8d5cd 100%);
+    border: 1px solid #888;
+    font-size: 11px;
+    font-family: 'Tahoma', sans-serif;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.bluemium-go-btn:hover {
+    background: linear-gradient(180deg, #e4eeff 0%, #c8d8f8 100%);
+    border-color: #316ac5;
+}
+
+.bluemium-spinning-globe {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.bluemium-spinning-globe.loading img {
+    animation: spinGlobe 0.6s linear infinite;
+}
+
+@keyframes spinGlobe {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+}
+
+.bluemium-links-bar {
+    display: flex;
+    align-items: center;
+    background: linear-gradient(180deg, #e8e6df 0%, #d4d0c8 100%);
+    border-bottom: 1px solid #b5b0a8;
+    padding: 2px 8px;
+    gap: 4px;
+    font-size: 11px;
+    font-family: 'Tahoma', sans-serif;
+    flex-shrink: 0;
+}
+
+.bluemium-link-btn {
+    padding: 1px 8px;
+    background: transparent;
+    border: 1px solid transparent;
+    font-size: 11px;
+    font-family: 'Tahoma', sans-serif;
+    color: #000080;
+    cursor: pointer;
+    border-radius: 2px;
+    text-decoration: underline;
+}
+
+.bluemium-link-btn:hover:not([style*="cursor:default"]) {
+    background: #e4eeff;
+    border-color: #316ac5;
+    text-decoration: none;
+}
+
+.browser-page {
+    position: absolute;
+    inset: 0;
+    overflow-y: auto;
+    flex-direction: column;
+}
+
+.bluemium-statusbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #d4d0c8;
+    border-top: 1px solid #808080;
+    padding: 2px 8px;
+    font-size: 10px;
+    font-family: 'Tahoma', sans-serif;
+    color: #333;
+    flex-shrink: 0;
+}
+
+/* ─── NEW TAB PAGE ──────────────────────────────────────────────────────────── */
+
+.bluemium-newtab {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 28px;
+    background: linear-gradient(160deg, #d6e4f7 0%, #eaf2ff 60%, #f5f9ff 100%);
+    min-height: 100%;
+    padding: 40px 20px;
+}
+
+.bluemium-newtab-logo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.bluemium-brand {
+    font-family: 'Trebuchet MS', 'Tahoma', sans-serif;
+    font-size: 38px;
+    font-weight: bold;
+    color: #1252a1;
+    letter-spacing: -1px;
+    text-shadow: 0 2px 4px rgba(0,100,200,0.15);
+}
+
+.bluemium-search-box {
+    display: flex;
+    width: 460px;
+    max-width: 90%;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    border-radius: 3px;
+    overflow: hidden;
+    border: 1px solid #aac8e8;
+}
+
+.bluemium-search-input {
+    flex: 1;
+    padding: 8px 14px;
+    border: none;
+    outline: none;
+    font-size: 13px;
+    font-family: 'Tahoma', sans-serif;
+    background: #fff;
+    color: #666;
+}
+
+.bluemium-search-btn {
+    padding: 8px 16px;
+    background: linear-gradient(180deg, #4d94e0 0%, #1a5cbf 100%);
+    color: #fff;
+    border: none;
+    font-size: 12px;
+    font-weight: bold;
+    font-family: 'Tahoma', sans-serif;
+    cursor: pointer;
+}
+
+.bluemium-quicklinks {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.bluemium-quicklink {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: transform 0.15s;
+}
+
+.bluemium-quicklink:hover {
+    transform: translateY(-2px);
+}
+
+.bluemium-ql-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+}
+
+.bluemium-quicklink span {
+    font-size: 11px;
+    font-family: 'Tahoma', sans-serif;
+    color: #333;
+    font-weight: bold;
+}
+
+/* ─── PC SHOP PAGE ──────────────────────────────────────────────────────────── */
+
+.pcshop-page {
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+    background: #f5f5f5;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.pcshop-header {
+    background: linear-gradient(180deg, #cc0000 0%, #990000 100%);
+    color: #fff;
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+}
+
+.pcshop-logo {
+    display: flex;
+    flex-direction: column;
+}
+
+.pcshop-logo-text {
+    font-size: 22px;
+    font-weight: 900;
+    letter-spacing: -0.5px;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.4);
+}
+
+.pcshop-logo-sub {
+    font-size: 10px;
+    opacity: 0.8;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.pcshop-nav {
+    display: flex;
+    gap: 4px;
+}
+
+.pcshop-nav-item {
+    padding: 5px 12px;
+    font-size: 12px;
+    color: rgba(255,255,255,0.85);
+    cursor: pointer;
+    border-radius: 2px;
+    border: 1px solid transparent;
+    transition: all 0.15s;
+}
+
+.pcshop-nav-item:hover,
+.pcshop-nav-item.active {
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+    border-color: rgba(255,255,255,0.3);
+}
+
+.pcshop-banner {
+    background: linear-gradient(90deg, #1a1a1a, #333 50%, #1a1a1a);
+    color: #ff4444;
+    text-align: center;
+    padding: 6px;
+    font-size: 12px;
+    font-weight: bold;
+    letter-spacing: 0.3px;
+    border-bottom: 2px solid #cc0000;
+}
+
+.pcshop-section-title {
+    padding: 20px 20px 10px;
+    border-bottom: 2px solid #cc0000;
+    margin-bottom: 20px;
+}
+
+.pcshop-section-title h2 {
+    margin: 0 0 4px 0;
+    font-size: 20px;
+    color: #cc0000;
+    font-weight: 900;
+}
+
+.pcshop-section-title p {
+    margin: 0;
+    font-size: 12px;
+    color: #666;
+}
+
+.pcshop-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+    padding: 0 20px 20px;
+}
+
+.pcshop-card {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    transition: box-shadow 0.2s, transform 0.2s;
+    overflow: hidden;
+}
+
+.pcshop-card:hover {
+    box-shadow: 0 4px 14px rgba(200,0,0,0.15);
+    transform: translateY(-2px);
+}
+
+.pcshop-card-badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: #cc0000;
+    color: #fff;
+    font-size: 8px;
+    font-weight: bold;
+    padding: 3px 7px;
+    letter-spacing: 0.5px;
+}
+
+.pcshop-card-img {
+    height: 110px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f0f0f0;
+    border-bottom: 1px solid #eee;
+}
+
+.pcshop-component-icon {
+    width: 74px;
+    height: 74px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.15);
+}
+
+.pcshop-card-info {
+    padding: 10px 12px 8px;
+    flex: 1;
+}
+
+.pcshop-card-category {
+    font-size: 9px;
+    color: #cc0000;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+}
+
+.pcshop-card-name {
+    font-size: 13px;
+    font-weight: bold;
+    color: #1a1a1a;
+    margin-bottom: 4px;
+    line-height: 1.2;
+}
+
+.pcshop-card-spec {
+    font-size: 10px;
+    color: #666;
+    margin-bottom: 8px;
+    line-height: 1.3;
+}
+
+.pcshop-card-price {
+    font-size: 18px;
+    font-weight: 900;
+    color: #cc0000;
+    margin-bottom: 2px;
+}
+
+.pcshop-buy-btn {
+    display: block;
+    width: 100%;
+    padding: 9px;
+    background: linear-gradient(180deg, #e60000, #b30000);
+    color: #fff;
+    border: none;
+    font-size: 11px;
+    font-weight: bold;
+    cursor: pointer;
+    font-family: Arial, sans-serif;
+    letter-spacing: 0.3px;
+    transition: background 0.15s;
+    border-top: 1px solid #800000;
+}
+
+.pcshop-buy-btn:hover {
+    background: linear-gradient(180deg, #ff1a1a, #cc0000);
+}
+
+.pcshop-buy-btn:active {
+    background: linear-gradient(180deg, #b30000, #e60000);
+}
+
+.pcshop-footer {
+    background: #1a1a1a;
+    color: #888;
+    padding: 12px 20px;
+    font-size: 10px;
+    display: flex;
+    justify-content: space-between;
+    margin-top: auto;
+}

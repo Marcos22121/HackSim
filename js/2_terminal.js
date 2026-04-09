@@ -43,6 +43,11 @@ function pickLine() {
 }
 
 function handleTyping(e) {
+    // If the user is typing inside an input field or textarea, do not capture the keystrokes.
+    if (document.activeElement && (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA')) {
+        return;
+    }
+
     if (!currentLine || !typingActive) return;
             
     // Prevent default for single character keys to avoid scrolling etc.
@@ -59,7 +64,16 @@ function handleTyping(e) {
 }
 
 function lineComplete() {
-    const reward        = currentLine.hash;
+    let reward = currentLine.hash;
+    
+    // CPU Upgrade buff: +25% hash per level
+    if (typeof gameState !== 'undefined' && gameState.pcParts && gameState.pcParts.cpu) {
+        const cpuLevel = gameState.pcParts.cpu.level;
+        if (cpuLevel > 0) {
+            reward = reward * (1 + (cpuLevel * 0.25));
+        }
+    }
+
     const completedText = currentLine.text;
     typingActive = false;
 
