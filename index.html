@@ -41,19 +41,30 @@
         <!-- ── Desktop Icons ── -->
         <div id="desktop-icons">
 
-            <div class="desktop-icon" data-app="hackos" id="icon-hackos">
-                <img src="assets/icon-hackos.png" alt="BlueCode" draggable="false">
-                <span>BlueCode v0.1</span>
-            </div>
-
-            <div class="desktop-icon" data-app="pallpay" id="icon-pallpay">
-                <img src="assets/icon-pallpay.png" alt="PallPay" draggable="false">
-                <span>PallPay</span>
+            <div class="desktop-icon" data-app="topmail" id="icon-topmail">
+                <img src="assets/icon-topmail.png" alt="TopMail" draggable="false">
+                <span>TopMail</span>
             </div>
 
             <div class="desktop-icon" data-app="trash" id="icon-trash">
                 <img src="assets/icon-trash.png" alt="Trash Bin" draggable="false">
                 <span>Trash Bin</span>
+            </div>
+
+            <!-- Hidden until apps are installed -->
+            <div class="desktop-icon desktop-icon-hidden" data-app="hackos" id="icon-hackos">
+                <img src="assets/icon-hackos.png" alt="BlueCode" draggable="false">
+                <span>BlueCode v0.1</span>
+            </div>
+
+            <div class="desktop-icon desktop-icon-hidden" data-app="darknet" id="icon-darknet">
+                <img src="assets/icon-darknet.svg" alt="Dark Net" draggable="false">
+                <span>Dark Net</span>
+            </div>
+
+            <div class="desktop-icon" data-app="pallpay" id="icon-pallpay">
+                <img src="assets/icon-pallpay.png" alt="PallPay" draggable="false">
+                <span>PallPay</span>
             </div>
 
         </div>
@@ -112,7 +123,7 @@
                                 <button id="btn-open-terminal">Open</button>
                             </div>
 
-                            <!-- Section: Wallet (inside HackOS) -->
+                            <!-- Section: Wallet (opens desktop PallPay) -->
                             <div id="section-wallet">
                                 <div id="wallet-pallpay-logo-bg">
                                     <span class="logo-pall">Pall</span><span class="logo-pay">Pay</span>
@@ -152,32 +163,6 @@
                         </div>
                     </div>
 
-                    <!-- ── PALLPAY PANEL (sub-window inside HackOS) ── -->
-                    <div id="wallet-panel" class="window" style="display:none;">
-                        <div class="title-bar" id="wallet-title-bar">
-                            <div class="title-bar-text">PallPay — Secure Wallet</div>
-                            <div class="title-bar-controls">
-                                <button aria-label="Minimize" id="btn-minimize-wallet"></button>
-                                <button aria-label="Maximize" id="btn-maximize-wallet"></button>
-                                <button aria-label="Close"    id="btn-close-wallet"></button>
-                            </div>
-                        </div>
-                        <div class="window-body" id="wallet-body">
-                            <div id="pallpay-content">
-                                <div id="pallpay-logo">
-                                    <span class="logo-pall">Pall</span><span class="logo-pay">Pay</span>
-                                </div>
-                                <div id="pallpay-card">
-                                    <div class="card-title">Account Balance</div>
-                                    <div class="card-value">Cash: $<span id="cash-value-display">0.0</span></div>
-                                </div>
-                                <div id="pallpay-footer">
-                                    Secure Transaction Verified
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
                 </div><!-- /hackos-window-body -->
 
             </div><!-- /hackos-window -->
@@ -212,7 +197,86 @@
 
             </div><!-- /pallpay-desktop-window -->
 
+            <!-- ════════════════════════════════════════════════════════════
+                 TOPMAIL WINDOW — Email client
+                 ════════════════════════════════════════════════════════════ -->
+            <div id="topmail-window" class="window desktop-window" style="display:none;">
+
+                <div class="title-bar" id="topmail-title-bar">
+                    <div class="title-bar-text">TopMail — Inbox</div>
+                    <div class="title-bar-controls">
+                        <button aria-label="Minimize" id="btn-topmail-minimize"></button>
+                        <button aria-label="Maximize" id="btn-topmail-maximize"></button>
+                        <button aria-label="Close"    id="btn-topmail-close"></button>
+                    </div>
+                </div>
+                <div class="window-body" id="topmail-body">
+                    <div id="topmail-content">
+                        <!-- Toolbar -->
+                        <div id="topmail-toolbar">
+                            <div class="topmail-toolbar-btn" id="topmail-inbox-btn">
+                                <span class="topmail-toolbar-icon">📥</span> Inbox
+                            </div>
+                            <div class="topmail-toolbar-separator"></div>
+                            <div class="topmail-toolbar-btn disabled">
+                                <span class="topmail-toolbar-icon">📤</span> Sent
+                            </div>
+                            <div class="topmail-toolbar-btn disabled">
+                                <span class="topmail-toolbar-icon">📝</span> Compose
+                            </div>
+                        </div>
+
+                        <!-- Split pane: list + reader -->
+                        <div id="topmail-split">
+                            <!-- Email list -->
+                            <div id="topmail-list">
+                                <!-- Emails injected by JS -->
+                            </div>
+
+                            <!-- Email reader -->
+                            <div id="topmail-reader">
+                                <div id="topmail-reader-empty">
+                                    <span>📧</span>
+                                    <p>Select an email to read</p>
+                                </div>
+                                <div id="topmail-reader-content" style="display:none;">
+                                    <div id="topmail-reader-header">
+                                        <div id="topmail-reader-subject"></div>
+                                        <div id="topmail-reader-sender"></div>
+                                    </div>
+                                    <div id="topmail-reader-body"></div>
+                                    <div id="topmail-reader-attachments" style="display:none;">
+                                        <div class="attachments-label">Attachments:</div>
+                                        <div id="topmail-attachment-list"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div><!-- /topmail-window -->
+
         </div><!-- /window-container -->
+
+        <!-- ════════════════════════════════════════════════════════════
+             INSTALLATION OVERLAY — XP-style installer
+             ════════════════════════════════════════════════════════════ -->
+        <div id="install-overlay" style="display:none;">
+            <div id="install-dialog" class="window">
+                <div class="title-bar">
+                    <div class="title-bar-text">Installing Applications...</div>
+                </div>
+                <div class="window-body" id="install-dialog-body">
+                    <div id="install-icon">📦</div>
+                    <div id="install-status">Extracting files...</div>
+                    <div id="install-progress-container">
+                        <div id="install-progress-bar"></div>
+                    </div>
+                    <div id="install-detail">Please wait while the applications are being installed.</div>
+                </div>
+            </div>
+        </div>
 
         <!-- ── XP Taskbar ── -->
         <div id="xp-taskbar">

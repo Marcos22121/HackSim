@@ -35,11 +35,12 @@ const gameState = {
     currency: 'Hash',
     balance:  0,
     cash:     0,
+    appsInstalled: false,   // true after the TopMail attachment is opened
+    introMailSeen: false,   // true after the "Need money?" mail has arrived
 };
 
 // ─── Displays ────────────────────────────────────────────────────────────
 const hashValueEl   = document.getElementById('hash-value');
-const cashValueEl   = document.getElementById('cash-value-display');
 const cashDesktopEl = document.getElementById('cash-value-desktop-display');
 
 function updateHashDisplay() {
@@ -47,7 +48,6 @@ function updateHashDisplay() {
 }
 
 function updateCashDisplay() {
-    if (cashValueEl)   cashValueEl.textContent   = gameState.cash.toFixed(1);
     if (cashDesktopEl) cashDesktopEl.textContent  = gameState.cash.toFixed(1);
 }
 
@@ -153,10 +153,6 @@ const terminalOutput   = document.getElementById('terminal-output');
 const btnTermMax       = document.getElementById('btn-maximize-terminal');
 const hackosWindowBody = document.getElementById('hackos-window-body');
 const windowTaskbar    = document.getElementById('window-taskbar');
-
-const walletPanel      = document.getElementById('wallet-panel');
-const walletTitleBar   = document.getElementById('wallet-title-bar');
-const btnWalletMax     = document.getElementById('btn-maximize-wallet');
 
 let terminalInterval = null;
 
@@ -321,90 +317,6 @@ function saveNormalGeometry() {
     normalPos.height = parseInt(terminalPanel.style.height) || 440;
 }
 
-// ─── Sub-Window: Wallet inside HackOS ─────────────────────────────────────────
-let walletState = 'hidden';
-let walletNormalPos = { top: 60, left: 100, width: 400, height: 300 };
-
-function applyWalletNormalGeometry() {
-    walletPanel.style.top    = walletNormalPos.top    + 'px';
-    walletPanel.style.left   = walletNormalPos.left   + 'px';
-    walletPanel.style.width  = walletNormalPos.width  + 'px';
-    walletPanel.style.height = walletNormalPos.height + 'px';
-}
-
-function openWallet() {
-    if (walletState !== 'hidden') {
-        if (walletState === 'minimized') restoreWalletFromMinimize();
-        return;
-    }
-    walletState = 'normal';
-    walletPanel.classList.remove('is-maximized');
-    walletPanel.style.display = 'flex';
-    btnWalletMax.setAttribute('aria-label', 'Maximize');
-    applyWalletNormalGeometry();
-    updateCashDisplay();
-    if (document.activeElement) document.activeElement.blur();
-    saveGame();
-}
-
-function closeWallet() {
-    walletState = 'hidden';
-    walletPanel.style.display = 'none';
-    walletPanel.classList.remove('is-maximized');
-    removeInternalTaskbarTab('tab-wallet');
-    saveGame();
-}
-
-function minimizeWallet() {
-    if (walletState === 'hidden') return;
-    if (walletState === 'normal') saveWalletNormalGeometry();
-    if (walletState === 'maximized') {
-        walletPanel.classList.remove('is-maximized');
-        btnWalletMax.setAttribute('aria-label', 'Maximize');
-    }
-    walletState = 'minimized';
-    walletPanel.style.display = 'none';
-    addInternalTaskbarTab('tab-wallet', '💳 PallPay', restoreWalletFromMinimize);
-    saveGame();
-}
-
-function restoreWalletFromMinimize() {
-    removeInternalTaskbarTab('tab-wallet');
-    walletState = 'normal';
-    walletPanel.classList.remove('is-maximized');
-    walletPanel.style.display = 'flex';
-    btnWalletMax.setAttribute('aria-label', 'Maximize');
-    applyWalletNormalGeometry();
-    if (document.activeElement) document.activeElement.blur();
-    saveGame();
-}
-
-function toggleMaximizeWallet() {
-    if (walletState === 'maximized') {
-        walletState = 'normal';
-        walletPanel.classList.remove('is-maximized');
-        btnWalletMax.setAttribute('aria-label', 'Maximize');
-        applyWalletNormalGeometry();
-    } else if (walletState === 'normal') {
-        saveWalletNormalGeometry();
-        walletState = 'maximized';
-        walletPanel.classList.add('is-maximized');
-        btnWalletMax.setAttribute('aria-label', 'Restore');
-        walletPanel.style.top    = '0';
-        walletPanel.style.left   = '0';
-        walletPanel.style.width  = '100%';
-        walletPanel.style.height = '100%';
-    }
-    saveGame();
-}
-
-function saveWalletNormalGeometry() {
-    walletNormalPos.top    = parseInt(walletPanel.style.top)    || 60;
-    walletNormalPos.left   = parseInt(walletPanel.style.left)   || 100;
-    walletNormalPos.width  = parseInt(walletPanel.style.width)  || 400;
-    walletNormalPos.height = parseInt(walletPanel.style.height) || 300;
-}
-
 // ─── Internal Taskbar Tabs (inside HackOS window) ─────────────────────────────
 function addInternalTaskbarTab(id, label, restoreFn) {
     if (document.getElementById(id)) return;
@@ -427,12 +339,10 @@ document.getElementById('btn-minimize-terminal').addEventListener('click', minim
 document.getElementById('btn-maximize-terminal').addEventListener('click', toggleMaximize);
 document.getElementById('btn-close-terminal').addEventListener('click', closeTerminal);
 
-document.getElementById('btn-open-wallet').addEventListener('click', openWallet);
-document.getElementById('btn-minimize-wallet').addEventListener('click', minimizeWallet);
-document.getElementById('btn-maximize-wallet').addEventListener('click', toggleMaximizeWallet);
-document.getElementById('btn-close-wallet').addEventListener('click', closeWallet);
+// Wallet button inside BlueCode now opens the desktop PallPay window
+document.getElementById('btn-open-wallet').addEventListener('click', () => openDesktopWindow('pallpay-desktop'));
 
-// ─── Sub-Window Drag Logic ────────────────────────────────────────────────────
+// ─── Sub-Window Drag Logic (Terminal only now) ────────────────────────────────
 let dragActive = false;
 let dragTarget = null;
 let dragState  = null;
@@ -453,18 +363,12 @@ function startSubDrag(e, panel, state, normalPosRef) {
 }
 
 terminalTitleBar.addEventListener('mousedown', e => startSubDrag(e, terminalPanel, terminalState, normalPos));
-walletTitleBar.addEventListener('mousedown', e => startSubDrag(e, walletPanel, walletState, walletNormalPos));
 
 document.addEventListener('mousemove', e => {
     if (!dragActive || !dragTarget) return;
 
-    // Determine parent bounds
-    let par;
-    if (dragTarget === terminalPanel || dragTarget === walletPanel) {
-        par = hackosWindowBody.getBoundingClientRect();
-    } else {
-        par = windowContainer.getBoundingClientRect();
-    }
+    // Terminal drags within HackOS window body
+    const par = hackosWindowBody.getBoundingClientRect();
 
     let newLeft = e.clientX - par.left - dragOffset.x;
     let newTop  = e.clientY - par.top  - dragOffset.y;
@@ -545,11 +449,11 @@ function openDesktopWindow(appId) {
     addDesktopTaskbarTab(appId);
 
     // App-specific init
-    if (appId === 'hackos') {
-        // Load saved sub-window states if any
-    }
     if (appId === 'pallpay-desktop') {
         updateCashDisplay();
+    }
+    if (appId === 'topmail') {
+        initTopMail();
     }
 
     saveGame();
@@ -562,7 +466,6 @@ function closeDesktopWindow(appId) {
     // App-specific cleanup
     if (appId === 'hackos') {
         closeTerminal();
-        closeWallet();
     }
 
     win.state = 'hidden';
@@ -642,7 +545,8 @@ function saveDesktopWindowGeometry(appId) {
 // ─── Desktop Taskbar Tabs ─────────────────────────────────────────────────────
 const appTabConfig = {
     'hackos':           { label: 'BlueCode v0.1',  icon: './assets/icon-hackos.png' },
-    'pallpay-desktop':  { label: 'PallPay',      icon: './assets/icon-pallpay.png' },
+    'pallpay-desktop':  { label: 'PallPay',        icon: './assets/icon-pallpay.png' },
+    'topmail':          { label: 'TopMail',         icon: './assets/icon-topmail.png' },
 };
 
 function addDesktopTaskbarTab(appId) {
@@ -732,9 +636,15 @@ const pallpayDesktopTitleBar = document.getElementById('pallpay-desktop-title-ba
 registerDesktopWindow('pallpay-desktop', pallpayDesktopWindow, pallpayDesktopTitleBar,
     { top: 80, left: 200, width: 420, height: 320 });
 
+const topmailWindow   = document.getElementById('topmail-window');
+const topmailTitleBar = document.getElementById('topmail-title-bar');
+registerDesktopWindow('topmail', topmailWindow, topmailTitleBar,
+    { top: 60, left: 120, width: 720, height: 500 });
+
 // Wire up title bar drag
 hackosTitleBar.addEventListener('mousedown', e => initDesktopDrag('hackos', e));
 pallpayDesktopTitleBar.addEventListener('mousedown', e => initDesktopDrag('pallpay-desktop', e));
+topmailTitleBar.addEventListener('mousedown', e => initDesktopDrag('topmail', e));
 
 // Wire up window control buttons
 document.getElementById('btn-hackos-minimize').addEventListener('click', () => minimizeDesktopWindow('hackos'));
@@ -745,9 +655,14 @@ document.getElementById('btn-pallpay-desktop-minimize').addEventListener('click'
 document.getElementById('btn-pallpay-desktop-maximize').addEventListener('click', () => toggleMaximizeDesktopWindow('pallpay-desktop'));
 document.getElementById('btn-pallpay-desktop-close').addEventListener('click',    () => closeDesktopWindow('pallpay-desktop'));
 
+document.getElementById('btn-topmail-minimize').addEventListener('click', () => minimizeDesktopWindow('topmail'));
+document.getElementById('btn-topmail-maximize').addEventListener('click', () => toggleMaximizeDesktopWindow('topmail'));
+document.getElementById('btn-topmail-close').addEventListener('click',    () => closeDesktopWindow('topmail'));
+
 // Click on window body to focus
 hackosWindow.addEventListener('mousedown', () => focusDesktopWindow('hackos'));
 pallpayDesktopWindow.addEventListener('mousedown', () => focusDesktopWindow('pallpay-desktop'));
+topmailWindow.addEventListener('mousedown', () => focusDesktopWindow('topmail'));
 
 // ─── Desktop Icons — Double Click ─────────────────────────────────────────────
 let lastClickTime = 0;
@@ -761,13 +676,14 @@ document.getElementById('desktop-icons').addEventListener('click', e => {
     document.querySelectorAll('.desktop-icon').forEach(i => i.classList.remove('selected'));
     icon.classList.add('selected');
 
-    // Double-click detection (300ms window)
+    // Double-click detection (400ms window)
     const now = Date.now();
     if (lastClickTarget === icon && (now - lastClickTime) < 400) {
         const app = icon.dataset.app;
         if (app === 'hackos')  openDesktopWindow('hackos');
         if (app === 'pallpay') openDesktopWindow('pallpay-desktop');
-        // 'trash' does nothing
+        if (app === 'topmail') openDesktopWindow('topmail');
+        // 'trash' and 'darknet' do nothing for now
         lastClickTime = 0;
         lastClickTarget = null;
     } else {
@@ -811,6 +727,263 @@ function showDesktop() {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
+//  TOPMAIL — Email Client System
+// ═══════════════════════════════════════════════════════════════════════════════
+
+const emailData = [
+    {
+        id: 'rent-due',
+        subject: 'Rent Due — Final Notice',
+        sender: 'landlord@greenfield-apts.com',
+        body: `This is your final notice. Rent of $1,200 is now 15 days overdue.\n\nIf payment is not received by the end of this week, eviction proceedings will begin.\n\nNo further extensions will be granted.\n\n— Greenfield Apartments Management`,
+        attachments: [],
+        read: true,
+        isNew: false,
+    },
+    {
+        id: 'debts-due',
+        subject: 'Outstanding Balance — Action Required',
+        sender: 'collections@quickcash-loans.com',
+        body: `Dear Customer,\n\nYour outstanding balance of $3,450.00 is now 60 days past due.\n\nFailure to resolve this debt within the next 14 business days may result in further collection action, including but not limited to wage garnishment and credit reporting.\n\nTo make a payment or discuss options, visit our portal at quickcash-loans.com/pay.\n\nRegards,\nQuickCash Loans — Collections Dept.`,
+        attachments: [],
+        read: true,
+        isNew: false,
+    },
+    {
+        id: 'aiden',
+        subject: 'When are you going to pay me back?',
+        sender: 'aiden.cross@mail.com',
+        body: `Bro seriously, it's been 3 months. You said you'd have it by last Friday.\n\nI'm not asking again after this. $500. Just send it.\n\n— Aiden`,
+        attachments: [],
+        read: true,
+        isNew: false,
+    },
+    {
+        id: 'need-money',
+        subject: 'Need money?',
+        sender: 'Unknown',
+        body: `I'll make it quick. If you need money, all you need are these two apps. With your skills, I'm sure you'll figure it out in no time. Just get to work.`,
+        attachments: [
+            { name: '██████████.zip', icon: '📦' }
+        ],
+        read: false,
+        isNew: true,
+    },
+];
+
+// TopMail DOM refs
+const topmailList       = document.getElementById('topmail-list');
+const topmailReaderEmpty   = document.getElementById('topmail-reader-empty');
+const topmailReaderContent = document.getElementById('topmail-reader-content');
+const topmailReaderSubject = document.getElementById('topmail-reader-subject');
+const topmailReaderSender  = document.getElementById('topmail-reader-sender');
+const topmailReaderBody    = document.getElementById('topmail-reader-body');
+const topmailReaderAttach  = document.getElementById('topmail-reader-attachments');
+const topmailAttachList    = document.getElementById('topmail-attachment-list');
+
+let topmailInitialized = false;
+let selectedEmailId    = null;
+
+function initTopMail() {
+    if (topmailInitialized) return;
+    topmailInitialized = true;
+
+    // Render the "old" emails (not the "need money?" one yet)
+    const oldEmails = emailData.filter(e => !e.isNew);
+    oldEmails.forEach(email => renderEmailItem(email));
+
+    // If intro mail hasn't been seen yet, trigger it after a delay
+    if (!gameState.introMailSeen) {
+        setTimeout(() => {
+            triggerNewMailArrival();
+        }, 2500);
+    } else {
+        // If already seen, just show it in the list
+        const newMail = emailData.find(e => e.isNew);
+        if (newMail) {
+            renderEmailItem(newMail);
+        }
+    }
+}
+
+function renderEmailItem(email) {
+    const item = document.createElement('div');
+    item.className = 'topmail-email-item';
+    item.dataset.emailId = email.id;
+
+    if (!email.read) item.classList.add('unread');
+
+    item.innerHTML = `
+        <div class="topmail-item-subject">${email.subject}</div>
+        <div class="topmail-item-sender">${email.sender}</div>
+        <div class="topmail-item-preview">${email.body.split('\n')[0].substring(0, 60)}...</div>
+    `;
+
+    item.addEventListener('click', () => selectEmail(email.id, item));
+
+    // Insert at the top of the list
+    if (topmailList.firstChild) {
+        topmailList.insertBefore(item, topmailList.firstChild);
+    } else {
+        topmailList.appendChild(item);
+    }
+
+    return item;
+}
+
+function selectEmail(emailId, itemEl) {
+    selectedEmailId = emailId;
+    const email = emailData.find(e => e.id === emailId);
+    if (!email) return;
+
+    // Mark as read
+    email.read = true;
+    itemEl.classList.remove('unread');
+
+    // Deselect all, select this one
+    topmailList.querySelectorAll('.topmail-email-item').forEach(el => el.classList.remove('selected'));
+    itemEl.classList.add('selected');
+
+    // Show reader content
+    topmailReaderEmpty.style.display   = 'none';
+    topmailReaderContent.style.display = 'block';
+
+    topmailReaderSubject.textContent = email.subject;
+    topmailReaderSender.textContent  = `From: ${email.sender}`;
+    topmailReaderBody.textContent    = email.body;
+
+    // Attachments
+    if (email.attachments && email.attachments.length > 0) {
+        topmailReaderAttach.style.display = 'block';
+        topmailAttachList.innerHTML = '';
+
+        email.attachments.forEach(att => {
+            const attEl = document.createElement('div');
+            attEl.className = 'attachment-item';
+            attEl.innerHTML = `<span class="att-icon">${att.icon}</span><span class="att-name">${att.name}</span>`;
+
+            // If this is the special attachment from the "need money?" email
+            if (email.id === 'need-money' && !gameState.appsInstalled) {
+                attEl.addEventListener('click', () => startInstallation());
+            }
+
+            topmailAttachList.appendChild(attEl);
+        });
+    } else {
+        topmailReaderAttach.style.display = 'none';
+    }
+}
+
+function triggerNewMailArrival() {
+    const newMail = emailData.find(e => e.isNew);
+    if (!newMail) return;
+
+    // Play notification sound
+    try {
+        const notifSound = new Audio('./SFX/notification.mp3');
+        notifSound.volume = 0.6;
+        notifSound.play().catch(() => {});
+    } catch (_) {}
+
+    // Render with arrival animation
+    const item = renderEmailItem(newMail);
+    item.classList.add('new-arrival');
+
+    // Mark intro mail as seen
+    gameState.introMailSeen = true;
+    saveGame();
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+//  INSTALLATION SEQUENCE
+// ═══════════════════════════════════════════════════════════════════════════════
+
+const installOverlay     = document.getElementById('install-overlay');
+const installProgressBar = document.getElementById('install-progress-bar');
+const installStatus      = document.getElementById('install-status');
+const installDetail      = document.getElementById('install-detail');
+
+function startInstallation() {
+    if (gameState.appsInstalled) return;
+
+    // Show overlay
+    installOverlay.style.display = 'flex';
+    installProgressBar.style.width = '0%';
+    installStatus.textContent = 'Extracting files...';
+    installDetail.textContent = 'Please wait while the applications are being installed.';
+
+    // Simulate installation progress
+    const steps = [
+        { pct: 15,  text: 'Extracting files...',              detail: 'Unpacking ██████████.zip' },
+        { pct: 30,  text: 'Extracting files...',              detail: 'Reading package manifest...' },
+        { pct: 45,  text: 'Installing BlueCode v0.1...',      detail: 'Copying files to system...' },
+        { pct: 60,  text: 'Installing BlueCode v0.1...',      detail: 'Registering components...' },
+        { pct: 75,  text: 'Installing Dark Net...',           detail: 'Configuring network adapter...' },
+        { pct: 85,  text: 'Installing Dark Net...',           detail: 'Setting up Tor routing layer...' },
+        { pct: 95,  text: 'Finalizing...',                    detail: 'Creating desktop shortcuts...' },
+        { pct: 100, text: 'Installation complete!',           detail: 'Applications installed successfully.' },
+    ];
+
+    let stepIdx = 0;
+    const interval = setInterval(() => {
+        if (stepIdx >= steps.length) {
+            clearInterval(interval);
+            setTimeout(() => finishInstallation(), 800);
+            return;
+        }
+        const step = steps[stepIdx];
+        installProgressBar.style.width = step.pct + '%';
+        installStatus.textContent = step.text;
+        installDetail.textContent = step.detail;
+        stepIdx++;
+    }, 600);
+}
+
+function finishInstallation() {
+    // Hide overlay
+    installOverlay.style.display = 'none';
+
+    // Mark as installed
+    gameState.appsInstalled = true;
+    saveGame();
+
+    // Show the desktop icons with animation
+    revealInstalledIcons();
+}
+
+function revealInstalledIcons() {
+    const hackosIcon  = document.getElementById('icon-hackos');
+    const darknetIcon = document.getElementById('icon-darknet');
+
+    hackosIcon.classList.remove('desktop-icon-hidden');
+    hackosIcon.classList.add('desktop-icon-appear');
+
+    setTimeout(() => {
+        darknetIcon.classList.remove('desktop-icon-hidden');
+        darknetIcon.classList.add('desktop-icon-appear');
+    }, 300);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+//  FIRST-TIME EXPERIENCE — Desktop Icon Visibility
+// ═══════════════════════════════════════════════════════════════════════════════
+
+function applyDesktopIconVisibility() {
+    const hackosIcon  = document.getElementById('icon-hackos');
+    const darknetIcon = document.getElementById('icon-darknet');
+
+    if (gameState.appsInstalled) {
+        // Apps are installed — show them (no animation on load)
+        hackosIcon.classList.remove('desktop-icon-hidden');
+        darknetIcon.classList.remove('desktop-icon-hidden');
+    } else {
+        // First time — hide them
+        hackosIcon.classList.add('desktop-icon-hidden');
+        darknetIcon.classList.add('desktop-icon-hidden');
+    }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
 //  LOGIN SCREEN
 // ═══════════════════════════════════════════════════════════════════════════════
 
@@ -851,8 +1024,6 @@ function saveGame() {
         subWindows: {
             terminalState,
             normalPos,
-            walletState,
-            walletNormalPos,
         },
     };
     localStorage.setItem('hackOS_save', JSON.stringify(saveData));
@@ -867,11 +1038,16 @@ function loadGame() {
 
         // Restore game data
         if (data.gameState) {
-            gameState.balance = data.gameState.balance || 0;
-            gameState.cash    = data.gameState.cash || 0;
+            gameState.balance       = data.gameState.balance || 0;
+            gameState.cash          = data.gameState.cash || 0;
+            gameState.appsInstalled = data.gameState.appsInstalled || false;
+            gameState.introMailSeen = data.gameState.introMailSeen || false;
             updateHashDisplay();
             updateCashDisplay();
         }
+
+        // Apply desktop icon visibility based on loaded state
+        applyDesktopIconVisibility();
 
         // Restore desktop window states
         if (data.desktopWindows) {
@@ -895,7 +1071,6 @@ function loadGame() {
         // Restore sub-window states (inside HackOS)
         if (data.subWindows) {
             normalPos = data.subWindows.normalPos || normalPos;
-            walletNormalPos = data.subWindows.walletNormalPos || walletNormalPos;
 
             const savedTermState = data.subWindows.terminalState;
             if (savedTermState === 'normal') {
@@ -906,17 +1081,6 @@ function loadGame() {
             } else if (savedTermState === 'minimized') {
                 openTerminal();
                 minimizeTerminal();
-            }
-
-            const savedWalletState = data.subWindows.walletState;
-            if (savedWalletState === 'normal') {
-                openWallet();
-            } else if (savedWalletState === 'maximized') {
-                openWallet();
-                toggleMaximizeWallet();
-            } else if (savedWalletState === 'minimized') {
-                openWallet();
-                minimizeWallet();
             }
         }
     } catch (e) {
@@ -941,6 +1105,7 @@ function randomUUID() {
 }
 
 // ─── Init ──────────────────────────────────────────────────────────────────────
+applyDesktopIconVisibility();
 startLoginSequence();
 loadGame();
 console.log(`[HackOS] v${gameState.version} initialized. Currency: ${gameState.currency}`);
