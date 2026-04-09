@@ -1,0 +1,572 @@
+/* =============================================
+   BlueCode — Hacker Simulator
+   3_apps.css - Application Internal Styles
+   ============================================= */
+
+/* =============================================
+   STATUS BAR — Hash Display (inside HackOS)
+   ============================================= */
+
+#game-status-bar {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    padding: 3px 10px;
+    background: #d4d0c8;
+    border-bottom: 2px solid;
+    border-color: #808080 #fff #fff #808080;
+    gap: 20px;
+}
+
+#hash-display {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-family: 'Tahoma', 'MS Sans Serif', sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+    color: #000;
+}
+
+#hash-icon  { font-size: 14px; color: #1a6b0a; }
+#hash-label { color: #333; }
+
+#hash-value {
+    font-size: 14px;
+    color: #0a5200;
+    min-width: 48px;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.5px;
+}
+
+/* =============================================
+   SECTIONS AREA — Icon grid inside HackOS
+   ============================================= */
+
+#sections-area {
+    flex: 1;
+    display: flex;
+    flex-wrap: wrap;
+    padding: 12px;
+    gap: 10px;
+    align-content: flex-start;
+    overflow: auto;
+}
+
+/* Columna izquierda de secciones */
+.sections-column {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Columna pegada a la derecha */
+.right-panel {
+    margin-left: auto;
+}
+
+/* Section card */
+#section-hack-terminal {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    width: 260px;
+    height: 38vh;
+    padding: 8px;
+    background-color: #d4d0c8;
+    border: 2px inset #808080;
+    cursor: default;
+    user-select: none;
+}
+
+/* Section card Wallet — same width, lower height */
+#section-wallet {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    width: 260px;
+    height: 120px;
+    padding: 12px;
+    background-color: #d4d0c8;
+    border: 2px inset #808080;
+    cursor: default;
+    user-select: none;
+    position: relative;
+    overflow: hidden;
+}
+
+#wallet-pallpay-logo-bg {
+    position: absolute;
+    top: 15px;
+    font-family: "Trebuchet MS", sans-serif;
+    font-size: 20px;
+    font-weight: bold;
+    font-style: italic;
+    opacity: 0.25;
+    pointer-events: none;
+}
+
+#wallet-label {
+    font-family: 'Tahoma', 'MS Sans Serif', sans-serif;
+    font-size: 13px;
+    font-weight: bold;
+    color: #444;
+    z-index: 1;
+    margin-top: 15px;
+}
+
+#btn-open-wallet {
+    min-width: 120px;
+    height: 35px;
+    font-weight: bold;
+    z-index: 1;
+}
+
+/* Section card Decodify — tall panel style */
+#section-decodify {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    width: 260px;
+    height: auto;           /* Let content dictate height so it doesn't overflow */
+    min-height: 180px;      /* Ensure it's visually a bit taller */
+    padding: 20px 12px;     /* Extra padding vertical */
+    background-color: #d4d0c8;
+    border: 2px inset #808080;
+    cursor: default;
+    user-select: none;
+    position: relative;
+}
+
+#decodify-preview-screen {
+    flex: 1;
+    width: 100%;
+    background-color: #000b18; /* Dark navy blue */
+    border: 1px solid #444;
+    padding: 5px 6px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+    font-family: 'Courier New', 'Lucida Console', monospace;
+    font-size: 9px;
+    color: #00e5ff; /* Cyan cyber style */
+    box-sizing: border-box;
+}
+
+#decodify-hex-output {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5px;
+}
+
+#decodify-label {
+    font-family: 'Tahoma', 'MS Sans Serif', sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    color: #000;
+}
+
+#btn-open-decodify {
+    min-width: 120px;
+    height: 35px;
+    font-weight: bold;
+}
+
+/* Mini terminal preview — black panel taking most of the card height */
+#hack-terminal-preview {
+    flex: 1;
+    width: 100%;
+    background-color: #000;
+    border: 1px solid #444;
+    padding: 5px 7px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    font-family: 'Courier New', 'Lucida Console', monospace;
+    font-size: 10px;
+    color: #00ff41;
+    box-sizing: border-box;
+}
+
+#preview-output {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
+
+#preview-cursor-line {
+    display: flex;
+    align-items: center;
+    margin-top: 3px;
+    flex-shrink: 0;
+}
+
+.preview-prompt  { color: #009922; }
+.preview-cursor  { color: #00ff41; animation: blink 1s step-start infinite; }
+
+#hack-terminal-label {
+    font-family: 'Tahoma', 'MS Sans Serif', sans-serif;
+    font-size: 11px;
+    font-weight: bold;
+    color: #000;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+#btn-open-terminal {
+    min-width: 70px;
+    flex-shrink: 0;
+}
+
+/* =============================================
+   PALLPAY — Internal Window Content (inside HackOS)
+   ============================================= */
+
+#wallet-panel {
+    position: absolute;
+    z-index: 11;
+    top: 60px;
+    left: 100px;
+    width: 520px;
+    height: 460px;
+    display: flex;
+    flex-direction: column;
+    max-width: none !important;
+}
+
+#pallpay-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background-color: #f7f7f7;
+    height: 100%;
+}
+
+#pallpay-logo {
+    font-family: "Trebuchet MS", sans-serif;
+    font-size: 32px;
+    font-weight: bold;
+    font-style: italic;
+    margin-bottom: 25px;
+}
+
+.logo-pall { color: #003087; }
+.logo-pay  { color: #009cde; }
+
+#pallpay-card {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    width: 100%;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    text-align: center;
+}
+
+.card-title {
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 10px;
+    font-family: Arial, sans-serif;
+}
+
+.card-value {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+}
+
+#pallpay-footer {
+    margin-top: auto;
+    font-size: 10px;
+    color: #999;
+    border-top: 1px solid #eee;
+    padding-top: 10px;
+    width: 100%;
+    text-align: center;
+}
+
+/* =============================================
+   DECODIFY — Hash to Cash Converter Console
+   ============================================= */
+
+#decodify-panel {
+    position: absolute;
+    z-index: 12;
+    top: 70px;
+    left: 450px;
+    width: 380px;
+    height: 400px;
+    display: flex;
+    flex-direction: column;
+    max-width: none !important;
+}
+
+#decodify-content {
+    display: flex;
+    flex-direction: column;
+    padding: 24px;
+    height: 100%;
+    gap: 20px;
+}
+
+#decodify-header {
+    text-align: center;
+    border-bottom: 2px groove #fff;
+    padding-bottom: 12px;
+}
+
+#decodify-header h3 {
+    margin: 0 0 5px 0;
+    font-size: 16px;
+    color: #000;
+}
+
+#decodify-header p {
+    font-size: 12px;
+    color: #444;
+    margin-bottom: 8px;
+}
+
+.exchange-rate {
+    display: inline-block;
+    background: #fff;
+    border: 1px solid #808080;
+    padding: 4px 10px;
+    font-weight: bold;
+    color: #1a6b0a;
+}
+
+#decodify-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.field-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.field-row input {
+    width: 120px;
+    padding: 4px;
+    text-align: right;
+    font-family: 'Tahoma', sans-serif;
+}
+
+.projected-payout {
+    text-align: right;
+    font-size: 12px;
+    color: #555;
+    font-style: italic;
+}
+
+#projected-cash {
+    font-weight: bold;
+    color: #000;
+}
+
+#decodify-process-area {
+    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* XP Style Progress Bar */
+.progress-bar-container {
+    width: 100%;
+    height: 22px;
+    border: 2px inset #fff;
+    background-color: #e0dfdc;
+    position: relative;
+    overflow: hidden;
+    padding: 1px;
+}
+
+#decodify-progress-bar {
+    height: 100%;
+    width: 0%;
+    /* Replicating the segmented XP green/blue progress bar style */
+    background: repeating-linear-gradient(
+        90deg,
+        #2b5cd7,
+        #2b5cd7 12px,
+        transparent 12px,
+        transparent 14px
+    );
+    transition: width 0.3s linear;
+}
+
+#decodify-status-text {
+    font-size: 11px;
+    color: #333;
+    font-family: 'Courier New', monospace;
+}
+
+#decodify-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 10px;
+}
+
+#btn-start-decodify {
+    min-width: 120px;
+    height: 30px;
+    font-weight: bold;
+}
+
+/* Black screen */
+#terminal-screen {
+    width: 100%;
+    height: 100%;
+    background-color: #000;
+    padding: 10px 14px 10px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    font-family: 'Courier New', 'Lucida Console', monospace;
+    font-size: 13px;
+    color: #00ff41;
+    position: relative;
+}
+
+/* Scrolling output */
+#terminal-output {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    scrollbar-width: thin;
+    scrollbar-color: #003300 #000;
+}
+
+#terminal-output::-webkit-scrollbar       { width: 6px; }
+#terminal-output::-webkit-scrollbar-track { background: #000; }
+#terminal-output::-webkit-scrollbar-thumb { background: #003300; }
+
+/* =============================================
+   LAUNDER WEB
+   ============================================= */
+#section-launder {
+    background-color: #d4d0c8;
+    padding: 15px;
+    padding-bottom: 25px;
+    text-align: center;
+    border: 2px outset #fff;
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#btn-open-launder {
+    padding: 4px 15px;
+    margin-top: 5px;
+}
+
+/* Document / Explorer Style */
+.document-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 75px;
+    padding: 5px;
+    margin: 2px;
+    border: 1px solid transparent;
+    transition: background 0.1s, border 0.1s;
+    user-select: none;
+}
+
+.document-item:hover {
+    background-color: rgba(49, 106, 197, 0.1);
+    border: 1px solid rgba(49, 106, 197, 0.3);
+}
+
+.document-item.selected, .document-item:active {
+    background-color: rgba(49, 106, 197, 0.2) !important;
+    border: 1px solid rgba(49, 106, 197, 0.5) !important;
+}
+
+#launder-panel {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Red XP progress bar override for launder */
+#launder-progress-bar {
+    height: 100%;
+    width: 0%;
+    background: repeating-linear-gradient(90deg, #3168d5, #3168d5 12px, transparent 12px, transparent 14px);
+    transition: width 0.1s linear;
+}
+/* Installer Center Fix */
+#installer-window {
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%);
+}
+
+#launder-panel {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+}
+
+/* --- PallPay App Styles --- */
+.pp-nav-item:hover {
+    color: #0070ba;
+    text-decoration: underline;
+}
+
+.pp-btn:hover {
+    filter: brightness(1.1);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.pp-btn:active {
+    transform: translateY(1px);
+    filter: brightness(0.9);
+}
+
+.xp-calc-btn {
+    width: 100%;
+    height: 100%;
+    min-height: 32px;
+    font-size: 13px;
+    font-weight: bold;
+    cursor: pointer;
+    background: #ece9d8;
+    border: 2px outset #fff;
+    box-shadow: 1px 1px 0 #000;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    margin: 0;
+}
+
+.xp-calc-btn:active {
+    border: 2px inset #fff;
+    padding: 2px 0 0 2px;
+}

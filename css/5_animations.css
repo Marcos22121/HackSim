@@ -1,0 +1,108 @@
+/* =============================================
+   BlueCode — Hacker Simulator
+   5_animations.css - Keyframes & Special Effects
+   ============================================= */
+
+.terminal-line {
+    color: #00ff41;
+    text-shadow: 0 0 6px rgba(0, 255, 65, 0.6);
+    white-space: pre;
+    line-height: 1.4;
+    animation: fadeInLine 0.15s ease-in;
+}
+
+@keyframes fadeInLine {
+    from { opacity: 0; transform: translateX(-4px); }
+    to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes hexFade {
+    to { opacity: 1; }
+}
+
+@keyframes previewFadeIn {
+    to { opacity: 1; }
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0; }
+}
+
+@keyframes dotFade {
+    0%, 100% { opacity: 0; }
+    30%, 70% { opacity: 1; }
+}
+
+@keyframes logoPulse {
+    0%, 100% { transform: scale(1); filter: drop-shadow(0 0 20px rgba(0, 200, 255, 0.4)); }
+    50%      { transform: scale(1.04); filter: drop-shadow(0 0 30px rgba(0, 200, 255, 0.6)); }
+}
+
+@keyframes slideUpFade {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+#terminal-cursor {
+    color: #00ff41;
+    animation: blink 1s step-start infinite;
+    flex-shrink: 0;
+}
+
+#typed-text.line-complete-flash {
+    color: #ffffff;
+    text-shadow: 0 0 16px rgba(255, 255, 255, 1);
+    transition: color 0.1s, text-shadow 0.1s;
+}
+
+#hash-popup {
+    position: absolute;
+    bottom: 52px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Courier New', monospace;
+    font-size: 18px;
+    font-weight: bold;
+    color: #00ff41;
+    text-shadow: 0 0 12px rgba(0, 255, 65, 1);
+    pointer-events: none;
+    opacity: 0;
+    z-index: 20;
+}
+
+#hash-popup.hash-popup-animate {
+    animation: popupFloat 1.2s ease-out forwards;
+}
+
+@keyframes popupFloat {
+    0%   { opacity: 1; transform: translateX(-50%) translateY(0); }
+    60%  { opacity: 1; transform: translateX(-50%) translateY(-30px); }
+    100% { opacity: 0; transform: translateX(-50%) translateY(-55px); }
+}
+
+.decode-overlay-scanline {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(
+        to bottom,
+        rgba(255, 255, 255, 0),
+        rgba(255, 255, 255, 0) 50%,
+        rgba(0, 0, 0, 0.2) 50%,
+        rgba(0, 0, 0, 0.2)
+    );
+    background-size: 100% 4px;
+    z-index: 2;
+}
+
+.preview-line {
+    color: #00cc33;
+    text-shadow: 0 0 4px rgba(0,255,65,0.5);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.35;
+    opacity: 0;
+    animation: previewFadeIn 0.3s ease-in forwards;
+}

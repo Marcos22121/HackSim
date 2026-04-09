@@ -1,0 +1,145 @@
+/* =============================================
+   BlueCode — Hacker Simulator
+   1_windows.css - Window Containers & Frames
+   ============================================= */
+
+/* =============================================
+   WINDOW CONTAINER — floating windows area
+   ============================================= */
+
+#window-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 36px; /* room for taskbar */
+    z-index: 10;
+    pointer-events: none; /* let clicks pass to desktop icons */
+}
+
+/* Desktop floating windows */
+.desktop-window {
+    pointer-events: all;
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    max-width: none !important;
+    box-shadow: 2px 4px 16px rgba(0, 0, 0, 0.45);
+    transition: none;
+}
+
+/* Focused window gets higher z-index (applied via JS) */
+.desktop-window.focused {
+    z-index: 100;
+}
+
+/* =============================================
+   HACKOS WINDOW — Main game application
+   ============================================= */
+
+#hackos-window {
+    top: 40px;
+    left: 60px;
+    width: 85vw;
+    height: 80vh;
+}
+
+#hackos-window.is-maximized {
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+}
+
+#hackos-title-bar {
+    cursor: move;
+    user-select: none;
+    flex-shrink: 0;
+}
+
+#hackos-window.is-maximized #hackos-title-bar {
+    cursor: default;
+}
+
+/* Window body: column layout */
+#hackos-window-body {
+    flex: 1;
+    overflow: hidden;
+    background-color: #ece9d8;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+/* =============================================
+   PALLPAY DESKTOP WINDOW — Standalone wallet
+   ============================================= */
+
+#pallpay-desktop-window {
+    top: 80px;
+    left: 200px;
+    width: 420px;
+    height: 320px;
+}
+
+#pallpay-desktop-window.is-maximized {
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+}
+
+#pallpay-desktop-title-bar {
+    cursor: move;
+    user-select: none;
+    flex-shrink: 0;
+}
+
+#pallpay-desktop-window.is-maximized #pallpay-desktop-title-bar {
+    cursor: default;
+}
+
+#pallpay-desktop-body {
+    flex: 1;
+    overflow: hidden;
+    background-color: #fff !important;
+    padding: 0 !important;
+}
+
+/* =============================================
+   HACK TERMINAL — Panel Window (sub-window)
+   ============================================= */
+
+#terminal-panel {
+    position: absolute;
+    z-index: 10;
+    top: 30px;
+    left: 20px;
+    width: 900px;
+    height: 45vh;
+    display: flex;
+    flex-direction: column;
+    max-width: none !important;
+    transition: none;
+}
+
+#terminal-title-bar, #wallet-title-bar, #decodify-title-bar, #launder-title-bar, #notepad-title-bar, #calc-title-bar, #topmail-title-bar, #documents-title-bar {
+    cursor: move;
+    user-select: none;
+}
+
+#terminal-panel.is-maximized #terminal-title-bar,
+#wallet-panel.is-maximized #wallet-title-bar,
+#decodify-panel.is-maximized #decodify-title-bar {
+    cursor: default;
+}
+
+#terminal-body, #wallet-body, #decodify-body {
+    flex: 1;
+    padding: 0 !important;
+    overflow: hidden;
+}
+
+#terminal-body { background-color: #000 !important; }
+#wallet-body { background-color: #fff !important; }
+#decodify-body { background-color: #ece9d8 !important; }

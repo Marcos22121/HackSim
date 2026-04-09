@@ -1,0 +1,174 @@
+/* =============================================
+   BlueCode — Hacker Simulator
+   0_base.css - Reset, Login & Desktop Base
+   ============================================= */
+
+/* --- Reset & Base --- */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    font-family: 'Tahoma', 'MS Sans Serif', sans-serif;
+}
+
+button {
+    cursor: pointer;
+}
+
+/* =============================================
+   LOGIN SCREEN
+   ============================================= */
+
+#login-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: linear-gradient(180deg, #0052a5 0%, #003380 50%, #001a4d 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.8s ease-out;
+}
+
+#login-screen.fade-out {
+    opacity: 0;
+    pointer-events: none;
+}
+
+#login-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 28px;
+}
+
+#login-logo {
+    width: 120px;
+    height: 120px;
+    object-fit: contain;
+    filter: drop-shadow(0 0 20px rgba(0, 200, 255, 0.4));
+    animation: logoPulse 2s ease-in-out infinite;
+}
+
+@keyframes logoPulse {
+    0%, 100% { transform: scale(1); filter: drop-shadow(0 0 20px rgba(0, 200, 255, 0.4)); }
+    50%      { transform: scale(1.04); filter: drop-shadow(0 0 30px rgba(0, 200, 255, 0.6)); }
+}
+
+#login-text {
+    display: flex;
+    align-items: baseline;
+    gap: 2px;
+    font-family: 'Trebuchet MS', 'Tahoma', sans-serif;
+    font-size: 22px;
+    font-weight: 400;
+    color: #fff;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+    letter-spacing: 0.5px;
+}
+
+#login-dots {
+    display: inline-flex;
+    gap: 1px;
+    min-width: 24px;
+}
+
+#login-dots .dot {
+    opacity: 0;
+    font-size: 22px;
+    font-weight: bold;
+    animation: dotFade 1.5s ease-in-out infinite;
+}
+
+#login-dots .dot:nth-child(1) { animation-delay: 0s; }
+#login-dots .dot:nth-child(2) { animation-delay: 0.3s; }
+#login-dots .dot:nth-child(3) { animation-delay: 0.6s; }
+
+@keyframes dotFade {
+    0%, 100% { opacity: 0; }
+    30%, 70% { opacity: 1; }
+}
+
+/* =============================================
+   XP DESKTOP
+   ============================================= */
+
+#xp-desktop {
+    position: fixed;
+    inset: 0;
+    background-color: #3a6ea5;
+    background-image: url('../assets/wallpaper.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: flex;
+    flex-direction: column;
+}
+
+/* =============================================
+   DESKTOP ICONS
+   ============================================= */
+
+#desktop-icons {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    padding: 16px 12px;
+    gap: 8px;
+    pointer-events: none; /* let clicks pass through to window-container */
+    position: relative;
+    z-index: 1;
+}
+
+.desktop-icon {
+    pointer-events: all;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    width: 80px;
+    padding: 6px 4px;
+    gap: 4px;
+    cursor: default;
+    user-select: none;
+    border: 1px solid transparent;
+    border-radius: 3px;
+    transition: background-color 0.1s;
+}
+
+.desktop-icon img {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+    image-rendering: auto;
+    pointer-events: none;
+}
+
+.desktop-icon span {
+    font-size: 11px;
+    color: #fff;
+    text-align: center;
+    line-height: 1.25;
+    text-shadow:
+        1px 1px 2px rgba(0, 0, 0, 0.9),
+        -1px -1px 2px rgba(0, 0, 0, 0.5);
+    word-break: break-word;
+    pointer-events: none;
+}
+
+.desktop-icon.selected {
+    background-color: rgba(49, 106, 197, 0.45);
+    border-color: rgba(49, 106, 197, 0.7);
+}
+
+.desktop-icon:active {
+    background-color: rgba(49, 106, 197, 0.55);
+}
