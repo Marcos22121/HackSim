@@ -66,11 +66,11 @@ function handleTyping(e) {
 function lineComplete() {
     let reward = currentLine.hash;
     
-    // CPU Upgrade buff: +10% hash per level
+    // CPU Upgrade buff: +25% hash per level
     if (typeof gameState !== 'undefined' && gameState.pcParts && gameState.pcParts.cpu) {
         const cpuLevel = gameState.pcParts.cpu.level;
         if (cpuLevel > 0) {
-            reward = reward * (1 + (cpuLevel * 0.10));
+            reward = reward * (1 + (cpuLevel * 0.25));
         }
     }
 
