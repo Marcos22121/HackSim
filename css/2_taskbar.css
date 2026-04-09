@@ -93,24 +93,27 @@
     font-weight: bold;
     color: #fff;
     text-shadow: 0 1px 1px rgba(0, 0, 0, 0.4);
-    background: linear-gradient(180deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.05) 100%);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: linear-gradient(180deg, #3a81f1 0%, #1d5ed1 100%);
+    border: 1px solid #104193;
     border-radius: 2px;
     cursor: pointer;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     flex-shrink: 0;
+    box-shadow: inset 1px 1px 1px rgba(255,255,255,0.4);
+    -webkit-appearance: none;
+    appearance: none;
 }
 
 .taskbar-app-tab:hover {
-    background: linear-gradient(180deg, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0.1) 100%);
+    background: linear-gradient(180deg, #4b8df2 0%, #2e69d6 100%);
 }
 
 .taskbar-app-tab.active {
-    background: linear-gradient(180deg, rgba(255,255,255,0.08) 0%, rgba(0,0,0,0.1) 100%);
-    border-color: rgba(0, 0, 0, 0.2);
-    box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+    background: linear-gradient(180deg, #1d4b9f 0%, #123473 100%);
+    border-color: #0b224c;
+    box-shadow: inset 1px 1px 4px rgba(0,0,0,0.7);
 }
 
 .taskbar-app-tab img {

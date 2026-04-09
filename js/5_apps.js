@@ -19,6 +19,10 @@ So you forgot how to use your terminal? Let me remind you:
 7. Hashes = Money. 
 
 Get to work. We need that $3,500 by next week.`
+    },
+    'doc-onionweb': {
+        title: 'OnionWeb.txt',
+        content: `Put this in the net that must not be named:\n\nhttp://onion.web/laundering_service`
     }
 };
 

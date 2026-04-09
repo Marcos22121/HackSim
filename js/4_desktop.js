@@ -307,6 +307,15 @@ if (notepadWindow && notepadTitleBar) {
     notepadWindow.addEventListener('mousedown', () => focusDesktopWindow('notepad'));
 }
 
+const darknetWindow = document.getElementById('darknet-window');
+const darknetTitleBar = document.getElementById('darknet-title-bar');
+if (darknetWindow && darknetTitleBar) {
+    registerDesktopWindow('darknet', darknetWindow, darknetTitleBar,
+        { top: 50, left: 100, width: 750, height: 550 });
+    darknetTitleBar.addEventListener('mousedown', e => initDesktopDrag('darknet', e));
+    darknetWindow.addEventListener('mousedown', () => focusDesktopWindow('darknet'));
+}
+
 const calcWindow = document.getElementById('calc-window');
 const calcTitleBar = document.getElementById('calc-title-bar');
 if (calcWindow && calcTitleBar) {
@@ -346,7 +355,10 @@ const controlMap = {
     'close-documents':    () => closeDesktopWindow('documents'),
     'minimize-notepad':   () => minimizeDesktopWindow('notepad'),
     'maximize-notepad':   () => toggleMaximizeDesktopWindow('notepad'),
-    'close-notepad':      () => closeDesktopWindow('notepad')
+    'close-notepad':      () => closeDesktopWindow('notepad'),
+    'minimize-darknet':   () => minimizeDesktopWindow('darknet'),
+    'maximize-darknet':   () => toggleMaximizeDesktopWindow('darknet'),
+    'close-darknet':      () => closeDesktopWindow('darknet')
 };
 
 Object.entries(controlMap).forEach(([id, fn]) => {
@@ -373,6 +385,10 @@ if (desktopIconsArea) {
             if (app === 'pallpay') { openDesktopWindow('pallpay-desktop'); if (typeof updatePallPayActivity === 'function') updatePallPayActivity(); }
             if (app === 'topmail') openDesktopWindow('topmail');
             if (app === 'documents') { openDesktopWindow('documents'); if (typeof renderDocumentsList === 'function') renderDocumentsList(); }
+            if (app === 'darknet') { 
+                openDesktopWindow('darknet'); 
+                if (typeof receiveDarkNetMail === 'function') receiveDarkNetMail(); 
+            }
             lastClickTime = 0;
             lastClickTarget = null;
         } else {
@@ -490,3 +506,91 @@ if (btnNotifications) {
         }
     });
 }
+
+// ─── Dark Net Browser Logic ──────────────────────────────────────────────────
+const darknetUrlBar = document.getElementById('darknet-url-bar');
+const btnDarknetGo  = document.getElementById('btn-darknet-go');
+const darknetContent = document.getElementById('darknet-content');
+
+if (btnDarknetGo && darknetUrlBar) {
+    btnDarknetGo.addEventListener('click', () => {
+        handleDarkNetURL(darknetUrlBar.value.trim());
+    });
+    
+    darknetUrlBar.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') handleDarkNetURL(darknetUrlBar.value.trim());
+    });
+}
+
+function handleDarkNetURL(url) {
+    if (!darknetContent) return;
+    
+    // Exact match for the hidden OnionWeb url
+    if (url === 'http://onion.web/laundering_service' || url === 'onion.web/laundering_service') {
+        if (gameState.addonInstalled) {
+            darknetContent.innerHTML = `
+                <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; color:#fff; font-family:monospace;">
+                    <h2 style="color:#0f0;">AddOn ALREADY INSTALLED</h2>
+                    <p>Access the service from within BlueCode.</p>
+                </div>
+            `;
+        } else {
+            // Render Landing Page
+            darknetContent.innerHTML = `
+                <div class="darknet-addon-landing">
+                    <img src="assets/icon-darknet.svg" width="80" alt="">
+                    <h2>OnionWeb Laundering AddOn</h2>
+                    <p>To access the untraceable laundering network, you must install the encrypted communication layer into your host system.</p>
+                    <button class="btn-turbina-download" onclick="startAddonInstaller()">Download & Install</button>
+                </div>
+            `;
+        }
+    } else {
+        // Generic 404 for darknet
+        darknetContent.innerHTML = `
+            <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; padding:20px; text-align:center;">
+                <h1 style="color:#f00; font-family:'Courier New', monospace; font-size:48px; margin-bottom:10px;">404</h1>
+                <p style="color:#a00; font-family:monospace; font-size:14px;">Node undiscoverable or offline.</p>
+            </div>
+        `;
+    }
+}
+
+// Global hook for the button injected above
+window.startAddonInstaller = function() {
+    if (typeof openDesktopWindow === 'function') openDesktopWindow('installer');
+    
+    const pbar = document.getElementById('installer-progress-bar');
+    const title = document.getElementById('installer-title');
+    const desc = document.getElementById('installer-desc');
+    
+    if (title) title.textContent = 'BlueCode Detected';
+    if (desc) desc.textContent = 'Installing OnionWeb AddOn securely...';
+    
+    if (pbar) {
+        pbar.style.width = '0%';
+        pbar.style.transition = 'none';
+        void pbar.offsetWidth;
+        pbar.style.transition = 'width 6s linear';
+        pbar.style.width = '100%';
+    }
+    
+    setTimeout(() => {
+        if (typeof closeDesktopWindow === 'function') closeDesktopWindow('installer');
+        gameState.addonInstalled = true;
+        
+        // Return to home page in browser
+        if (darknetContent) {
+            darknetContent.innerHTML = `
+                <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; color:#fff; font-family:monospace;">
+                    <h2 style="color:#0f0;">INSTALLATION COMPLETE</h2>
+                    <p>OnionWeb Laundering tools unlocked.</p>
+                </div>
+            `;
+        }
+        
+        if (typeof applyStoryState === 'function') applyStoryState();
+        if (typeof saveGame === 'function') saveGame();
+        playSuccessSound();
+    }, 6100);
+};

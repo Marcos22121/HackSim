@@ -170,6 +170,55 @@ if (btnAttachment) {
                 document.body.appendChild(popup);
                 setTimeout(() => popup.remove(), 3000);
             }
+        } else if (mail.id === 'm_darknet') {
+            if (!gameState.documentsUnlocked.includes('doc-onionweb')) {
+                gameState.documentsUnlocked.push('doc-onionweb');
+                if (typeof saveGame === 'function') saveGame();
+                playSuccessSound();
+                
+                const popup = document.createElement('div');
+                popup.className = 'mail-notification';
+                popup.innerHTML = `<img src="assets/icon-documents.svg" width="24" height="24"> <div><strong>Download Complete</strong><br>OnionWeb.txt saved to Documents</div>`;
+                document.body.appendChild(popup);
+                setTimeout(() => popup.remove(), 4000);
+                
+                if (typeof desktopWindows !== 'undefined' && desktopWindows['documents'] && desktopWindows['documents'].state !== 'hidden') {
+                    if (typeof renderDocumentsList === 'function') renderDocumentsList();
+                }
+            } else {
+                const popup = document.createElement('div');
+                popup.className = 'mail-notification';
+                popup.innerHTML = `<img src="assets/icon-documents.svg" width="24" height="24"> <div><strong>File Exists</strong><br>Already saved to Documents.</div>`;
+                document.body.appendChild(popup);
+                setTimeout(() => popup.remove(), 3000);
+            }
         }
     });
 }
+
+function receiveDarkNetMail() {
+    if (gameState.darknetOpened) return; // Only trigger once
+    gameState.darknetOpened = true;
+    if (typeof saveGame === 'function') saveGame();
+
+    if (inboxEmails.find(m => m.id === 'm_darknet')) return;
+    
+    // Simulate delay before email arrives so user is looking at darknet
+    setTimeout(() => {
+        playSuccessSound(); 
+        
+        const popup = document.createElement('div');
+        popup.className = 'mail-notification';
+        popup.innerHTML = `<img src="assets/icon-topmail.svg" width="24" height="24"> <div><strong>New Email</strong><br>Unknown: The Net that must not be named</div>`;
+        document.body.appendChild(popup);
+        
+        setTimeout(() => { popup.remove(); }, 6000);
+        
+        addEmailToList({
+            id: 'm_darknet', sender: 'Unknown', date: 'Now', subject: 'The Net that must not be named',
+            body: "I noticed you turned on Dark Net. You are going to need this if you want to clean your money.\n\nOpen the attached file and put its contents in the search bar. Do not lose it.",
+            unread: true, attachment: true, attachName: 'OnionWeb.txt', attachIcon: 'assets/icon-documents.svg'
+        });
+    }, 2000);
+}
+

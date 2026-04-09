@@ -60,17 +60,50 @@ const gameState = {
     documentsUnlocked: [],
     transactions: [],
     storyProgress: 0, // 0 = Intro, 1 = Tools unlocked
+    darknetOpened: false,
+    addonInstalled: false,
 };
 
 function applyStoryState() {
     if (gameState.storyProgress >= 1) {
-        document.getElementById('icon-hackos').style.display = 'flex';
-        document.getElementById('icon-pallpay').style.display = 'flex';
-        document.getElementById('icon-darknet').style.display = 'flex';
+        let el = document.getElementById('icon-hackos'); if(el) el.style.display = 'flex';
+        el = document.getElementById('icon-pallpay'); if(el) el.style.display = 'flex';
+        el = document.getElementById('icon-darknet'); if(el) el.style.display = 'flex';
     } else {
-        document.getElementById('icon-hackos').style.display = 'none';
-        document.getElementById('icon-pallpay').style.display = 'none';
-        document.getElementById('icon-darknet').style.display = 'none';
+        let el = document.getElementById('icon-hackos'); if(el) el.style.display = 'none';
+        el = document.getElementById('icon-pallpay'); if(el) el.style.display = 'none';
+        el = document.getElementById('icon-darknet'); if(el) el.style.display = 'none';
+    }
+
+    const launderBtn = document.getElementById('btn-open-launder');
+    const launderLbl = document.getElementById('launder-label');
+    const launderIcn = document.getElementById('launder-icon-container');
+    const iconOnionWeb = document.getElementById('icon-onionweb');
+
+    if (gameState.addonInstalled) {
+        if (launderBtn) launderBtn.removeAttribute('disabled');
+        if (iconOnionWeb) iconOnionWeb.style.display = 'flex';
+        if (launderLbl) {
+            launderLbl.textContent = 'OnionWeb - Launder';
+            launderLbl.style.color = '#d33c3c';
+        }
+        if (launderIcn) {
+            launderIcn.style.opacity = '1';
+            const img = launderIcn.querySelector('img');
+            if (img) img.style.filter = 'none';
+        }
+    } else {
+        if (launderBtn) launderBtn.setAttribute('disabled', 'true');
+        if (iconOnionWeb) iconOnionWeb.style.display = 'none';
+        if (launderLbl) {
+            launderLbl.textContent = 'Must Install AddOn';
+            launderLbl.style.color = '#888';
+        }
+        if (launderIcn) {
+            launderIcn.style.opacity = '0.4';
+            const img = launderIcn.querySelector('img');
+            if (img) img.style.filter = 'grayscale(1)';
+        }
     }
 }
 
@@ -181,6 +214,8 @@ function loadGame() {
             gameState.documentsUnlocked = data.gameState.documentsUnlocked || [];
             gameState.transactions = data.gameState.transactions || [];
             gameState.storyProgress = data.gameState.storyProgress || 0;
+            gameState.darknetOpened = data.gameState.darknetOpened || false;
+            gameState.addonInstalled = data.gameState.addonInstalled || false;
             updateHashDisplay();
             updateCashDisplay();
             updateLaunderDisplay();

@@ -570,3 +570,83 @@
     border: 2px inset #fff;
     padding: 2px 0 0 2px;
 }
+
+/* =============================================
+   DARK NET - TURBINA BROWSER STYLES
+   ============================================= */
+
+#darknet-window {
+    box-shadow: 0 0 20px rgba(255, 0, 0, 0.2), 2px 4px 16px rgba(0, 0, 0, 0.8) !important;
+}
+
+#darknet-title-bar {
+    border-bottom: 2px solid #600;
+}
+
+#btn-darknet-go:hover {
+    background: #500 !important;
+    color: #fff !important;
+}
+
+#btn-darknet-go:active {
+    background: #200 !important;
+    border-color: #400 !important;
+}
+
+/* OnionWeb Landing Page Injection */
+.darknet-addon-landing {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    background: radial-gradient(circle at center, #1a0505 0%, #000 80%);
+    padding: 20px;
+    text-align: center;
+}
+
+.darknet-addon-landing img {
+    filter: drop-shadow(0 0 15px rgba(255,0,0,0.4));
+    margin-bottom: 20px;
+}
+
+.darknet-addon-landing h2 {
+    color: #ff3333;
+    font-family: 'Courier New', monospace;
+    font-size: 24px;
+    margin: 0 0 10px 0;
+    text-shadow: 0 0 8px rgba(255,0,0,0.5);
+}
+
+.darknet-addon-landing p {
+    color: #aa5555;
+    font-family: monospace;
+    font-size: 14px;
+    max-width: 400px;
+    margin: 0 0 30px 0;
+}
+
+.btn-turbina-download {
+    background: linear-gradient(180deg, #400 0%, #200 100%);
+    border: 2px solid #800;
+    color: #ff5555;
+    font-family: 'Courier New', monospace;
+    font-weight: bold;
+    font-size: 18px;
+    padding: 12px 30px;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(255,0,0,0.3);
+    border-radius: 3px;
+    transition: all 0.2s;
+}
+
+.btn-turbina-download:hover {
+    background: linear-gradient(180deg, #600 0%, #300 100%);
+    color: #fff;
+    box-shadow: 0 0 20px rgba(255,0,0,0.6);
+}
+
+.btn-turbina-download:active {
+    background: #100;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
+}
