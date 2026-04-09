@@ -12,42 +12,114 @@
 }
 
 @keyframes fadeInLine {
-    from { opacity: 0; transform: translateX(-4px); }
-    to   { opacity: 1; transform: translateX(0); }
+    from {
+        opacity: 0;
+        transform: translateX(-4px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
 }
 
 @keyframes hexFade {
-    to { opacity: 1; }
+    to {
+        opacity: 1;
+    }
 }
 
 @keyframes previewFadeIn {
-    to { opacity: 1; }
+    to {
+        opacity: 1;
+    }
 }
 
 @keyframes blink {
-    0%, 100% { opacity: 1; }
-    50%       { opacity: 0; }
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0;
+    }
 }
 
 @keyframes dotFade {
-    0%, 100% { opacity: 0; }
-    30%, 70% { opacity: 1; }
+
+    0%,
+    100% {
+        opacity: 0;
+    }
+
+    30%,
+    70% {
+        opacity: 1;
+    }
 }
 
 @keyframes logoPulse {
-    0%, 100% { transform: scale(1); filter: drop-shadow(0 0 20px rgba(0, 200, 255, 0.4)); }
-    50%      { transform: scale(1.04); filter: drop-shadow(0 0 30px rgba(0, 200, 255, 0.6)); }
+
+    0%,
+    100% {
+        transform: scale(1);
+        filter: drop-shadow(0 0 20px rgba(0, 200, 255, 0.4));
+    }
+
+    50% {
+        transform: scale(1.04);
+        filter: drop-shadow(0 0 30px rgba(0, 200, 255, 0.6));
+    }
 }
 
 @keyframes slideUpFade {
-    from { transform: translateY(20px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
 }
 
 #terminal-cursor {
     color: #00ff41;
     animation: blink 1s step-start infinite;
     flex-shrink: 0;
+}
+
+/* ── TYPING INPUT LINE ── */
+#terminal-input-line {
+    display: flex;
+    align-items: center;
+    margin-top: 8px;
+    flex-shrink: 0;
+    border-top: 1px solid #002200;
+    padding-top: 7px;
+    white-space: pre;
+    font-size: 13px;
+}
+
+.terminal-prompt {
+    color: #00cc33;
+    text-shadow: 0 0 5px rgba(0, 200, 50, 0.8);
+    flex-shrink: 0;
+}
+
+/* Characters already typed — bright green */
+#typed-text {
+    color: #00ff41;
+    text-shadow: 0 0 8px rgba(0, 255, 65, 0.9);
+}
+
+/* Characters not yet typed — ghosted (shadowcode) */
+#ghost-text {
+    color: rgba(0, 255, 64, 0.568);
+    text-shadow: none;
 }
 
 #typed-text.line-complete-flash {
@@ -76,29 +148,38 @@
 }
 
 @keyframes popupFloat {
-    0%   { opacity: 1; transform: translateX(-50%) translateY(0); }
-    60%  { opacity: 1; transform: translateX(-50%) translateY(-30px); }
-    100% { opacity: 0; transform: translateX(-50%) translateY(-55px); }
+    0% {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+
+    60% {
+        opacity: 1;
+        transform: translateX(-50%) translateY(-30px);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-55px);
+    }
 }
 
 .decode-overlay-scanline {
     position: absolute;
     inset: 0;
     pointer-events: none;
-    background: linear-gradient(
-        to bottom,
-        rgba(255, 255, 255, 0),
-        rgba(255, 255, 255, 0) 50%,
-        rgba(0, 0, 0, 0.2) 50%,
-        rgba(0, 0, 0, 0.2)
-    );
+    background: linear-gradient(to bottom,
+            rgba(255, 255, 255, 0),
+            rgba(255, 255, 255, 0) 50%,
+            rgba(0, 0, 0, 0.2) 50%,
+            rgba(0, 0, 0, 0.2));
     background-size: 100% 4px;
     z-index: 2;
 }
 
 .preview-line {
     color: #00cc33;
-    text-shadow: 0 0 4px rgba(0,255,65,0.5);
+    text-shadow: 0 0 4px rgba(0, 255, 65, 0.5);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
