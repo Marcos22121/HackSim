@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="HackOS — A cyberpunk hacker simulator with Windows XP aesthetics">
-    <title>HackOS — Hacker Simulator</title>
+    <meta name="description" content="BlueCode — A cyberpunk hacker simulator with Windows XP aesthetics">
+    <title>BlueCode — Hacker Simulator</title>
 
     <!-- XP.css — Windows XP UI Library -->
     <link rel="stylesheet" href="node_modules/xp.css/dist/XP.css">
@@ -21,7 +21,7 @@
          ================================================================ -->
     <div id="login-screen">
         <div id="login-content">
-            <img id="login-logo" src="assets/logo.png" alt="HackOS Logo">
+            <img id="login-logo" src="assets/logo.png" alt="BlueCode Logo">
             <div id="login-text">
                 <span id="login-label">Logging in</span>
                 <span id="login-dots">
@@ -42,8 +42,8 @@
         <div id="desktop-icons">
 
             <div class="desktop-icon" data-app="hackos" id="icon-hackos">
-                <img src="assets/icon-hackos.png" alt="HackOS" draggable="false">
-                <span>HackOS v0.1</span>
+                <img src="assets/icon-hackos.png" alt="BlueCode" draggable="false">
+                <span>BlueCode v0.1</span>
             </div>
 
             <div class="desktop-icon" data-app="pallpay" id="icon-pallpay">
@@ -68,7 +68,7 @@
 
                 <!-- Title Bar -->
                 <div class="title-bar" id="hackos-title-bar">
-                    <div class="title-bar-text">HackOS v0.1 — Terminal Interface</div>
+                    <div class="title-bar-text">BlueCode v0.1 — Terminal Interface</div>
                     <div class="title-bar-controls">
                         <button aria-label="Minimize" id="btn-hackos-minimize"></button>
                         <button aria-label="Maximize" id="btn-hackos-maximize"></button>
@@ -128,7 +128,7 @@
                     <!-- ── TERMINAL PANEL (sub-window inside HackOS) ── -->
                     <div id="terminal-panel" class="window" style="display:none;">
                         <div class="title-bar" id="terminal-title-bar">
-                            <div class="title-bar-text">Hack Terminal — root@hackos</div>
+                            <div class="title-bar-text">Hack Terminal — root@bluecode</div>
                             <div class="title-bar-controls">
                                 <button aria-label="Minimize" id="btn-minimize-terminal"></button>
                                 <button aria-label="Maximize" id="btn-maximize-terminal"></button>
@@ -143,7 +143,7 @@
                                 <div id="hash-popup"></div>
                                 <!-- Typing input line -->
                                 <div id="terminal-input-line">
-                                    <span class="terminal-prompt">root@hackos:~$&nbsp;</span>
+                                    <span class="terminal-prompt">root@bluecode:~$&nbsp;</span>
                                     <span id="typed-text"></span>
                                     <span id="terminal-cursor">█</span>
                                     <span id="ghost-text"></span>
@@ -218,13 +218,15 @@
         <div id="xp-taskbar">
             <button id="start-button">
                 <img src="assets/logo.png" alt="" class="start-logo">
-                <span>Start</span>
+                <span>Bluecode</span>
             </button>
             <div id="taskbar-divider"></div>
             <div id="taskbar-apps"></div>
             <div id="system-tray">
                 <span id="system-clock"></span>
             </div>
+            <!-- Show Desktop Button (far right) -->
+            <div id="show-desktop-button" onclick="showDesktop()"></div>
         </div>
 
     </div><!-- /xp-desktop -->

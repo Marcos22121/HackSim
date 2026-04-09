@@ -1,5 +1,5 @@
 /* =============================================
-   HackOS — Hacker Simulator
+   BlueCode — Hacker Simulator
    Main Stylesheet — XP Desktop Edition
    ============================================= */
 
@@ -447,6 +447,38 @@ button {
     text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
     font-variant-numeric: tabular-nums;
     letter-spacing: 0.3px;
+}
+
+/* Show Desktop Button — Narrow rectangle at the far right */
+#show-desktop-button {
+    width: 14px;
+    height: 100%;
+    background: linear-gradient(180deg, #0ba0e8 0%, #0869b5 50%, #0661a8 100%);
+    border-left: 1px solid rgba(255, 255, 255, 0.15);
+    border-right: 1px solid rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    position: relative;
+    flex-shrink: 0;
+}
+
+#show-desktop-button:hover {
+    background: linear-gradient(180deg, #1caaf8 0%, #177bd1 50%, #1574c3 100%);
+}
+
+#show-desktop-button:active {
+    background: linear-gradient(180deg, #0861a8 0%, #0640a0 100%);
+    box-shadow: inset 1px 0 3px rgba(0,0,0,0.3);
+}
+
+/* The "bubble" hint / narrow line separator */
+#show-desktop-button::before {
+    content: '';
+    position: absolute;
+    left: 2px;
+    top: 4px;
+    bottom: 4px;
+    width: 1px;
+    background: rgba(255,255,255,0.1);
 }
 
 /* =============================================

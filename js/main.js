@@ -1,5 +1,5 @@
 /* =============================================
-   HackOS — Hacker Simulator
+   BlueCode — Hacker Simulator
    Game Logic — XP Desktop Edition
    ============================================= */
 
@@ -128,7 +128,7 @@ function lineComplete() {
     typedTextEl.classList.add('line-complete-flash');
     setTimeout(() => {
         typedTextEl.classList.remove('line-complete-flash');
-        addTerminalLine(`root@hackos:~$ ${completedText}`);
+        addTerminalLine(`root@bluecode:~$ ${completedText}`);
         pickLine();
         typingActive = true;
     }, 380);
@@ -190,7 +190,7 @@ function addTerminalLine(text) {
 
 function getBootSequence() {
     return [
-        'HackOS Terminal v0.1.0 — Initializing...',
+        'BlueCode Terminal v0.1.0 — Initializing...',
         'Loading kernel modules........... OK',
         `Network interface eth0 — ${randomIP()}`,
         'Tor routing layer................. ACTIVE',
@@ -641,7 +641,7 @@ function saveDesktopWindowGeometry(appId) {
 
 // ─── Desktop Taskbar Tabs ─────────────────────────────────────────────────────
 const appTabConfig = {
-    'hackos':           { label: 'HackOS v0.1',  icon: './assets/icon-hackos.png' },
+    'hackos':           { label: 'BlueCode v0.1',  icon: './assets/icon-hackos.png' },
     'pallpay-desktop':  { label: 'PallPay',      icon: './assets/icon-pallpay.png' },
 };
 
@@ -795,6 +795,20 @@ function updateClock() {
 
 updateClock();
 setInterval(updateClock, 30000); // update every 30 seconds
+
+// ─── Show Desktop Toggle ──────────────────────────────────────────────────────
+function showDesktop() {
+    // Minimize all windows that aren't already hidden or minimized
+    Object.keys(desktopWindows).forEach(appId => {
+        const win = desktopWindows[appId];
+        if (win.state === 'normal' || win.state === 'maximized') {
+            minimizeDesktopWindow(appId);
+        }
+    });
+
+    // Deselect desktop icons
+    document.querySelectorAll('.desktop-icon').forEach(i => i.classList.remove('selected'));
+}
 
 // ═══════════════════════════════════════════════════════════════════════════════
 //  LOGIN SCREEN
