@@ -144,22 +144,6 @@ button {
     transition: background-color 0.1s;
 }
 
-/* Hidden desktop icons (before installation) */
-.desktop-icon-hidden {
-    display: none !important;
-}
-
-/* Icon appear animation after installation */
-.desktop-icon-appear {
-    animation: iconAppear 0.6s ease-out forwards;
-}
-
-@keyframes iconAppear {
-    0%   { opacity: 0; transform: scale(0.5) translateY(10px); }
-    60%  { opacity: 1; transform: scale(1.1) translateY(-2px); }
-    100% { opacity: 1; transform: scale(1) translateY(0); }
-}
-
 .desktop-icon img {
     width: 48px;
     height: 48px;
@@ -408,7 +392,7 @@ button {
     overflow: hidden;
 }
 
-/* Individual taskbar app tab — inactive/minimized (lighter blue) */
+/* Individual taskbar app tab */
 .taskbar-app-tab {
     display: inline-flex;
     align-items: center;
@@ -420,7 +404,7 @@ button {
     font-weight: bold;
     color: #fff;
     text-shadow: 0 1px 1px rgba(0, 0, 0, 0.4);
-    background: linear-gradient(180deg, #3c82e6 0%, #2a6ad4 40%, #2460c8 100%);
+    background: linear-gradient(180deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.05) 100%);
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 2px;
     cursor: pointer;
@@ -431,18 +415,13 @@ button {
 }
 
 .taskbar-app-tab:hover {
-    background: linear-gradient(180deg, #4a90f0 0%, #3878e0 40%, #3070d8 100%);
+    background: linear-gradient(180deg, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0.1) 100%);
 }
 
-/* Active/open window tab — DARKER blue like real Windows XP */
 .taskbar-app-tab.active {
-    background: linear-gradient(180deg, #1a3f7a 0%, #16356b 30%, #122d5c 60%, #0e254e 100%);
-    border-color: rgba(0, 0, 0, 0.35);
-    box-shadow: inset 0 1px 3px rgba(0,0,0,0.35), inset 0 0 1px rgba(0,0,0,0.2);
-}
-
-.taskbar-app-tab.active:hover {
-    background: linear-gradient(180deg, #1f4a8e 0%, #1a3f7a 30%, #16356b 60%, #122d5c 100%);
+    background: linear-gradient(180deg, rgba(255,255,255,0.08) 0%, rgba(0,0,0,0.1) 100%);
+    border-color: rgba(0, 0, 0, 0.2);
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
 }
 
 .taskbar-app-tab img {
@@ -829,24 +808,21 @@ button {
     transition: none;
 }
 
-#terminal-title-bar {
+#terminal-title-bar, #wallet-title-bar {
     cursor: move;
     user-select: none;
 }
 
-#terminal-panel.is-maximized #terminal-title-bar {
 #terminal-panel.is-maximized #terminal-title-bar,
 #wallet-panel.is-maximized #wallet-title-bar,
 #decodify-panel.is-maximized #decodify-title-bar {
     cursor: default;
 }
 
-#terminal-body {
 #terminal-body, #wallet-body, #decodify-body {
     flex: 1;
     padding: 0 !important;
     overflow: hidden;
-    background-color: #000 !important;
 }
 
 #terminal-body { background-color: #000 !important; }
@@ -854,11 +830,50 @@ button {
 #decodify-body { background-color: #ece9d8 !important; }
 
 /* =============================================
-   PALLPAY — Shared logo colors
+   PALLPAY — Internal Window Content (inside HackOS)
    ============================================= */
+
+#wallet-panel {
+    position: absolute;
+    z-index: 11;
+    top: 60px;
+    left: 100px;
+    width: 400px;
+    height: 300px;
+    display: flex;
+    flex-direction: column;
+    max-width: none !important;
+}
+
+#pallpay-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background-color: #f7f7f7;
+    height: 100%;
+}
+
+#pallpay-logo {
+    font-family: "Trebuchet MS", sans-serif;
+    font-size: 32px;
+    font-weight: bold;
+    font-style: italic;
+    margin-bottom: 25px;
+}
 
 .logo-pall { color: #003087; }
 .logo-pay  { color: #009cde; }
+
+#pallpay-card {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    width: 100%;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    text-align: center;
+}
 
 .card-title {
     color: #666;
@@ -872,6 +887,16 @@ button {
     font-weight: bold;
     color: #333;
     font-family: 'Segoe UI', Tahoma, sans-serif;
+}
+
+#pallpay-footer {
+    margin-top: auto;
+    font-size: 10px;
+    color: #999;
+    border-top: 1px solid #eee;
+    padding-top: 10px;
+    width: 100%;
+    text-align: center;
 }
 
 /* =============================================
@@ -1127,382 +1152,3 @@ button {
     60%  { opacity: 1; transform: translateX(-50%) translateY(-30px); }
     100% { opacity: 0; transform: translateX(-50%) translateY(-55px); }
 }
-
-/* =============================================
-   TOPMAIL — Email Client Window
-   ============================================= */
-
-#topmail-window {
-    top: 60px;
-    left: 120px;
-    width: 720px;
-    height: 500px;
-}
-
-#topmail-window.is-maximized {
-    top: 0 !important;
-    left: 0 !important;
-    width: 100% !important;
-    height: 100% !important;
-}
-
-#topmail-title-bar {
-    cursor: move;
-    user-select: none;
-    flex-shrink: 0;
-}
-
-#topmail-window.is-maximized #topmail-title-bar {
-    cursor: default;
-}
-
-#topmail-body {
-    flex: 1;
-    overflow: hidden;
-    background-color: #fff !important;
-    padding: 0 !important;
-}
-
-#topmail-content {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    background: #f0efe6;
-}
-
-/* ── Toolbar ── */
-#topmail-toolbar {
-    display: flex;
-    align-items: center;
-    gap: 2px;
-    padding: 3px 6px;
-    background: #ece9d8;
-    border-bottom: 1px solid #aca899;
-    flex-shrink: 0;
-}
-
-.topmail-toolbar-btn {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    padding: 3px 10px;
-    font-size: 11px;
-    font-family: 'Tahoma', sans-serif;
-    cursor: pointer;
-    border: 1px solid transparent;
-    border-radius: 2px;
-}
-
-.topmail-toolbar-btn:hover:not(.disabled) {
-    background: #ddd8c8;
-    border-color: #aca899;
-}
-
-.topmail-toolbar-btn.disabled {
-    color: #999;
-    cursor: default;
-}
-
-.topmail-toolbar-icon {
-    font-size: 14px;
-}
-
-.topmail-toolbar-separator {
-    width: 1px;
-    height: 20px;
-    background: #aca899;
-    margin: 0 4px;
-}
-
-/* ── Split Pane ── */
-#topmail-split {
-    flex: 1;
-    display: flex;
-    overflow: hidden;
-}
-
-/* ── Email List (left panel) ── */
-#topmail-list {
-    width: 280px;
-    min-width: 280px;
-    border-right: 1px solid #aca899;
-    overflow-y: auto;
-    background: #fff;
-    scrollbar-width: thin;
-}
-
-.topmail-email-item {
-    display: flex;
-    flex-direction: column;
-    padding: 8px 10px;
-    border-bottom: 1px solid #e8e6de;
-    cursor: pointer;
-    transition: background 0.1s;
-    font-family: 'Tahoma', sans-serif;
-}
-
-.topmail-email-item:hover {
-    background: #e8f0fe;
-}
-
-.topmail-email-item.selected {
-    background: #316ac5;
-    color: #fff;
-}
-
-.topmail-email-item.selected .topmail-item-sender,
-.topmail-email-item.selected .topmail-item-preview {
-    color: #dde6f7;
-}
-
-.topmail-email-item.unread .topmail-item-subject {
-    font-weight: bold;
-}
-
-.topmail-item-subject {
-    font-size: 12px;
-    font-weight: normal;
-    color: #000;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.topmail-email-item.selected .topmail-item-subject {
-    color: #fff;
-}
-
-.topmail-item-sender {
-    font-size: 10px;
-    color: #666;
-    margin-top: 2px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.topmail-item-preview {
-    font-size: 10px;
-    color: #888;
-    margin-top: 2px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-/* New mail indicator dot */
-.topmail-email-item.unread .topmail-item-subject::before {
-    content: '● ';
-    color: #0066cc;
-    font-size: 9px;
-}
-
-.topmail-email-item.selected.unread .topmail-item-subject::before {
-    color: #99ccff;
-}
-
-/* New mail arrival animation */
-.topmail-email-item.new-arrival {
-    animation: emailSlideIn 0.4s ease-out;
-    background: #fffde6;
-}
-
-.topmail-email-item.new-arrival.unread .topmail-item-subject::before {
-    color: #ff6600;
-}
-
-@keyframes emailSlideIn {
-    0%   { opacity: 0; transform: translateY(-100%); max-height: 0; padding: 0 10px; }
-    100% { opacity: 1; transform: translateY(0); max-height: 80px; padding: 8px 10px; }
-}
-
-/* ── Email Reader (right panel) ── */
-#topmail-reader {
-    flex: 1;
-    overflow-y: auto;
-    background: #fff;
-    padding: 0;
-}
-
-#topmail-reader-empty {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-    color: #aaa;
-    font-family: 'Tahoma', sans-serif;
-    gap: 10px;
-}
-
-#topmail-reader-empty span {
-    font-size: 40px;
-    opacity: 0.4;
-}
-
-#topmail-reader-empty p {
-    font-size: 13px;
-}
-
-#topmail-reader-content {
-    padding: 16px 20px;
-    font-family: 'Tahoma', sans-serif;
-}
-
-#topmail-reader-header {
-    border-bottom: 1px solid #e0ddd5;
-    padding-bottom: 12px;
-    margin-bottom: 14px;
-}
-
-#topmail-reader-subject {
-    font-size: 16px;
-    font-weight: bold;
-    color: #1a1a1a;
-    margin-bottom: 6px;
-}
-
-#topmail-reader-sender {
-    font-size: 11px;
-    color: #666;
-}
-
-#topmail-reader-body {
-    font-size: 13px;
-    color: #333;
-    line-height: 1.6;
-    white-space: pre-wrap;
-    word-wrap: break-word;
-}
-
-/* ── Attachments ── */
-#topmail-reader-attachments {
-    margin-top: 20px;
-    padding-top: 14px;
-    border-top: 1px solid #e0ddd5;
-}
-
-.attachments-label {
-    font-size: 11px;
-    font-weight: bold;
-    color: #666;
-    margin-bottom: 8px;
-}
-
-#topmail-attachment-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-}
-
-.attachment-item {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 6px 12px;
-    background: #f4f2e8;
-    border: 1px solid #d4d0c0;
-    border-radius: 3px;
-    cursor: pointer;
-    font-size: 11px;
-    font-family: 'Tahoma', sans-serif;
-    color: #333;
-    transition: background 0.15s, border-color 0.15s;
-}
-
-.attachment-item:hover {
-    background: #e8e4d8;
-    border-color: #b0ac9c;
-}
-
-.attachment-item .att-icon {
-    font-size: 16px;
-}
-
-.attachment-item .att-name {
-    max-width: 160px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-/* =============================================
-   INSTALLATION OVERLAY
-   ============================================= */
-
-#install-overlay {
-    position: fixed;
-    inset: 0;
-    z-index: 9000;
-    background: rgba(0, 0, 0, 0.45);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    animation: overlayFadeIn 0.3s ease-out;
-}
-
-@keyframes overlayFadeIn {
-    from { opacity: 0; }
-    to   { opacity: 1; }
-}
-
-#install-dialog {
-    width: 420px;
-    box-shadow: 4px 6px 20px rgba(0,0,0,0.5);
-}
-
-#install-dialog-body {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-    padding: 20px 24px !important;
-    background: #ece9d8;
-}
-
-#install-icon {
-    font-size: 36px;
-}
-
-#install-status {
-    font-family: 'Tahoma', sans-serif;
-    font-size: 13px;
-    font-weight: bold;
-    color: #333;
-}
-
-#install-progress-container {
-    width: 100%;
-    height: 20px;
-    background: #fff;
-    border: 1px solid #808080;
-    border-radius: 2px;
-    overflow: hidden;
-    position: relative;
-}
-
-/* XP-style chunky progress bar */
-#install-progress-bar {
-    height: 100%;
-    width: 0%;
-    background: repeating-linear-gradient(
-        90deg,
-        #37a337 0px,
-        #37a337 8px,
-        #2d8f2d 8px,
-        #2d8f2d 10px
-    );
-    border-radius: 1px;
-    transition: width 0.3s linear;
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.3);
-}
-
-#install-detail {
-    font-family: 'Tahoma', sans-serif;
-    font-size: 11px;
-    color: #666;
-    text-align: center;
-}
-}
-}
-
