@@ -1,0 +1,24 @@
+# HackOS - Comandos de Consola (Developer Console)
+# Para abrir la consola: Presiona F12 o Ctrl+Shift+I y ve a la pestaña 'Console'
+
+# 1. DARSE HASH (La moneda de hackeo)
+# Cambia el 1000 por la cantidad que quieras.
+gameState.balance += 1000; updateHashDisplay(); saveGame();
+
+# 2. DARSE CASH (Dinero en PallPay)
+# Cambia el 5000 por la cantidad que quieras.
+gameState.cash += 5000; updateCashDisplay(); updatePallPayActivity(); saveGame();
+
+# 3. REINICIAR TODO EL JUEGO (Borrar progreso por completo)
+localStorage.clear(); location.reload();
+
+# --- COMANDOS EXTRA ---
+
+# DESBLOQUEAR TODO EL SOFTWARE (Terminal, PallPay, DarkNet)
+gameState.storyProgress = 1; applyStoryState(); saveGame();
+
+# LIMPIAR BANDEJA DE ENTRADA
+inboxEmails = []; renderInbox(); saveGame();
+
+# AGREGAR UNA TRANSACCION DE PRUEBA A PALLPAY
+gameState.transactions.unshift({id:'DEBUG-INV', amount: 999, date: 'Today', source: 'Cheat Console'}); updatePallPayActivity();

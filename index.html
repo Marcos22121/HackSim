@@ -41,19 +41,34 @@
         <!-- ── Desktop Icons ── -->
         <div id="desktop-icons">
 
-            <div class="desktop-icon" data-app="hackos" id="icon-hackos">
-                <img src="assets/icon-hackos.png" alt="BlueCode" draggable="false">
-                <span>BlueCode v0.1</span>
-            </div>
-
-            <div class="desktop-icon" data-app="pallpay" id="icon-pallpay">
-                <img src="assets/icon-pallpay.png" alt="PallPay" draggable="false">
-                <span>PallPay</span>
+            <div class="desktop-icon" data-app="topmail" id="icon-topmail">
+                <img src="assets/icon-topmail.svg" alt="TopMail" draggable="false">
+                <span>TopMail</span>
             </div>
 
             <div class="desktop-icon" data-app="trash" id="icon-trash">
                 <img src="assets/icon-trash.png" alt="Trash Bin" draggable="false">
                 <span>Trash Bin</span>
+            </div>
+
+            <div class="desktop-icon" data-app="hackos" id="icon-hackos" style="display:none;">
+                <img src="assets/icon-hackos.png" alt="BlueCode" draggable="false">
+                <span>BlueCode v0.1</span>
+            </div>
+
+            <div class="desktop-icon" data-app="pallpay" id="icon-pallpay" style="display:none;">
+                <img src="assets/icon-pallpay.png" alt="PallPay" draggable="false">
+                <span>PallPay</span>
+            </div>
+
+            <div class="desktop-icon" data-app="darknet" id="icon-darknet" style="display:none;">
+                <img src="assets/icon-darknet.svg" alt="Dark Net" draggable="false">
+                <span>Dark Net</span>
+            </div>
+
+            <div class="desktop-icon" data-app="documents" id="icon-documents" style="top: 180px; left: 20px;">
+                <img src="assets/icon-documents.svg" alt="Documents" draggable="false">
+                <span>Documents</span>
             </div>
 
         </div>
@@ -133,8 +148,17 @@
                                     <div id="decodify-hex-output"></div>
                                     <div class="decode-overlay-scanline"></div>
                                 </div>
-                                <div id="decodify-label">Decodify Hashes</div>
+                                <div id="decodify-label">Decodify Hashes to Cash</div>
                                 <button id="btn-open-decodify">Open</button>
+                            </div>
+
+                            <!-- Section: Launder Funds -->
+                            <div id="section-launder">
+                                <div id="launder-icon-container" style="margin-bottom: 12px;">
+                                    <img src="assets/icon-darknet.svg" style="width:48px;" alt="">
+                                </div>
+                                <div id="launder-label" style="font-weight:bold; margin-bottom:10px; font-size:13px; color:#d33c3c;">OnionWeb - Launder</div>
+                                <button id="btn-open-launder">Connect</button>
                             </div>
 
                         </div>
@@ -178,17 +202,38 @@
                                 <button aria-label="Close"    id="btn-close-wallet"></button>
                             </div>
                         </div>
-                        <div class="window-body" id="wallet-body">
-                            <div id="pallpay-content">
-                                <div id="pallpay-logo">
-                                    <span class="logo-pall">Pall</span><span class="logo-pay">Pay</span>
+                        <div class="window-body" id="wallet-body" style="padding:0; display:flex; flex-direction:column; background:#fff; height:100%; overflow:hidden;">
+                            <!-- Reusing the new PallPay structure -->
+                            <div class="pallpay-app-container" data-instance="internal" style="display:flex; flex-direction:column; height:100%;">
+                                <!-- PallPay Navbar -->
+                                <div style="background:#0070ba; color:#fff; padding:8px 12px; display:flex; justify-content:space-between; align-items:center;">
+                                    <div style="display:flex; align-items:center; gap:6px;">
+                                        <img src="assets/icon-pallpay.png" width="20" height="20" alt="">
+                                        <span style="font-weight:bold; font-size:14px;">PallPay</span>
+                                    </div>
+                                    <div style="width:24px; height:24px; background:#005ea6; border:1px solid #5aa9e6; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:bold;">B</div>
                                 </div>
-                                <div id="pallpay-card">
-                                    <div class="card-title">Account Balance</div>
-                                    <div class="card-value">Cash: $<span id="cash-value-display">0.0</span></div>
+                                <!-- Dummy Menu -->
+                                <div class="pp-tabs" style="background:#f5f7fa; border-bottom:1px solid #ddd; padding:4px 12px; display:flex; gap:10px; font-size:10px; color:#666;">
+                                    <span class="pp-tab active" data-target="summary" style="cursor:pointer; color:#0070ba; font-weight:bold;">Summary</span>
+                                    <span class="pp-tab" data-target="activity" style="cursor:pointer;">Activity</span>
+                                    <span class="pp-tab" data-target="send" style="cursor:pointer;">Send</span>
+                                    <span class="pp-tab" data-target="help" style="cursor:pointer;">Help</span>
                                 </div>
-                                <div id="pallpay-footer">
-                                    Secure Transaction Verified
+                                <!-- Content Area -->
+                                <div class="pp-content-area" style="flex:1; overflow-y:auto; padding:15px; position:relative;">
+                                    <!-- Summary -->
+                                    <div class="pp-section section-summary">
+                                        <div style="background:#fff; border-radius:6px; border:1px solid #e0e0e0; padding:15px; box-shadow:0 1px 3px rgba(0,0,0,0.05); margin-bottom:15px;">
+                                            <div style="font-size:10px; color:#666; font-family:'Trebuchet MS', sans-serif;">
+                                                <span class="logo-pall" style="font-style:italic; font-weight:bold;">Pall</span><span class="logo-pay" style="font-style:italic; font-weight:bold;">Pay</span> balance
+                                            </div>
+                                            <div style="font-size:24px; color:#333; margin:5px 0;">$<span class="cash-sync-internal">0.00</span></div>
+                                        </div>
+                                        <h5 style="margin:0 0 8px 0; font-size:11px; color:#333;">Recent Activity</h5>
+                                        <div class="pp-activity-short" style="display:flex; flex-direction:column; gap:8px;"></div>
+                                    </div>
+                                    <!-- Other sections hidden by default in CSS or JS toggle -->
                                 </div>
                             </div>
                         </div>
@@ -234,6 +279,53 @@
                             </div>
                         </div>
                     </div>
+                    </div>
+
+                    <div id="launder-panel" class="window desktop-window" style="display:none; z-index: 100; position:absolute; width:380px;">
+                        <div class="title-bar" id="launder-title-bar" style="background: linear-gradient(90deg, #d33c3c, #9c2b2b);">
+                            <div class="title-bar-text">OnionWeb - Digital Money Launderer</div>
+                            <div class="title-bar-controls">
+                                <button aria-label="Minimize" id="btn-minimize-launder"></button>
+                                <button aria-label="Maximize" id="btn-maximize-launder"></button>
+                                <button aria-label="Close"    id="btn-close-launder"></button>
+                            </div>
+                        </div>
+                        <div class="window-body" id="launder-body" style="padding:0; display: flex; flex-direction: column; background:#ece9d8;">
+                            <!-- Red Pastel Header Banner -->
+                            <div style="background:#f2dede; padding:10px; border-bottom:1px solid #ebccd1; display:flex; align-items:center; gap:12px;">
+                                <img src="assets/icon-darknet.svg" style="width:32px; height:32px; filter: drop-shadow(0 0 2px rgba(255,0,0,0.2));" alt="">
+                                <div>
+                                    <h4 style="margin: 0; color:#a94442; font-size:13px;">ONIONWEB LAUNDERING SERVICE</h4>
+                                    <p style="margin: 0; font-size:10px; color:#a94442; opacity:0.8;">Secure. Untraceable. Encrypted.</p>
+                                </div>
+                            </div>
+
+                            <div style="padding:15px;">
+                                <fieldset style="padding: 10px; margin-bottom: 15px; border: 1px solid #ebccd1;">
+                                    <legend style="color:#a94442; font-weight:bold; font-size:11px; padding:0 5px;">Funds Overview</legend>
+                                    <div style="display:flex; justify-content:space-between; margin-bottom:8px; font-size:12px;">
+                                        <span style="color:#666;">Marked (Dirty):</span>
+                                        <span style="color:#d00; font-weight:bold;">$<span id="launder-dirty-balance">0.00</span></span>
+                                    </div>
+                                    <div style="display:flex; justify-content:space-between; font-size:12px;">
+                                        <span style="color:#666;">Retained (Clean):</span>
+                                        <span style="color:#00a000; font-weight:bold;">$<span id="launder-clean-balance">0.00</span></span>
+                                    </div>
+                                </fieldset>
+
+                                <div style="margin-bottom: 15px; background: #fff; padding: 12px; border: 1px solid #ccc; box-shadow: inset 1px 1px 2px #eee;">
+                                    <p style="font-size:11px; color:#555; margin-bottom:10px; border-bottom:1px solid #f2f2f2; padding-bottom:5px;">MIXER STATUS</p>
+                                    <button id="btn-launder-process" style="width: 100%; margin-bottom: 10px; height:28px;">Process Marked Funds (10% Fee)</button>
+                                    <div class="progress-bar-container" style="height:16px;">
+                                        <div id="launder-progress-bar" style="height:100%; width:0%; background: repeating-linear-gradient(90deg, #d9534f, #d9534f 12px, transparent 12px, transparent 14px);"></div>
+                                    </div>
+                                    <p id="launder-status" style="font-size:10px; text-align:center; margin-top:5px; height:12px; color:#a94442;">Status: Active & Secure.</p>
+                                </div>
+
+                                <button id="btn-launder-transfer" style="width: 100%; font-weight: bold; height:32px;" disabled>Push Clean Money to PallPay</button>
+                            </div>
+                        </div>
+                    </div>
 
                 </div><!-- /hackos-window-body -->
 
@@ -252,34 +344,321 @@
                         <button aria-label="Close"    id="btn-pallpay-desktop-close"></button>
                     </div>
                 </div>
-                <div class="window-body" id="pallpay-desktop-body">
-                    <div class="pallpay-content-standalone">
-                        <div class="pallpay-logo-standalone">
-                            <span class="logo-pall">Pall</span><span class="logo-pay">Pay</span>
+                <div class="window-body" id="pallpay-desktop-body" style="padding:0; display:flex; flex-direction:column; background:#fff; height:100%; overflow:hidden;">
+                    <div class="pallpay-app-container" data-instance="desktop" style="display:flex; flex-direction:column; height:100%;">
+                        <!-- PallPay Navbar -->
+                        <div style="background:#0070ba; color:#fff; padding:10px 15px; display:flex; justify-content:space-between; align-items:center;">
+                            <div style="display:flex; align-items:center; gap:8px;">
+                                <img src="assets/icon-pallpay.png" width="24" height="24" alt="">
+                                <span style="font-weight:bold; font-size:16px;">PallPay</span>
+                            </div>
+                            <div style="display:flex; align-items:center; gap:10px;">
+                                <span style="font-size:11px;">User: <strong>BlueCode_Hacker</strong></span>
+                                <div style="width:28px; height:28px; background:#005ea6; border:2px solid #5aa9e6; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:bold;">B</div>
+                            </div>
                         </div>
-                        <div class="pallpay-card-standalone">
-                            <div class="card-title">Account Balance</div>
-                            <div class="card-value">Cash: $<span id="cash-value-desktop-display">0.0</span></div>
+
+                        <!-- Dummy Menu -->
+                        <div class="pp-tabs" style="background:#f5f7fa; border-bottom:1px solid #ddd; padding:5px 15px; display:flex; gap:15px; font-size:11px; color:#666;">
+                            <span class="pp-tab active" data-target="summary" style="cursor:pointer; color:#0070ba; font-weight:bold;">Summary</span>
+                            <span class="pp-tab" data-target="activity" style="cursor:pointer;">Activity</span>
+                            <span class="pp-tab" data-target="send" style="cursor:pointer;">Send & Request</span>
+                            <span class="pp-tab" data-target="wallet" style="cursor:pointer;">Wallet</span>
+                            <span class="pp-tab" data-target="help" style="cursor:pointer;">Help</span>
                         </div>
-                        <div class="pallpay-footer-standalone">
-                            Secure Transaction Verified
+
+                        <div class="pp-content-area" style="flex:1; overflow-y:auto; padding:20px; position:relative;">
+                            <!-- SECTION: SUMMARY -->
+                            <div class="pp-section section-summary">
+                                <div style="background:#fff; border-radius:8px; border:1px solid #e0e0e0; padding:20px; box-shadow:0 2px 5px rgba(0,0,0,0.05); margin-bottom:20px;">
+                                    <div style="font-size:12px; color:#666; margin-bottom:5px; font-family:'Trebuchet MS', sans-serif;">
+                                        <span class="logo-pall" style="font-style:italic; font-weight:bold;">Pall</span><span class="logo-pay" style="font-style:italic; font-weight:bold;">Pay</span> balance
+                                    </div>
+                                    <div style="font-size:32px; font-weight:lighter; color:#333; margin-bottom:20px;">
+                                        $<span class="cash-sync-desktop">0.00</span>
+                                    </div>
+                                    <div style="display:flex; gap:10px;">
+                                        <button class="pp-btn" style="background:#0070ba; color:#fff; border:none; padding:8px 20px; border-radius:20px; font-weight:bold; font-size:12px; cursor:pointer;">Transfer Funds</button>
+                                        <button class="pp-btn" style="background:transparent; color:#0070ba; border:1px solid #0070ba; padding:8px 20px; border-radius:20px; font-weight:bold; font-size:12px; cursor:pointer;">Request</button>
+                                    </div>
+                                </div>
+                                <h4 style="margin:0 0 10px 0; font-size:13px; color:#333;">Recent Activity</h4>
+                                <div class="pp-activity-short" style="display:flex; flex-direction:column; gap:10px;"></div>
+                            </div>
+                        </div>
+
+                        <div style="background:#f7f8f9; padding:8px 15px; font-size:10px; color:#999; border-top:1px solid #eee; display:flex; justify-content:space-between;">
+                            <span>© 1999-2026 PallPay Inc.</span>
+                            <span>Secure Connection Locked</span>
                         </div>
                     </div>
                 </div>
 
             </div><!-- /pallpay-desktop-window -->
 
+            <!-- ════════════════════════════════════════════════════════════
+                 TOPMAIL WINDOW
+                 ════════════════════════════════════════════════════════════ -->
+            <div id="topmail-window" class="window desktop-window" style="display:none;">
+                <div class="title-bar" id="topmail-title-bar">
+                    <div class="title-bar-text">TopMail — Inbox</div>
+                    <div class="title-bar-controls">
+                        <button aria-label="Minimize" id="btn-topmail-minimize"></button>
+                        <button aria-label="Maximize" id="btn-topmail-maximize"></button>
+                        <button aria-label="Close"    id="btn-topmail-close"></button>
+                    </div>
+                </div>
+                <!-- topmail layout -->
+                <div class="window-body" id="topmail-body">
+                    <div id="topmail-layout">
+                        <!-- Left pane: inbox list -->
+                        <div id="topmail-list">
+                            <div id="inbox-header">Inbox</div>
+                            <div id="emails-container">
+                                <!-- JS will populate emails here -->
+                            </div>
+                        </div>
+                        <!-- Right pane: mail view -->
+                        <div id="topmail-view">
+                            <div id="mail-view-headers">
+                                <div><strong>From:</strong> <span id="mail-view-sender"></span></div>
+                                <div><strong>Date:</strong> <span id="mail-view-date"></span></div>
+                                <div><strong>Subject:</strong> <span id="mail-view-subject"></span></div>
+                                <div id="mail-view-attachments-bar" style="display:none;">
+                                    <strong>Attachments:</strong>
+                                    <div id="btn-attachment-download" class="attachment-chip">
+                                        <img id="mail-view-attach-icon" src="assets/icon-hackos.png" alt="" width="16" height="16">
+                                        <span id="mail-view-attach-name">tools.exe</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="mail-view-body">
+                                Select an email to read.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- /topmail-window -->
+
+            <!-- ════════════════════════════════════════════════════════════
+                 INSTALLER DIALOG WINDOW
+                 ════════════════════════════════════════════════════════════ -->
+            <div id="installer-window" class="window desktop-window" style="display:none; z-index: 9999;">
+                <div class="title-bar">
+                    <div class="title-bar-text">Setup — System Tools</div>
+                    <div class="title-bar-controls"></div>
+                </div>
+                <div class="window-body" style="padding: 15px; display: flex; flex-direction: column; gap: 15px;">
+                    <div style="display:flex; align-items:flex-start;">
+                        <img src="assets/icon-hackos.png" style="width:32px; height:32px; margin-right:15px;" alt="">
+                        <div>
+                            <h4 style="margin:0 0 5px 0;">Installing components...</h4>
+                            <p style="margin:0;font-size:11px;">Extracting BlueCode and DarkNet.</p>
+                        </div>
+                    </div>
+                    <div class="progress-bar-container" style="flex-shrink: 0; width: 100%;">
+                        <div id="installer-progress-bar" style="height:100%; width:0%; background: repeating-linear-gradient(90deg, #2b5cd7, #2b5cd7 12px, transparent 12px, transparent 14px);"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ════════════════════════════════════════════════════════════
+                 DOCUMENTS WINDOW
+                 ════════════════════════════════════════════════════════════ -->
+            <div id="documents-window" class="window desktop-window" style="display:none; z-index: 100; width:550px; height:400px; top: 80px; left: 140px;">
+                <div class="title-bar" id="documents-title-bar">
+                    <div class="title-bar-text">Documents</div>
+                    <div class="title-bar-controls">
+                        <button aria-label="Minimize" id="btn-minimize-documents"></button>
+                        <button aria-label="Maximize" id="btn-maximize-documents"></button>
+                        <button aria-label="Close"    id="btn-close-documents"></button>
+                    </div>
+                </div>
+                <div class="window-body" style="padding:0; display:flex; flex-direction:column; background: #ece9d8; height: 100%;">
+                    <div style="padding: 4px; border-bottom: 1px solid #ccc; display:flex; align-items:center; gap: 5px;">
+                        <span style="font-size:11px; margin-left: 5px;">Address: \Documents</span>
+                    </div>
+                    <div style="display:flex; flex:1; overflow:hidden;">
+                        <div style="width: 160px; background: linear-gradient(180deg, #7ba2e7, #638ce0); border-right: 1px solid #777;">
+                            <div style="background: linear-gradient(90deg, #fff, #b7ccee); padding: 4px; font-weight:bold; font-size:11px; color:#003399; margin: 10px; border-radius: 3px 3px 0 0;">
+                                File and Folder Tasks
+                            </div>
+                        </div>
+                        <div id="documents-list" style="flex:1; background:#fff; padding: 15px; display:flex; gap: 20px; align-content: flex-start; flex-wrap: wrap; box-shadow: inset 1px 1px 2px #ccc; overflow-y: auto;">
+                            <!-- Files populate here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ════════════════════════════════════════════════════════════
+                 NOTEPAD WINDOW
+                 ════════════════════════════════════════════════════════════ -->
+            <div id="notepad-window" class="window desktop-window" style="display:none; z-index: 101; width:450px; height:350px; top:120px; left:200px;">
+                <div class="title-bar" id="notepad-title-bar">
+                    <div class="title-bar-text" id="notepad-title">Notepad</div>
+                    <div class="title-bar-controls">
+                        <button aria-label="Minimize" id="btn-minimize-notepad"></button>
+                        <button aria-label="Maximize" id="btn-maximize-notepad"></button>
+                        <button aria-label="Close"    id="btn-close-notepad"></button>
+                    </div>
+                </div>
+                <div class="window-body" style="padding:0; display:flex; flex-direction:column; background: #fff; height: 100%;">
+                    <div style="background:#ece9d8; border-bottom:1px solid #ccc; font-size:11px; padding: 2px 10px;">
+                        File &nbsp; Edit &nbsp; Format &nbsp; View &nbsp; Help
+                    </div>
+                    <textarea id="notepad-content" style="flex:1; margin:0; border:none; resize:none; padding: 10px; font-family:'Courier New', monospace; font-size:13px; outline:none; background: #fff; color: #000;" readonly></textarea>
+                </div>
+            </div>
+
+            <!-- ════════════════════════════════════════════════════════════
+                 CALCULATOR XP - REBUILT
+                 ════════════════════════════════════════════════════════════ -->
+            <div id="calc-window" class="window desktop-window" style="display:none; z-index: 102; width:250px; height:350px; top:150px; left:250px;">
+                <div class="title-bar" id="calc-title-bar">
+                    <div class="title-bar-text">Calculator</div>
+                    <div class="title-bar-controls">
+                        <button aria-label="Minimize" id="btn-minimize-calc"></button>
+                        <button aria-label="Close"    id="btn-close-calc" onclick="closeDesktopWindow('calc')"></button>
+                    </div>
+                </div>
+                <div class="window-body" style="margin:0; padding:12px; background:#ece9d8; display:flex; flex-direction:column; gap:12px; height:calc(100% - 30px); box-sizing:border-box;">
+                    <!-- Display Area -->
+                    <div id="calc-display" style="background:#fff; border:2px inset #fff; padding:6px 10px; text-align:right; font-family:'Tahoma', sans-serif; font-size:22px; height:45px; display:flex; align-items:center; justify-content:flex-end; box-sizing:border-box;">0</div>
+                    
+                    <!-- Controls Panel -->
+                    <div style="flex:1; display:flex; flex-direction:column; gap:8px;">
+                        <!-- Utility row -->
+                        <div style="display:flex; gap:6px; height:32px;">
+                            <button class="xp-calc-btn" style="flex:1; color:red;" onclick="calcBackspace()">Back</button>
+                            <button class="xp-calc-btn" style="flex:1; color:red;" onclick="calcClearEntry()">CE</button>
+                            <button class="xp-calc-btn" style="flex:1; color:red;" onclick="calcClear()">C</button>
+                        </div>
+                        
+                        <!-- Main buttons grid -->
+                        <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:6px; flex:1;">
+                            <button class="xp-calc-btn" onclick="calcNum(7)">7</button>
+                            <button class="xp-calc-btn" onclick="calcNum(8)">8</button>
+                            <button class="xp-calc-btn" onclick="calcNum(9)">9</button>
+                            <button class="xp-calc-btn" style="color:red;" onclick="calcOp('/')">/</button>
+                            
+                            <button class="xp-calc-btn" onclick="calcNum(4)">4</button>
+                            <button class="xp-calc-btn" onclick="calcNum(5)">5</button>
+                            <button class="xp-calc-btn" onclick="calcNum(6)">6</button>
+                            <button class="xp-calc-btn" style="color:red;" onclick="calcOp('*')">*</button>
+                            
+                            <button class="xp-calc-btn" onclick="calcNum(1)">1</button>
+                            <button class="xp-calc-btn" onclick="calcNum(2)">2</button>
+                            <button class="xp-calc-btn" onclick="calcNum(3)">3</button>
+                            <button class="xp-calc-btn" style="color:red;" onclick="calcOp('-')">-</button>
+                            
+                            <button class="xp-calc-btn" onclick="calcNum(0)">0</button>
+                            <button class="xp-calc-btn" onclick="calcDot()">.</button>
+                            <button class="xp-calc-btn" style="color:red;" onclick="calcEqual()">=</button>
+                            <button class="xp-calc-btn" style="color:red;" onclick="calcOp('+')">+</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div><!-- /window-container -->
 
         <!-- ── XP Taskbar ── -->
+            <!-- ── START MENU ── -->
+            <div id="start-menu" style="display:none; position:absolute; bottom:30px; left:0; width:380px; z-index:20000; font-family:'Tahoma', sans-serif; box-shadow: 2px -2px 10px rgba(0,0,0,0.5); border-radius: 5px 5px 0 0; overflow:hidden; flex-direction:column; border:1px solid #0053e1;">
+                <!-- Top Header -->
+                <div style="background: linear-gradient(180deg, #1d5ed1 0%, #3a81f1 100%); padding:8px 12px; display:flex; align-items:center; gap:10px; border-bottom:1px solid #104193;">
+                    <div style="width:42px; height:42px; border:2px solid #fff; border-radius:4px; overflow:hidden; background:#fff;">
+                        <img src="assets/icon-darknet.svg" width="100%" height="100%" style="object-fit:cover;">
+                    </div>
+                    <span style="color:#fff; font-weight:bold; font-size:14px; text-shadow:1px 1px 1px #000;">BlueCode_Hacker</span>
+                </div>
+                
+                <!-- Main Content (Two Columns) -->
+                <div style="display:flex; background:#fff;">
+                    <!-- Left Column (Apps) -->
+                    <div style="flex:1.2; padding:8px; display:flex; flex-direction:column; gap:2px; border-right:1px solid #91b0df;">
+                        <div class="start-menu-item" onclick="openDesktopWindow('topmail'); closeStartMenu();">
+                            <img src="assets/icon-topmail.svg" width="28">
+                            <div>
+                                <div style="font-weight:bold; font-size:11px;">TopMail Client</div>
+                                <div style="font-size:9px; color:#888;">E-mail Client</div>
+                            </div>
+                        </div>
+                        <div class="start-menu-item" style="opacity:0.6; cursor:default;">
+                            <img src="assets/icon-darknet.svg" width="28" style="filter:grayscale(1);">
+                            <div>
+                                <div style="font-weight:bold; font-size:11px;">Internet Explorer</div>
+                                <div style="font-size:9px; color:#888;">The web is down.</div>
+                            </div>
+                        </div>
+                        <div style="height:1px; background:#eee; margin:5px 0;"></div>
+                        <div class="start-menu-item" onclick="openDesktopWindow('documents'); renderDocumentsList(); closeStartMenu();">
+                            <img src="assets/icon-documents.svg" width="28">
+                            <span style="font-size:11px;">My Documents</span>
+                        </div>
+                        <div class="start-menu-item" onclick="openDesktopWindow('pallpay-desktop'); updatePallPayActivity(); closeStartMenu();">
+                            <img src="assets/icon-pallpay.png" width="28">
+                            <span style="font-size:11px;">PallPay Wallet</span>
+                        </div>
+                        <div class="start-menu-item" style="opacity:0.5; cursor:default;">
+                            <img src="assets/icon-trash.png" width="28">
+                            <span style="font-size:11px;">Recycle Bin</span>
+                        </div>
+                        <div class="start-menu-item" onclick="openDesktopWindow('calc'); updateCalcDisplay(); closeStartMenu();">
+                            <img src="assets/icon-calculator.png" width="28">
+                            <span style="font-size:11px;">Calculator</span>
+                        </div>
+                        <div style="margin-top:auto; padding:10px; border-top:1px solid #eee; display:flex; align-items:center; justify-content:center; gap:5px; font-weight:bold; font-size:11px; cursor:pointer;" class="start-menu-item">
+                            All Programs <span style="color:#d39800;">►</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Right Column (System) -->
+                    <div style="flex:1; background:#d3e5fa; padding:8px; display:flex; flex-direction:column; gap:8px;">
+                        <div class="start-menu-system-item" onclick="openDesktopWindow('documents'); renderDocumentsList(); closeStartMenu();">My Documents</div>
+                        <div class="start-menu-system-item">My Pictures</div>
+                        <div class="start-menu-system-item">My Music</div>
+                        <div class="start-menu-system-item">My Computer</div>
+                        <div style="height:1px; background:#91b0df; margin:2px 0;"></div>
+                        <div class="start-menu-system-item">Control Panel</div>
+                        <div class="start-menu-system-item">Set Program Access</div>
+                        <div class="start-menu-system-item">Connect To</div>
+                        <div class="start-menu-system-item">Printers and Faxes</div>
+                        <div style="height:1px; background:#91b0df; margin:2px 0;"></div>
+                        <div class="start-menu-system-item">Help and Support</div>
+                        <div class="start-menu-system-item">Search</div>
+                        <div class="start-menu-system-item">Run...</div>
+                    </div>
+                </div>
+                
+                <!-- Bottom Bar -->
+                <div style="background: linear-gradient(180deg, #3a81f1 0%, #1d5ed1 100%); padding:8px 12px; display:flex; justify-content:flex-end; gap:12px; border-top:1px solid #104193;">
+                    <div style="display:flex; align-items:center; gap:6px; color:#fff; font-size:11px; font-weight:bold; cursor:pointer; padding:2px 6px;" class="taskbar-btn-hover">
+                        <img src="assets/icon-bell.svg" width="16" style="filter: brightness(0) invert(1);"> Log Off
+                    </div>
+                    <div style="display:flex; align-items:center; gap:6px; color:#fff; font-size:11px; font-weight:bold; cursor:pointer; padding:2px 6px;" class="taskbar-btn-hover">
+                        <div style="width:16px; height:16px; background:red; border-radius:3px; display:flex; align-items:center; justify-content:center; font-size:10px;">I</div> Turn Off Computer
+                    </div>
+                </div>
+            </div>
+
         <div id="xp-taskbar">
-            <button id="start-button">
+            <button id="start-button" onclick="toggleStartMenu()">
                 <img src="assets/logo.png" alt="" class="start-logo">
                 <span>Bluecode</span>
             </button>
             <div id="taskbar-divider"></div>
             <div id="taskbar-apps"></div>
-            <div id="system-tray">
+            <div id="system-tray" style="position:relative; display:flex; align-items:center;">
+                <button id="btn-notifications" class="tray-icon-btn">
+                    <img src="assets/icon-bell.svg" alt="Notifications">
+                    <span id="unread-count">!</span>
+                </button>
+                <div id="notification-panel" style="display:none; position:absolute; bottom:30px; right:0px; width:220px; background:#ffffe1; border:1px solid #000; box-shadow:2px 2px 5px rgba(0,0,0,0.5); padding:5px; flex-direction:column; z-index:10000; font-family:'Tahoma',sans-serif; text-align:left; cursor:default;">
+                    <div style="font-weight:bold; font-size:11px; padding:3px; border-bottom:1px solid #ccc; margin-bottom:5px;">Recent Notifications</div>
+                    <div id="notification-list" style="display:flex; flex-direction:column; max-height:180px; overflow-y:auto; font-size:11px;"></div>
+                </div>
                 <span id="system-clock"></span>
             </div>
             <!-- Show Desktop Button (far right) -->
