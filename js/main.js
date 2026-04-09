@@ -161,9 +161,7 @@ const btnTermMax       = document.getElementById('btn-maximize-terminal');
 const hackosWindowBody = document.getElementById('hackos-window-body');
 const windowTaskbar    = document.getElementById('window-taskbar');
 
-const walletPanel      = document.getElementById('wallet-panel');
-const walletTitleBar   = document.getElementById('wallet-title-bar');
-const btnWalletMax     = document.getElementById('btn-maximize-wallet');
+
 
 let terminalInterval = null;
 
@@ -328,89 +326,7 @@ function saveNormalGeometry() {
     normalPos.height = parseInt(terminalPanel.style.height) || 440;
 }
 
-// ─── Sub-Window: Wallet inside HackOS ─────────────────────────────────────────
-let walletState = 'hidden';
-let walletNormalPos = { top: 60, left: 100, width: 400, height: 300 };
 
-function applyWalletNormalGeometry() {
-    walletPanel.style.top    = walletNormalPos.top    + 'px';
-    walletPanel.style.left   = walletNormalPos.left   + 'px';
-    walletPanel.style.width  = walletNormalPos.width  + 'px';
-    walletPanel.style.height = walletNormalPos.height + 'px';
-}
-
-function openWallet() {
-    if (walletState !== 'hidden') {
-        if (walletState === 'minimized') restoreWalletFromMinimize();
-        return;
-    }
-    walletState = 'normal';
-    walletPanel.classList.remove('is-maximized');
-    walletPanel.style.display = 'flex';
-    btnWalletMax.setAttribute('aria-label', 'Maximize');
-    applyWalletNormalGeometry();
-    updateCashDisplay();
-    if (document.activeElement) document.activeElement.blur();
-    saveGame();
-}
-
-function closeWallet() {
-    walletState = 'hidden';
-    walletPanel.style.display = 'none';
-    walletPanel.classList.remove('is-maximized');
-    removeInternalTaskbarTab('tab-wallet');
-    saveGame();
-}
-
-function minimizeWallet() {
-    if (walletState === 'hidden') return;
-    if (walletState === 'normal') saveWalletNormalGeometry();
-    if (walletState === 'maximized') {
-        walletPanel.classList.remove('is-maximized');
-        btnWalletMax.setAttribute('aria-label', 'Maximize');
-    }
-    walletState = 'minimized';
-    walletPanel.style.display = 'none';
-    addInternalTaskbarTab('tab-wallet', '💳 PallPay', restoreWalletFromMinimize);
-    saveGame();
-}
-
-function restoreWalletFromMinimize() {
-    removeInternalTaskbarTab('tab-wallet');
-    walletState = 'normal';
-    walletPanel.classList.remove('is-maximized');
-    walletPanel.style.display = 'flex';
-    btnWalletMax.setAttribute('aria-label', 'Maximize');
-    applyWalletNormalGeometry();
-    if (document.activeElement) document.activeElement.blur();
-    saveGame();
-}
-
-function toggleMaximizeWallet() {
-    if (walletState === 'maximized') {
-        walletState = 'normal';
-        walletPanel.classList.remove('is-maximized');
-        btnWalletMax.setAttribute('aria-label', 'Maximize');
-        applyWalletNormalGeometry();
-    } else if (walletState === 'normal') {
-        saveWalletNormalGeometry();
-        walletState = 'maximized';
-        walletPanel.classList.add('is-maximized');
-        btnWalletMax.setAttribute('aria-label', 'Restore');
-        walletPanel.style.top    = '0';
-        walletPanel.style.left   = '0';
-        walletPanel.style.width  = '100%';
-        walletPanel.style.height = '100%';
-    }
-    saveGame();
-}
-
-function saveWalletNormalGeometry() {
-    walletNormalPos.top    = parseInt(walletPanel.style.top)    || 60;
-    walletNormalPos.left   = parseInt(walletPanel.style.left)   || 100;
-    walletNormalPos.width  = parseInt(walletPanel.style.width)  || 400;
-    walletNormalPos.height = parseInt(walletPanel.style.height) || 300;
-}
 
 // ─── Internal Taskbar Tabs (inside HackOS window) ─────────────────────────────
 function addInternalTaskbarTab(id, label, restoreFn) {
@@ -434,10 +350,8 @@ document.getElementById('btn-minimize-terminal').addEventListener('click', minim
 document.getElementById('btn-maximize-terminal').addEventListener('click', toggleMaximize);
 document.getElementById('btn-close-terminal').addEventListener('click', closeTerminal);
 
-document.getElementById('btn-open-wallet').addEventListener('click', openWallet);
-document.getElementById('btn-minimize-wallet').addEventListener('click', minimizeWallet);
-document.getElementById('btn-maximize-wallet').addEventListener('click', toggleMaximizeWallet);
-document.getElementById('btn-close-wallet').addEventListener('click', closeWallet);
+// Wallet button inside BlueCode now opens the desktop PallPay window
+document.getElementById('btn-open-wallet').addEventListener('click', () => openDesktopWindow('pallpay-desktop'));
 
 // ─── Sub-Window Drag Logic (Terminal only now) ────────────────────────────────
 let dragActive = false;
@@ -460,18 +374,12 @@ function startSubDrag(e, panel, state, normalPosRef) {
 }
 
 terminalTitleBar.addEventListener('mousedown', e => startSubDrag(e, terminalPanel, terminalState, normalPos));
-walletTitleBar.addEventListener('mousedown', e => startSubDrag(e, walletPanel, walletState, walletNormalPos));
 
 document.addEventListener('mousemove', e => {
     if (!dragActive || !dragTarget) return;
 
-    // Determine parent bounds
-    let par;
-    if (dragTarget === terminalPanel || dragTarget === walletPanel) {
-        par = hackosWindowBody.getBoundingClientRect();
-    } else {
-        par = windowContainer.getBoundingClientRect();
-    }
+    // Terminal drags within HackOS window body
+    const par = hackosWindowBody.getBoundingClientRect();
 
     let newLeft = e.clientX - par.left - dragOffset.x;
     let newTop  = e.clientY - par.top  - dragOffset.y;
@@ -568,7 +476,6 @@ function closeDesktopWindow(appId) {
 
     if (appId === 'hackos') {
         closeTerminal();
-        closeWallet();
     }
 
     win.state = 'hidden';
@@ -1124,11 +1031,9 @@ function saveGame() {
     const saveData = {
         gameState,
         desktopWindows: windowStates,
-        ui: {
+        subWindows: {
             terminalState,
             normalPos,
-            walletState,
-            walletNormalPos,
         },
     };
     localStorage.setItem('hackOS_save', JSON.stringify(saveData));
@@ -1174,11 +1079,11 @@ function loadGame() {
         }
 
         // Restore sub-window states (inside HackOS)
-        if (data.subWindows) {
-            normalPos = data.subWindows.normalPos || normalPos;
-            walletNormalPos = data.subWindows.walletNormalPos || walletNormalPos;
+        const subData = data.subWindows || data.ui;
+        if (subData) {
+            normalPos = subData.normalPos || normalPos;
 
-            const savedTermState = data.ui.terminalState;
+            const savedTermState = subData.terminalState;
             if (savedTermState === 'normal') {
                 openTerminal();
             } else if (savedTermState === 'maximized') {
@@ -1187,17 +1092,6 @@ function loadGame() {
             } else if (savedTermState === 'minimized') {
                 openTerminal();
                 minimizeTerminal();
-            }
-
-            const savedWalletState = data.subWindows.walletState;
-            if (savedWalletState === 'normal') {
-                openWallet();
-            } else if (savedWalletState === 'maximized') {
-                openWallet();
-                toggleMaximizeWallet();
-            } else if (savedWalletState === 'minimized') {
-                openWallet();
-                minimizeWallet();
             }
         }
     } catch (e) {
