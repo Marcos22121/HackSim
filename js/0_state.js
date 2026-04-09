@@ -60,6 +60,15 @@ const gameState = {
     documentsUnlocked: [],
     transactions: [],
     storyProgress: 0, // 0 = Intro, 1 = Tools unlocked
+    pcParts: {
+        cpu:  { level: 0, basePrice: 25, multiplier: 1.30, name: "Processor" },
+        gpu:  { level: 0, basePrice: 50, multiplier: 1.40, name: "Graphics Card" },
+        ram1: { level: 0, basePrice: 15, multiplier: 1.20, name: "Memory Slot 1" },
+        ram2: { level: 0, basePrice: 15, multiplier: 1.20, name: "Memory Slot 2" },
+        psu:  { level: 0, basePrice: 20, multiplier: 1.25, name: "Power Supply" },
+        mb:   { level: 0, basePrice: 35, multiplier: 1.35, name: "Motherboard" },
+        case: { level: 0, basePrice: 10, multiplier: 1.15, name: "Gabinete" }
+    }
 };
 
 function applyStoryState() {
@@ -181,6 +190,14 @@ function loadGame() {
             gameState.documentsUnlocked = data.gameState.documentsUnlocked || [];
             gameState.transactions = data.gameState.transactions || [];
             gameState.storyProgress = data.gameState.storyProgress || 0;
+            if (data.gameState.pcParts) {
+                // Merge loaded parts carefully to preserve structure if updates happen
+                for (let key in data.gameState.pcParts) {
+                    if (gameState.pcParts[key]) {
+                        gameState.pcParts[key].level = data.gameState.pcParts[key].level || 0;
+                    }
+                }
+            }
             updateHashDisplay();
             updateCashDisplay();
             updateLaunderDisplay();

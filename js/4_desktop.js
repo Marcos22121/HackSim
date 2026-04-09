@@ -320,6 +320,16 @@ if (installerWindow) {
         { top: window.innerHeight/2 - 75, left: window.innerWidth/2 - 175, width: 350, height: 150 });
 }
 
+const bluemiumWindow   = document.getElementById('bluemium-window');
+const bluemiumTitleBar = document.getElementById('bluemium-title-bar');
+if (bluemiumWindow && bluemiumTitleBar) {
+    registerDesktopWindow('bluemium', bluemiumWindow, bluemiumTitleBar,
+        { top: 40, left: 80, width: 1000, height: 640 });
+    bluemiumTitleBar.addEventListener('mousedown', e => initDesktopDrag('bluemium', e));
+    bluemiumWindow.addEventListener('mousedown', () => focusDesktopWindow('bluemium'));
+    bluemiumTitleBar.addEventListener('dblclick', () => toggleMaximizeDesktopWindow('bluemium'));
+}
+
 // Internal window drag wiring (needs items from terminal.js and finanzas.js)
 const terminalTitleBar = document.getElementById('terminal-title-bar');
 if (terminalTitleBar) terminalTitleBar.addEventListener('mousedown', e => startSubDrag(e, terminalPanel, terminalState, normalPos));
@@ -346,7 +356,10 @@ const controlMap = {
     'close-documents':    () => closeDesktopWindow('documents'),
     'minimize-notepad':   () => minimizeDesktopWindow('notepad'),
     'maximize-notepad':   () => toggleMaximizeDesktopWindow('notepad'),
-    'close-notepad':      () => closeDesktopWindow('notepad')
+    'close-notepad':      () => closeDesktopWindow('notepad'),
+    'bluemium-minimize':  () => minimizeDesktopWindow('bluemium'),
+    'bluemium-maximize':  () => toggleMaximizeDesktopWindow('bluemium'),
+    'bluemium-close':     () => closeDesktopWindow('bluemium'),
 };
 
 Object.entries(controlMap).forEach(([id, fn]) => {
@@ -373,6 +386,8 @@ if (desktopIconsArea) {
             if (app === 'pallpay') { openDesktopWindow('pallpay-desktop'); if (typeof updatePallPayActivity === 'function') updatePallPayActivity(); }
             if (app === 'topmail') openDesktopWindow('topmail');
             if (app === 'documents') { openDesktopWindow('documents'); if (typeof renderDocumentsList === 'function') renderDocumentsList(); }
+            if (app === 'darknet')   openDesktopWindow('darknet');
+            if (app === 'bluemium')  { openDesktopWindow('bluemium'); if (typeof browserNavigateTo === 'function') browserNavigateTo('newtab'); }
             lastClickTime = 0;
             lastClickTarget = null;
         } else {
