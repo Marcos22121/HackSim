@@ -68,6 +68,7 @@ const gameState = {
     documentsUnlocked: [],
     transactions: [],
     storyProgress: 0, // 0 = Intro, 1 = Tools unlocked
+    addonInstalled: false, // Tracks if Money Laundering is unlocked
     pcParts: {
         cpu:  { level: 0, basePrice: 25, multiplier: 1.30, name: "Processor" },
         gpu:  { level: 0, basePrice: 50, multiplier: 1.40, name: "Graphics Card" },
@@ -78,9 +79,11 @@ const gameState = {
         case: { level: 0, basePrice: 10, multiplier: 1.15, name: "Gabinete" }
     },
     // Rent system
-    lastRentPaidDay: 0,    // Day when rent was last paid
-    rentDueDay: 7,         // Next day rent is due
-    rentOwed: 0,           // Current unpaid rent amount
+    lastRentPaidDay: 0,
+    rentDueDay: 7,
+    rentOwed: 0,
+    // Loan system
+    activeLoan: null, // { amount, dayTaken, dueDateDay, paid }
 };
 
 function applyStoryState() {
@@ -224,9 +227,11 @@ function loadGame() {
             gameState.transactions = data.gameState.transactions || [];
             gameState.storyProgress = data.gameState.storyProgress || 0;
             gameState.currentDay    = data.gameState.currentDay    || 1;
+            gameState.addonInstalled = data.gameState.addonInstalled || false;
             gameState.lastRentPaidDay = data.gameState.lastRentPaidDay || 0;
             gameState.rentDueDay    = data.gameState.rentDueDay    || 7;
             gameState.rentOwed      = data.gameState.rentOwed      || 0;
+            gameState.activeLoan    = data.gameState.activeLoan    || null;
             if (data.gameState.pcParts) {
                 // Merge loaded parts carefully to preserve structure if updates happen
                 for (let key in data.gameState.pcParts) {
@@ -239,6 +244,7 @@ function loadGame() {
             updateCashDisplay();
             updateLaunderDisplay();
             if (typeof updatePallPayActivity === 'function') updatePallPayActivity();
+            if (typeof updateLoanUI === 'function') updateLoanUI();
             applyStoryState();
         }
 

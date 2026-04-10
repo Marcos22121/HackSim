@@ -1,11 +1,7 @@
-ahora vamos a implementar una mecanica que va a cambiar bastante el gameplay del juego. lo primero que vamos a hacer es un sistema de dias
-basicamente vamos a hacer una pantalla principal que va a ser antes del escritorio, que simularia la pc en un escritorio, tendremos del lado izquierdo
-una especie de pizarra donde dira Day 1, day 2, etc y abajo la fecha (El dia 1 comienza el 1 de mayo de 2001) a la derecha bamos a tener una caja
-que va a simular la pc con un boton tipo burbuhja en la pc de color verde que simulara el boton de prendido, al clickear el boton de prendido de la caja vertical gris
-(pc) se va a hacer un efecto de flash blanco y apárecera la pantalla de login que ya tenemos y entraremos ya en el escritorio que ya tenemos en el dia 1.
-El dia durara 15 minutos reales, y en el juego se simulara arrancando desde las 06:00 AM, y arrancara en el dia 1, a los 15 minutos ya seran las 23:00
-a las 23:00 se freezea el tiempo y aparecera un mensaje que dice que las aplicaciones ilegales quedan cerradas: Bluecode ya no se puede acceder, darknet tampocoi
-solamente se puede entrar al Bluemium (Navegador web) topmail, explorador de archivos y pallpay, pero no podras entrar a interfaces para decodificar ni generar mas hash.
-aparecera un mensaje arriba de todo de forma no muy molesta, pero pasivamente estatica que diga "Los servidores se restauraran mañana a las 6 am"
-ahi lo que tenes que hacer es darle a el boton de Bluecode (verde) y a turn off computer, ahi se apaga la pc con algun efecto de shutting down y volves a la pestaña inicial del juego
-donde se ve la pizarra en el dia 2 y la fecha 2 de mayo de 2001, y se repite el ciclo. 
+en pallpay quiero que donde dice help y todo eso agregues una nueva 
+seccion q se  llame Loans, al clickear abrira la seccion de prestamos 
+que se vera como una pagina prestamista del 2000 super realista  de windows xp 
+donde podremos elegir en un textfield el dinero que le solicitamos de prestamo
+ al banco, el minimo seria 500$ y el maximo 10.000$, al clickear en pedir prestamo
+ te sale una sub ventana para confirmarlo con botones d 
+windows xp todo, todo siempre diseño windows xp con los assets q tenemos. 

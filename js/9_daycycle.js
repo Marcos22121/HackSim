@@ -113,6 +113,9 @@ function startDayAfterLogin() {
     setTimeout(() => {
         startDayCycle();
 
+        // Check for loan default FIRST (before rent, before anything)
+        if (typeof checkLoanDefault === 'function') checkLoanDefault();
+
         // Check for rent email 2 seconds after desktop appears
         setTimeout(() => {
             if (typeof checkAndSendRentEmail === 'function') checkAndSendRentEmail();
