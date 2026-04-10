@@ -54,7 +54,7 @@ function playMailSound() {
 }
 
 document.addEventListener('click', e => {
-    if (e.target.tagName === 'BUTTON') playClick();
+    if (e.target.closest('button')) playClick();
 });
 
 const gameState = {
