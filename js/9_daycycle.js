@@ -46,7 +46,11 @@ window.getInGameDateStr = getInGameDateStr;
 
 function getInGameTime() {
     if (!dayStartTimestamp) return { h: INGAME_START_HOUR, m: 0, pct: 0 };
-    const elapsed = Date.now() - dayStartTimestamp;
+    
+    // Add previously saved elapsed time for this day (since last Log Off) if any
+    const baseElapsed = (typeof gameState !== 'undefined' && gameState.elapsedTimeInDay) ? gameState.elapsedTimeInDay : 0;
+    const elapsed = (Date.now() - dayStartTimestamp) + baseElapsed;
+    
     const pct     = Math.min(elapsed / REAL_DAY_MS, 1);
     const totalMinutes = Math.floor(pct * INGAME_HOURS_TOTAL * 60);
     const h = INGAME_START_HOUR + Math.floor(totalMinutes / 60);
@@ -182,6 +186,7 @@ function startDayAfterLogin() {
         // Check for rent email 2 seconds after desktop appears
         setTimeout(() => {
             if (typeof checkAndSendRentEmail === 'function') checkAndSendRentEmail();
+            if (typeof checkAndSendRentReminderEmail === 'function') checkAndSendRentReminderEmail();
         }, 2000);
     }, 4000);
 }
@@ -191,6 +196,11 @@ function startDayCycle() {
     stopDayCycle();
     isNightLocked    = false;
     dayStartTimestamp = Date.now();
+    
+    // Start daily background music with 3s delay (after boot sound)
+    setTimeout(() => {
+        if (typeof playBackgroundMusic === 'function') playBackgroundMusic();
+    }, 3000);
 
     // Update clock immediately
     tickDayCycle();
@@ -310,6 +320,15 @@ function closeIllegalWindows() {
     });
 }
 
+function closeAllWindows() {
+    const ALL_APPS = [...ILLEGAL_APPS, ...SAFE_APPS, 'terminal']; // add any others just in case
+    ALL_APPS.forEach(appId => {
+        if (typeof closeDesktopWindow === 'function') {
+            closeDesktopWindow(appId);
+        }
+    });
+}
+
 // ─── Shutdown PC ──────────────────────────────────────────────────────────────
 function shutdownPC() {
     const shutdownEl = document.getElementById('shutdown-overlay');
@@ -329,8 +348,15 @@ function shutdownPC() {
         // Advance day
         if (typeof gameState !== 'undefined') {
             gameState.currentDay = (gameState.currentDay || 1) + 1;
+            gameState.elapsedTimeInDay = 0; // Reset time for the new day
             if (typeof saveGame === 'function') saveGame();
         }
+
+        // Close ALL apps/windows to prepare for next day
+        closeAllWindows();
+
+        // Stop background music
+        if (typeof stopBackgroundMusic === 'function') stopBackgroundMusic();
 
         // Hide desktop
         if (desktopEl) desktopEl.style.display = 'none';
@@ -353,3 +379,36 @@ window.powerOnPC    = powerOnPC;
 window.shutdownPC   = shutdownPC;
 window.showLobby    = showLobby;
 window.startDayCycle = startDayCycle;
+
+window.logOffToMainMenu = function() {
+    // Check if day is currently active and running
+    if (dayStartTimestamp && typeof gameState !== 'undefined') {
+        if (!gameState.elapsedTimeInDay) gameState.elapsedTimeInDay = 0;
+        // Accumulate elapsed time since PC turned on today
+        gameState.elapsedTimeInDay += (Date.now() - dayStartTimestamp);
+        dayStartTimestamp = null;
+    }
+
+    // Stop loops and lock timers
+    stopDayCycle();
+
+    // Stop background music
+    if (typeof stopBackgroundMusic === 'function') stopBackgroundMusic();
+
+    // Close all apps
+    closeAllWindows();
+
+    // Persist immediately
+    if (typeof saveGame === 'function') saveGame();
+
+    // Visual cleanup: hide desktop, hide lobby
+    const desktopEl = document.getElementById('xp-desktop');
+    const lobbyEl   = document.getElementById('lobby-screen');
+    if (desktopEl) desktopEl.style.display = 'none';
+    if (lobbyEl)   lobbyEl.style.display = 'none';
+
+    // Show Main Menu by explicitly clearing the session state
+    sessionStorage.removeItem('mainMenuShown');
+    const mmOverlay = document.getElementById('main-menu-overlay');
+    if (mmOverlay) mmOverlay.style.display = 'flex';
+};

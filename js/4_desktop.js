@@ -44,6 +44,10 @@ function openDesktopWindow(appId) {
     win.state = 'normal';
     win.windowEl.classList.remove('is-maximized');
     win.windowEl.style.display = 'flex';
+    
+    // Clear any manual transforms (like from centering in Main Menu)
+    win.windowEl.style.transform = 'none';
+    
     applyDesktopWindowGeometry(appId);
     focusDesktopWindow(appId);
     addDesktopTaskbarTab(appId);
@@ -68,6 +72,11 @@ function closeDesktopWindow(appId) {
     if (appId === 'terminal') {
         if (typeof stopAmbientStream === 'function') stopAmbientStream();
         if (typeof deactivateTyping === 'function') deactivateTyping();
+    }
+    
+    if (appId === 'settings') {
+        const blocker = document.getElementById('mm-blocker');
+        if (blocker) blocker.style.display = 'none';
     }
 
     win.state = 'hidden';
@@ -99,6 +108,10 @@ function restoreDesktopWindow(appId) {
     win.state = 'normal';
     win.windowEl.classList.remove('is-maximized');
     win.windowEl.style.display = 'flex';
+    
+    // Clear any manual transforms (like from centering in Main Menu)
+    win.windowEl.style.transform = 'none';
+
     applyDesktopWindowGeometry(appId);
     focusDesktopWindow(appId);
     updateDesktopTaskbarTab(appId);
@@ -156,6 +169,7 @@ const appTabConfig = {
     'documents': { label: 'Documents', icon: './assets/icon-documents.svg' },
     'notepad': { label: 'Notepad', icon: './assets/icon-documents.svg' },
     'bluemium': { label: 'Bluemium', icon: './assets/icon-bluemium.png' },
+    'settings': { label: 'Settings', icon: './assets/icon-hackos.png' },
 };
 
 function addDesktopTaskbarTab(appId) {
@@ -341,6 +355,16 @@ if (bluemiumWindow && bluemiumTitleBar) {
     bluemiumTitleBar.addEventListener('dblclick', () => toggleMaximizeDesktopWindow('bluemium'));
 }
 
+const settingsWindow = document.getElementById('settings-window');
+const settingsTitleBar = document.getElementById('settings-title-bar');
+if (settingsWindow && settingsTitleBar) {
+    registerDesktopWindow('settings', settingsWindow, settingsTitleBar,
+        { top: window.innerHeight / 2 - 175, left: window.innerWidth / 2 - 175, width: 350, height: 350 });
+    settingsTitleBar.addEventListener('mousedown', e => initDesktopDrag('settings', e));
+    // NOTE: no mousedown→focusDesktopWindow listener here intentionally —
+    // focusDesktopWindow resets z-index to a low value which breaks display when in Main Menu context
+}
+
 
 // ─── Control Buttons ──────────────────────────────────────────────────────────
 const controlMap = {
@@ -374,6 +398,8 @@ const controlMap = {
     'bluemium-minimize': () => minimizeDesktopWindow('bluemium'),
     'bluemium-maximize': () => toggleMaximizeDesktopWindow('bluemium'),
     'bluemium-close': () => closeDesktopWindow('bluemium'),
+    'settings-minimize': () => minimizeDesktopWindow('settings'),
+    'settings-close': () => closeDesktopWindow('settings'),
 };
 
 Object.entries(controlMap).forEach(([id, fn]) => {

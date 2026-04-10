@@ -5,6 +5,7 @@
 'use strict';
 
 // ─── Initializer & Global Vars ────────────────────────────────────────────────
+window.CURRENT_SAVE_SLOT = 1;
 window.OS_USERNAME = 'BlueCode_Hacker';
 
 fetch('/api/username')
@@ -68,8 +69,42 @@ function playMailSound() {
     mailSound.play().catch(() => {});
 }
 
+// ─── Background Music ──────────────────────────────────────────────────────────
+const bgMusic = new Audio('./SFX/music.mp3');
+bgMusic.loop   = true;
+bgMusic.volume = 0.05;
+
+function playBackgroundMusic() {
+    bgMusic.currentTime = 0;
+    bgMusic.play().catch(() => {});
+}
+
+function stopBackgroundMusic() {
+    bgMusic.pause();
+    bgMusic.currentTime = 0;
+}
+
+function updateBGMVolume(val) {
+    const vol = parseFloat(val) / 100;
+    bgMusic.volume = vol;
+    const label = document.getElementById('settings-volume-value');
+    if (label) label.textContent = `${Math.round(val)}%`;
+}
+
+window.updateBGMVolume = updateBGMVolume;
+
 document.addEventListener('click', e => {
-    if (e.target.closest('button')) playClick();
+    const target = e.target;
+    if (target.closest('button') || 
+        target.closest('.document-item') || 
+        target.closest('.attachment-chip') || 
+        target.closest('.desktop-icon') ||
+        target.closest('.start-menu-item') ||
+        target.closest('.start-menu-system-item') ||
+        target.closest('.pp-tab') ||
+        target.closest('.bluemium-quicklink')) {
+        playClick();
+    }
 });
 
 const gameState = {
@@ -210,6 +245,7 @@ function saveGame() {
     const windowStates = {};
     if (typeof desktopWindows !== 'undefined') {
         for (const [appId, win] of Object.entries(desktopWindows)) {
+            if (appId === 'settings') continue; // never persist the settings window
             windowStates[appId] = {
                 state: win.state,
                 normalPos: { ...win.normalPos },
@@ -222,12 +258,54 @@ function saveGame() {
         inboxEmails: typeof inboxEmails !== 'undefined' ? inboxEmails : [],
         desktopWindows: windowStates
     };
-    localStorage.setItem('hackOS_save', JSON.stringify(saveData));
+    const saveKey = `hackOS_save_${window.CURRENT_SAVE_SLOT}`;
+    localStorage.setItem(saveKey, JSON.stringify(saveData));
+}
+
+function resetGameState() {
+    gameState.balance = 0;
+    gameState.cash = 0;
+    gameState.dirtyCash = 0;
+    gameState.cleanCash = 0;
+    gameState.currentDay = 1;
+    gameState.elapsedTimeInDay = 0;
+    gameState.documentsUnlocked = [];
+    gameState.transactions = [];
+    gameState.storyProgress = 0;
+    gameState.addonInstalled = false;
+    gameState.lastRentPaidDay = 0;
+    gameState.rentDueDay = 7;
+    gameState.rentOwed = 0;
+    gameState.activeLoan = null;
+
+    for (let key in gameState.pcParts) {
+        if (gameState.pcParts[key]) gameState.pcParts[key].level = 0;
+    }
+
+    if (typeof inboxEmails !== 'undefined') {
+        inboxEmails.length = 0;
+    }
+    if (typeof renderInbox === 'function') renderInbox();
+
+    updateHashDisplay();
+    updateCashDisplay();
+    updateLaunderDisplay();
+    if (typeof updatePallPayActivity === 'function') updatePallPayActivity();
+    if (typeof updateLoanUI === 'function') updateLoanUI();
+    applyStoryState();
 }
 
 function loadGame() {
-    const rawData = localStorage.getItem('hackOS_save');
-    if (!rawData) return;
+    const saveKey = `hackOS_save_${window.CURRENT_SAVE_SLOT}`;
+    let rawData = localStorage.getItem(saveKey);
+    // Legacy migration for Slot 1
+    if (!rawData && window.CURRENT_SAVE_SLOT === 1) {
+        rawData = localStorage.getItem('hackOS_save');
+    }
+    if (!rawData) {
+        resetGameState();
+        return;
+    }
 
     try {
         const data = JSON.parse(rawData);
@@ -275,6 +353,7 @@ function loadGame() {
         // Restore desktop window states
         if (data.desktopWindows && typeof desktopWindows !== 'undefined') {
             for (const [appId, saved] of Object.entries(data.desktopWindows)) {
+                if (appId === 'settings') continue; // never auto-open settings on load
                 const win = desktopWindows[appId];
                 if (!win) continue;
                 if (saved.normalPos) win.normalPos = { ...saved.normalPos };

@@ -824,6 +824,67 @@ function checkAndSendRentEmail() {
     if (typeof saveGame === 'function') saveGame();
 }
 
+const landlordReminderMessages = [
+    "Just a friendly reminder. Your rent is due at the end of the week. Have the money ready.",
+    "Don't forget, rent day is coming up in a few days. Don't be short.",
+    "Rent is due this weekend. I'm reminding you now so you can't say you forgot.",
+    "Start gathering the cash. Rent is due soon. No delays.",
+    "Consider this your mid-week reminder. Your rent is expected at the end of the week."
+];
+
+function checkAndSendRentReminderEmail() {
+    const day = gameState.currentDay;
+    
+    // Trigger only on the 3rd day of the 7-day cycle (e.g. Day 3, 10, 17, 24...)
+    if ((day % 7) !== 3) return;
+
+    // Upcoming rent day will be in 4 days
+    const upcomingRentDay = day + 4;
+    const reminderMailId = `m_rent_reminder_day${upcomingRentDay}`;
+
+    // Don't send reminder if already sent this cycle
+    if (typeof inboxEmails !== 'undefined' && inboxEmails.find(m => m.id === reminderMailId)) return;
+
+    const rentAmount = calculateRent(); // Retrieve projected rent
+    const rentFormatted = rentAmount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const baseMsg = landlordReminderMessages[Math.floor(Math.random() * landlordReminderMessages.length)];
+
+    const emailBody = `
+        <div style="font-family: sans-serif; color: #333; line-height: 1.6;">
+            <p>${baseMsg}</p>
+            <div style="background:#e8f4fc; border:1px solid #b6d4ea; padding:15px; border-radius:6px; margin:15px 0;">
+                <div style="font-size:11px; color:#5a8ba8; text-transform:uppercase; font-weight:bold; margin-bottom:5px;">UPCOMING RENT ESTIMATE</div>
+                <div style="font-size:24px; font-weight:bold; color:#333;">$${rentFormatted}</div>
+                <div style="font-size:10px; color:#666; margin-top:3px;">Ensure you have this amount in PallPay by Day ${upcomingRentDay}.</div>
+            </div>
+            <p style="font-size:11px; color:#888; margin-top:15px;">— Gerald M., Unit Manager</p>
+        </div>
+    `;
+
+    if (typeof playMailSound === 'function') playMailSound();
+
+    const popup = document.createElement('div');
+    popup.className = 'mail-notification';
+    popup.style.borderLeft = '4px solid #b6d4ea';
+    popup.innerHTML = `<img src="assets/icon-topmail.svg" width="24" height="24"> <div><strong>Landlord</strong><br>Rent Reminder</div>`;
+    document.body.appendChild(popup);
+    setTimeout(() => popup.remove(), 6000);
+
+    if (typeof addEmailToList === 'function') {
+        addEmailToList({
+            id: reminderMailId,
+            sender: 'Gerald M. (Landlord)',
+            date: typeof getGameDate === 'function' ? getGameDate(day) : 'Now',
+            subject: `Reminder: Rent due soon ($${rentFormatted})`,
+            body: emailBody,
+            unread: true,
+            attachment: false
+        });
+    }
+
+    if (typeof saveGame === 'function') saveGame();
+}
+
 // ─── Wiring ──────────────────────────────────────────────────────────────────
 const btnOpenWallet = document.getElementById('btn-open-wallet');
 if (btnOpenWallet) btnOpenWallet.addEventListener('click', openWallet);

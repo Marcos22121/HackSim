@@ -192,3 +192,13 @@
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
+
+@keyframes marquee {
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(-100%); }
+}
+
+@keyframes eqBar {
+    0%, 100% { height: 10%; }
+    50% { height: 90%; }
+}

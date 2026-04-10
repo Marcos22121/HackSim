@@ -1,0 +1,72 @@
+======================================================================
+                  BLUECODE / HACKER SIMULATOR
+                      ANÁLISIS DE DISEÑO
+======================================================================
+
+1. NARRATIVA Y FLUJO INICIAL
+======================================================================
+El jugador (identificado corporativamente como Subject_84 o BlueCode_Hacker) comienza su experiencia encendiendo una PC antigua. La primera vez que abre el sitio, interactúa con un "Main Menu" masivo que emula un instalador o sistema de login para iniciar partida.
+
+El reloj comienza en el "Día 1" a las 06:00 AM. A partir de allí, el temporizador avanza gradualmente: 15 minutos en la vida real equivalen a 1 día en el juego.
+A través del correo electrónico (TopMail), recibe correos tutoriales que lo insertan en la historia. Se entera de que vive en un departamento alquilado mantenido por su casero, Gerald, a quien debe pagarle renta obligatoriamente. 
+
+2. CORE GAMEPLAY LOOP (Línea de Tiempo y Ritmo)
+======================================================================
+El bucle principal del juego se centra en la administración del tiempo y los recursos financieros antes de que termine la jornada:
+
+- 06:00 AM: Los servidores se activan. El jugador tiene acceso a herramientas de minado y hackeo ilegal. Debe aprovechar este tiempo para generar ingresos y lavarlos.
+- Rentas y Deudas: Cada día se puede visualizar cuánto falta para pagar y se reciben correos. En el día 3 de la semana recibe recordatorios. El día 7 de cada ciclo semanal la renta llega y debe pagarse obligatoriamente.
+- 23:00 PM (Cierre de Servidores): A esta hora el "Day Cycle" bloquea automáticamente los iconos y funcionamiento de aplicaciones ilegales (BlueCode, OnionWeb). El jugador es forzado a apagar la PC para descansar.
+- Fin del Día: La pantalla pasa por una animación de Shutdown (Apagado), sumando 1 al día actual y devolviendo al jugador a la pantalla de la habitación (Lobby) para encender la PC en el día siguiente.
+
+EL CICLO FINANCIERO:
+Hackear/Minar Hashes -> Decodificar a Efectivo Sucio -> Lavar el Dinero -> Transferir a PallPay -> Pagar Mejoras y Deudas.
+
+3. MECÁNICAS E INTERFAZ (SISTEMAS DE ESCRITORIO XP)
+======================================================================
+
+TOPMAIL (Correo)
+La interfaz de comunicación primaria. Posee una bandeja de entrada clásica a la izquierda y un panel de lectura a la derecha. 
+- Funciones: Sirve como guía de la historia (tutoriales), sistema de alertas (avisos de renta o multas) y registro (recibos generados automáticamente al lavar dinero).
+- Gameplay: El jugador no responde los correos, pero el contenido de estos es lo que define sus objetivos a corto plazo.
+
+BLUECODE v0.1 (El Motor de Hackeo)
+Es el programa madre, la interfaz negra y dura de emulador de terminal.
+- Terminal Principal: Se interactúa tipando comandos por medio de un sistema de Hack Terminal. Según la exactitud o la velocidad, el jugador logra acceder a "Hashes" o información. Este es el recurso principal crudo. Es de alto enfoque e interacción constante.
+- Hash Decodifier (Decodificar): Dentro de la suite BlueCode, convierte esos Hashes (que todavía no tienen valor monetario) en su valor en dinero. El jugador ingresa cuántos Hashes decodificar; el sistema procesa una barra de carga, y el resultado es "Efectivo Sucio" que todavía no puede ser usado legalmente.
+
+ONIONWEB / DARKNET (La Lavandería)
+Al contar con Efectivo Sucio, este no puede gastarse en tiendas ni pagar renta. 
+- La interfaz de OnionWeb mezcla visuales oscuras y un clásico navegador con "Tor". 
+- Lavado de dinero: El jugador deposita su dinero marcado. El mezclador toma unos segundos o minutos de procesamiento con barra de progreso, eliminando rastros. El sistema cobra una penalización por honorarios (10% de comisión).
+- Retiro: El capital resultante, ahora "Dinero Limpio", puede ser expulsado hacia PallPay.
+
+PALLPAY (Cuenta Bancaria Digital)
+La pasarela de pagos legal del jugador. Estilo azul limpio e institucional.
+- Secciones: Posee pestañas de Resumen, Actividad (historial de transacciones), Envío de dinero (Send) y Préstamos.
+- Send Money: Posee una libreta de contactos (donde reside Gerald el Landlord). A la hora de enviar el dinero de la renta, solo podrá hacerlo si coincide con el ciclo donde él acepta los pagos (múltiplos de 7).
+
+LOANS (Banco FirstNet - Préstamos)
+Integrado en una pestaña de PallPay. En caso de no llegar con la renta, o querer invertir rápidamente en componentes, el jugador puede sacar de $500 a $10,000 dólares.
+- Préstamo Rápido: Con dos clics el dinero aparece en PallPay de forma instantánea.
+- Presión temporal: Pone al usuario a contrarreloj. Tiene exactamente 10 días para devolver la totalidad del préstamo. La interfaz pasa de azul a mostrar letretos rojos de peligro a medida que vence, si no se paga, se declara el Game Over.
+
+BLUEMIUM (Tienda de Partes de PC)
+Es la tienda e-commerce visual (tipo Amazon) para mejorar los componentes de la PC.
+- PC Parts: Al comprar CPU, GPU, Memorias o Enfriamiento, el rendimiento en la terminal y la obtención de hashes mejoran.
+- Consecuencias: Instalar componentes poderosos levanta el medidor de "Electricidad", encareciendo lo que Gerald cobra en la renta periódica y forzando a los usuarios a generar cantidades superiores de ingresos.
+
+
+En la economía de BlueCode / Hacker Simulator, tus recursos pasan por tres fases o "monedas" distintas. Funcionan como una cadena de producción en la que no puedes saltarte pasos para obtener dinero utilizable:
+
+1. Hashes (Datos Crudos)
+Qué es: Es la materia prima digital. No es dinero per se, sino bloques de información encriptada, contraseñas o datos valiosos extraídos de la red. Hasta que no se descifran, no tienen ningún valor real en el mercado.
+Cómo se consiguen: Es el fruto directo de tu trabajo en la Terminal (BlueCode). Al tipear comandos, completar minijuegos de hackeo o infiltrarte con éxito en nodos, tu contador de Hashes irá subiendo. Mientras mejores sean las piezas de tu PC, más cantidad de Hashes generarás por cada acción.
+2. Efectivo Sucio / Dirty Cash (Moneda Ilegal)
+Qué es: Dinero real, pero altamente peligroso. Es producto de la venta de datos en el mercado negro, por lo que está rastreado o "marcado" por las autoridades. Si intentaras usar este dinero para pagar algo legal (como tu renta), serías atrapado de inmediato.
+Cómo se consigue: Utilizando la herramienta Hash Decodifier (Decodificador de Hashes). Inyectas aquí tus Hashes (por ejemplo, a una tasa de 1 Hash = $1.50 dólares de Efectivo Sucio), la barra procesa la venta en segundos o minutos, y el resultado va directo a esta billetera clandestina.
+3. Efectivo Limpio / Cash (El Saldo de PallPay)
+Qué es: La moneda final y completamente legal del juego. Es el dinero utilizable que reside en tu cuenta bancaria digital (PallPay). Es la única moneda que aceptará Gerald para la renta, y la única aceptada por la tienda gubernamental/corporativa Bluemium para comprar mejores piezas de computadora.
+Cómo se consigue:
+A través de la Darknet (OnionWeb). El efectivo sucio debe enviarse obligatoriamente a una pasarela de "lavado de dinero" automática (mixer). El proceso reenvía el dinero en múltiples transferencias anónimas y se queda con un ~10% de comisión. El dinero resultante se envía a tu cuenta de PallPay como "Limpio".
+Mediante los Préstamos (FirstNet Loans) dentro de PallPay. Si solicitas un préstamo de rescate, se inyecta Cash en tu cuenta al instante de forma totalmente limpia, bajo la condición de regresarlo en 10 días límite.

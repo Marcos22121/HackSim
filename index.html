@@ -55,9 +55,9 @@
                         <div style="flex: 1; display:flex; flex-direction:column; gap: 15px;">
                             <div style="background:#fff; border:2px inset #ccc; padding: 20px; font-family:'Tahoma', sans-serif; font-size:14px; color:#333; height: 100%;">
                                 <h4 style="margin:0 0 10px 0; color:#003080; border-bottom:1px solid #aaa; padding-bottom:5px; font-size:16px;">System Information</h4>
-                                <p style="margin:0 0 10px 0;"><strong>OS:</strong> HackOS v2.0 (Build 2600)</p>
-                                <p style="margin:0 0 10px 0;"><strong>User:</strong> Subject_84</p>
-                                <p style="margin:0 0 10px 0;"><strong>Status:</strong> Awaiting connection...</p>
+                                <p style="margin:0 0 10px 0;"><strong>Active Profile:</strong> <span id="mm-info-profile">Profile 1</span></p>
+                                <p style="margin:0 0 10px 0;"><strong>Current Day:</strong> <span id="mm-info-day">1</span></p>
+                                <p style="margin:0 0 10px 0;"><strong>Bank Balance:</strong> <span id="mm-info-bank">$0.00</span></p>
                                 <div style="margin-top: 20px; padding-top:15px; border-top:1px dashed #ccc; font-size:12px; color:#666; line-height:1.5;">
                                     Welcome to the BlueCode environment. Ensure your connection is secure before proceeding. All activities are monitored by the system administrator.
                                 </div>
@@ -69,16 +69,16 @@
                             <button id="btn-mm-play" style="width: 100%; padding: 15px; font-weight:bold; font-size:16px; cursor:pointer;" title="Start Day">
                                 Play Game
                             </button>
-                            <button id="btn-mm-load" style="width: 100%; padding: 12px; font-size:14px; cursor:pointer;" onclick="alert('Load Profile functionality coming soon.')">
-                                Load Profile
+                            <button id="btn-mm-load" style="width: 100%; padding: 12px; font-size:14px; cursor:pointer;" onclick="if(typeof openProfileManager === 'function') openProfileManager();">
+                                Switch User
                             </button>
-                            <button id="btn-mm-options" style="width: 100%; padding: 12px; font-size:14px; cursor:not-allowed;" disabled>
+                            <button id="btn-mm-options" style="width: 100%; padding: 12px; font-size:14px; cursor:pointer;" onclick="if(typeof openMainMenuSettings === 'function') openMainMenuSettings();">
                                 Options
                             </button>
-                            <button id="btn-mm-credits" style="width: 100%; padding: 12px; font-size:14px; cursor:not-allowed;" disabled>
+                            <button id="btn-mm-credits" style="width: 100%; padding: 12px; font-size:14px; cursor:pointer;" onclick="if(typeof openMainMenuModal === 'function') openMainMenuModal('mm-credits-dialog'); else document.getElementById('mm-credits-dialog').style.display='block';">
                                 Credits
                             </button>
-                            <button id="btn-mm-exit" style="width: 100%; padding: 12px; font-size:14px; cursor:not-allowed;" disabled>
+                            <button id="btn-mm-exit" style="width: 100%; padding: 12px; font-size:14px; cursor:pointer;" onclick="if(confirm('Are you sure you want to quit?')){ window.close(); document.body.innerHTML=''; document.body.style.background='#000'; }">
                                 Exit to Desktop
                             </button>
                         </div>
@@ -92,6 +92,49 @@
                     <p class="status-bar-field">V 0.1.0</p>
                 </div>
 
+            </div>
+        </div>
+
+    </div>
+    <!-- ── MM BLOCKER – body-level, blocks main menu buttons but NOT dialogs/settings above it ── -->
+    <div id="mm-blocker" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:200000;"></div>
+
+    <!-- ── CREDITS DIALOG – body-level, z-index above blocker ── -->
+    <div id="mm-credits-dialog" class="window" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); margin:0; z-index:300000; width:300px; font-family:'Tahoma',sans-serif; box-shadow: 0 4px 15px rgba(0,0,0,0.5);">
+        <div class="title-bar">
+            <div class="title-bar-text">Credits</div>
+            <div class="title-bar-controls">
+                <button aria-label="Close" onclick="if(typeof closeMainMenuModal === 'function') closeMainMenuModal('mm-credits-dialog'); else document.getElementById('mm-credits-dialog').style.display='none';"></button>
+            </div>
+        </div>
+        <div class="window-body" style="padding:15px; background:#ece9d8; text-align:center;">
+            <div style="font-size:13px; font-weight:bold; color:#003080; margin-bottom:10px;">BlueCode Simulator</div>
+            <div style="font-size:11px; color:#333; line-height:1.6; margin-bottom:15px;">
+                <strong>Developers:</strong><br>
+                Marcos Villaro &amp; Pedro Coppola
+            </div>
+            <button onclick="if(typeof closeMainMenuModal === 'function') closeMainMenuModal('mm-credits-dialog'); else document.getElementById('mm-credits-dialog').style.display='none';" style="min-width:80px; font-size:11px; font-family:'Tahoma';">OK</button>
+        </div>
+    </div>
+
+    <!-- ── PROFILE DIALOG – body-level, z-index above blocker ── -->
+    <div id="mm-profile-dialog" class="window" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); margin:0; z-index:300000; width:450px; font-family:'Tahoma',sans-serif; box-shadow: 0 5px 25px rgba(0,0,0,0.8);">
+        <div class="title-bar" style="background: linear-gradient(180deg, #1d5ed1 0%, #0d3b8f 100%);">
+            <div class="title-bar-text">Windows Log On</div>
+            <div class="title-bar-controls">
+                <button aria-label="Close" onclick="if(typeof closeMainMenuModal === 'function') closeMainMenuModal('mm-profile-dialog'); else document.getElementById('mm-profile-dialog').style.display='none';"></button>
+            </div>
+        </div>
+        <div class="window-body" style="padding:0; background:#5a7edc; color:#fff; display:flex; flex-direction:column; height: 350px;">
+            <div style="background:linear-gradient(90deg, #3a68ce, #5a7edc); padding:10px 15px; border-bottom:1px solid #23459c; display:flex; align-items:center;">
+                <img src="assets/icon-hackos.png" width="32" style="margin-right:15px;">
+                <span style="font-size:18px; font-weight:bold; font-family:'Trebuchet MS',sans-serif; text-shadow:1px 1px #003399;">Select User Profile</span>
+            </div>
+            <div id="mm-profiles-list" style="flex:1; padding:20px; display:flex; flex-direction:column; gap:15px; overflow-y:auto; background:#5a7edc;">
+                <!-- Populated via JS -->
+            </div>
+            <div style="background:#3a68ce; padding:10px; border-top:1px solid #23459c; display:flex; justify-content:flex-end;">
+                <button onclick="if(typeof closeMainMenuModal === 'function') closeMainMenuModal('mm-profile-dialog'); else document.getElementById('mm-profile-dialog').style.display='none';" style="cursor:pointer; min-width:80px; font-size:11px; font-family:'Tahoma'; color:#333;">Cancel</button>
             </div>
         </div>
     </div>
@@ -1301,11 +1344,11 @@
                             <div style="font-size:9px; color:#888;">E-mail Client</div>
                         </div>
                     </div>
-                    <div class="start-menu-item" style="opacity:0.6; cursor:default;">
-                        <img src="assets/icon-darknet.svg" width="28" style="filter:grayscale(1);">
+                    <div class="start-menu-item" onclick="openDesktopWindow('settings'); closeStartMenu();">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0053e1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left:2px; margin-right:2px;"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
                         <div>
-                            <div style="font-weight:bold; font-size:11px;">Internet Explorer</div>
-                            <div style="font-size:9px; color:#888;">The web is down.</div>
+                            <div style="font-weight:bold; font-size:11px;">Settings</div>
+                            <div style="font-size:9px; color:#888;">System configuration.</div>
                         </div>
                     </div>
                     <div style="height:1px; background:#eee; margin:5px 0;"></div>
@@ -1361,15 +1404,14 @@
                 </div>
             </div>
 
-            <!-- Bottom Bar -->
             <div
                 style="background: linear-gradient(180deg, #3a81f1 0%, #1d5ed1 100%); padding:8px 12px; display:flex; justify-content:flex-end; gap:12px; border-top:1px solid #104193;">
                 <div style="display:flex; align-items:center; gap:6px; color:#fff; font-size:11px; font-weight:bold; cursor:pointer; padding:2px 6px;"
-                    class="taskbar-btn-hover">
-                    <img src="assets/icon-bell.svg" width="16" style="filter: brightness(0) invert(1);"> Log Off
+                    class="taskbar-btn-hover" onclick="logOffToMainMenu()">
+                    <img src="assets/icon-bell.svg" width="16" style="filter: brightness(0) invert(1);"> Main Menu
                 </div>
                 <div style="display:flex; align-items:center; gap:6px; color:#fff; font-size:11px; font-weight:bold; cursor:pointer; padding:2px 6px;"
-                    class="taskbar-btn-hover">
+                    class="taskbar-btn-hover" onclick="shutdownPC()">
                     <div
                         style="width:16px; height:16px; background:red; border-radius:3px; display:flex; align-items:center; justify-content:center; font-size:10px;">
                         I</div> Turn Off Computer
@@ -1410,6 +1452,48 @@
 
     </div><!-- /xp-desktop -->
 
+    <!-- ── SYSTEM SETTINGS WINDOW (Moved to body level) ── -->
+    <div id="settings-window" class="window desktop-window" style="display:none; width:350px; position:fixed; z-index:100; box-shadow: 0 5px 15px rgba(0,0,0,0.4); top:50%; left:50%; transform:translate(-50%,-50%);">
+        <div class="title-bar" id="settings-title-bar">
+            <div class="title-bar-text">System Settings</div>
+            <div class="title-bar-controls">
+                <button aria-label="Minimize" id="btn-settings-minimize"></button>
+                <button aria-label="Close" id="btn-settings-close"></button>
+            </div>
+        </div>
+        <div class="window-body" style="padding:15px; background:#d4d0c8; font-family:'Tahoma', sans-serif;">
+            
+            <div style="background:#000; border:2px inset #fff; padding:10px; margin-bottom:15px; display:flex; flex-direction:column; align-items:center; gap:10px;">
+                <div style="color:#0f0; font-family:'Courier New', monospace; font-size:12px; text-align:center; width:100%; overflow:hidden; white-space:nowrap;">
+                    <span style="display:inline-block; animation: marquee 5s linear infinite;">NOW PLAYING: background_theme.mp3 - 128kbps</span>
+                </div>
+                <!-- EQ Animation -->
+                <div style="width:100%; height:40px; background:linear-gradient(90deg, #003300, #006600, #003300); display:flex; align-items:flex-end; justify-content:center; gap:2px; padding-bottom:5px;">
+                    <div style="width:4px; height:60%; background:#0f0; animation: eqBar 0.5s ease-in-out infinite alternate;"></div>
+                    <div style="width:4px; height:80%; background:#0f0; animation: eqBar 0.8s ease-in-out infinite alternate;"></div>
+                    <div style="width:4px; height:40%; background:#0f0; animation: eqBar 0.4s ease-in-out infinite alternate;"></div>
+                    <div style="width:4px; height:90%; background:#0f0; animation: eqBar 0.7s ease-in-out infinite alternate;"></div>
+                    <div style="width:4px; height:70%; background:#0f0; animation: eqBar 0.6s ease-in-out infinite alternate;"></div>
+                    <div style="width:4px; height:50%; background:#0f0; animation: eqBar 0.9s ease-in-out infinite alternate;"></div>
+                </div>
+            </div>
+
+            <div style="padding:10px; border:1px solid #999; border-top-color:#fff; border-left-color:#fff;">
+                <label style="font-size:11px; font-weight:bold; color:#333; display:block; margin-bottom:8px;">BGM Volume:</label>
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <img src="assets/icon-bell.svg" width="16" style="filter:grayscale(1);">
+                    <input type="range" id="settings-volume-slider" min="0" max="100" value="5" style="flex:1; cursor:pointer;" oninput="updateBGMVolume(this.value)">
+                    <span id="settings-volume-value" style="font-size:11px; width:30px; text-align:right;">5%</span>
+                </div>
+            </div>
+
+            <div style="margin-top:15px; text-align:center; font-size:10px; color:#666;">
+                Windows Media Settings v1.0
+            </div>
+
+        </div>
+    </div>
+
     <!-- Game Logic -->
     <script src="js/0_state.js"></script>
     <script src="js/6_utils.js"></script>
@@ -1447,6 +1531,7 @@
     </div>
 
     <!-- ── GAME OVER DIALOG — body-level ── -->
+
     <div id="loan-gameover-dialog" class="window" style="display:none; position:fixed; z-index:999999; width:420px; top:50%; left:50%; transform:translate(-50%,-50%); font-family:'Tahoma',sans-serif;">
         <div class="title-bar" style="background:linear-gradient(180deg,#8b0000,#5a0000);">
             <div class="title-bar-text">⚠ System Alert</div>
