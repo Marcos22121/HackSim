@@ -420,9 +420,107 @@ function renderPallPaySection(container, section) {
                 </div>
             </div>
         `;
+    } else if (section === 'loans') {
+        const loan    = gameState.activeLoan;
+        const day     = gameState.currentDay || 1;
+        const hasActive = loan && !loan.paid;
+        const hasCooldown = loan && loan.paid && day < (loan.dayTaken + 10);
+        const eligible  = !hasActive && !hasCooldown;
+
+        let statusHtml = '';
+        let daysLeft = loan ? (loan.dueDateDay - day) : null;
+        let cooldownLeft = loan && loan.paid ? ((loan.dayTaken + 10) - day) : 0;
+
+        if (eligible) {
+            statusHtml = `<div style="color:#006600;">✅ No active loan. You are eligible to apply.</div>`;
+        } else if (hasCooldown) {
+            statusHtml = `<div style="color:#555;">✅ Loan repaid. Cooldown: <strong>${cooldownLeft} day(s)</strong> remaining before next application.</div>`;
+        } else if (hasActive) {
+            const overdue = daysLeft < 0;
+            statusHtml = overdue
+                ? `<div style="color:#cc0000;">🚨 OVERDUE! Loan of <strong>$${loan.amount.toFixed(2)}</strong> was due on Day ${loan.dueDateDay}. Pay immediately!</div>`
+                : `<div style="color:#884400;">⚠ Active loan: <strong>$${loan.amount.toFixed(2)}</strong> due on <strong>Day ${loan.dueDateDay}</strong> (${daysLeft} day(s) remaining).</div>`;
+        }
+
+        const repayDetailsHtml = hasActive ? `
+            <div id="loan-repay-box" style="background:#fff; border:2px inset #ccc; padding:16px; margin-top:14px;">
+                <div style="font-weight:bold; color:#cc0000; margin-bottom:10px; font-size:12px; border-bottom:1px solid #cc0000; padding-bottom:4px;">⚠ ACTIVE LOAN — REPAYMENT REQUIRED</div>
+                <div style="font-size:11px; font-family:'Tahoma'; color:#333; margin-bottom:12px; line-height:1.7;">
+                    Loan Amount: <strong>$${loan.amount.toFixed(2)}</strong><br>
+                    Taken on: Day ${loan.dayTaken}<br>
+                    Due on: Day ${loan.dueDateDay}<br>
+                    Status: <strong style="color:${daysLeft < 0 ? '#cc0000' : '#884400'}">${daysLeft < 0 ? 'OVERDUE' : 'PENDING'}</strong><br><br>
+                    Your current PallPay balance: <strong>$${(gameState.cash || 0).toFixed(2)}</strong>
+                </div>
+                <div style="display:flex; justify-content:flex-end;">
+                    <button id="btn-repay-loan" onclick="repayLoan()"
+                        style="background:linear-gradient(180deg,#3d9b2f,#1e6b10); color:#fff; border:2px solid #155a08; padding:5px 22px; font-size:12px; font-family:'Tahoma'; font-weight:bold; cursor:pointer; border-radius:2px;">
+                        💳 Pay Back Loan
+                    </button>
+                </div>
+            </div>` : '';
+
+        const formHtml = eligible ? `
+            <div id="loan-form" style="background:#fff; border:2px inset #ccc; padding:16px; margin-top:14px;">
+                <div style="font-weight:bold; color:#003080; margin-bottom:12px; font-size:12px; border-bottom:1px solid #3060c0; padding-bottom:4px;">💲 PERSONAL LOAN APPLICATION</div>
+                <table style="width:100%; font-size:11px; font-family:'Tahoma'; border-collapse:collapse;">
+                    <tr><td style="padding:6px 0; color:#444; width:45%;">Applicant Name:</td><td><strong>BlueCode_Hacker</strong></td></tr>
+                    <tr><td style="padding:6px 0; color:#444;">Repayment Period:</td><td style="color:#cc0000; font-weight:bold;">10 days from approval</td></tr>
+                    <tr><td style="padding:6px 0; color:#444;">Amount Range:</td><td>$500 — $10,000</td></tr>
+                </table>
+                <div style="margin-top:14px;">
+                    <label style="font-size:11px; font-weight:bold; color:#003080; font-family:'Tahoma'; display:block; margin-bottom:5px;">Requested Loan Amount ($):</label>
+                    <div style="display:flex; gap:8px; align-items:center;">
+                        <input type="number" id="loan-amount-input" min="500" max="10000" value="500" step="100"
+                            style="width:130px; padding:4px 6px; border:2px inset #aaa; font-size:13px; font-family:'Tahoma'; font-weight:bold; color:#003080;"
+                            onchange="clampLoanAmount()" oninput="clampLoanAmount()">
+                        <span style="font-size:10px; color:#666;">Min: $500 · Max: $10,000</span>
+                    </div>
+                </div>
+                <div style="margin-top:10px; background:#fffbe6; border:1px solid #e0c040; padding:8px 10px; font-size:10px; color:#664400; font-family:'Tahoma';">
+                    ⚠ By submitting this application you agree to repay the full principal within 10 days. Failure will result in account seizure and game over.
+                </div>
+                <div style="margin-top:14px; display:flex; justify-content:flex-end;">
+                    <button id="btn-submit-loan" onclick="submitLoanRequest()"
+                        style="background:linear-gradient(180deg,#4a90d9,#1a5fb4); color:#fff; border:2px solid #0a3f8a; padding:5px 22px; font-size:12px; font-family:'Tahoma'; font-weight:bold; cursor:pointer; border-radius:2px;">
+                        📤 Submit Application
+                    </button>
+                </div>
+            </div>` : '';
+
+        container.innerHTML = `
+            <div class="pp-section section-loans">
+                <div style="background:linear-gradient(180deg,#1a3a6e,#0e234a); color:#fff; padding:14px 18px; border-radius:4px 4px 0 0; border:2px solid #0e234a; border-bottom:none;">
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <img src="assets/icon-pallpay.png" width="26" height="26" style="filter:brightness(2);">
+                        <div>
+                            <div style="font-size:15px; font-weight:bold; letter-spacing:1px;">🏦 FirstNet Bank — Loan Services</div>
+                            <div style="font-size:10px; color:#aac4ff;">Member FDIC · Est. 1984 · Serving online since 1999</div>
+                        </div>
+                    </div>
+                </div>
+                <div style="border:2px solid #0e234a; border-top:3px solid #4a90d9; background:#ece9d8; border-radius:0 0 4px 4px;">
+                    <div style="background:#003080; color:#ffff88; font-size:10px; padding:3px 10px; font-family:'Courier New',monospace;">
+                        ★ RATES AS LOW AS 8.9% APR ★ FAST APPROVAL ★ NO CREDIT CHECK REQUIRED ★ APPLY NOW ★
+                    </div>
+                    <div style="padding:16px 18px; display:flex; flex-direction:column; gap:0;">
+                        <div style="background:#fff; border:2px inset #ccc; padding:12px; font-size:11px; font-family:'Tahoma';">
+                            <div style="font-weight:bold; color:#003080; margin-bottom:6px; font-size:12px;">📋 ACCOUNT STATUS</div>
+                            ${statusHtml}
+                        </div>
+                        ${repayDetailsHtml}
+                        ${formHtml}
+                    </div>
+                </div>
+                <div style="background:#d4d0c8; border:2px outset #fff; padding:5px 10px; font-size:9px; color:#555; font-family:'Tahoma'; margin-top:6px; text-align:center; border-radius:2px;">
+                    FirstNet Bank · Member FDIC · Licensed Money Lender · 128-bit SSL Encryption · PallPay Partnership Program
+                </div>
+            </div>
+        `;
     }
     updatePallPayActivity();
 }
+
 
 // ─── PallPay Contacts ────────────────────────────────────────────────────────
 
