@@ -426,18 +426,8 @@ if (xpDesktop) {
 }
 
 // ─── System UI ────────────────────────────────────────────────────────────────
-function updateClock() {
-    if (!systemClock) return;
-    const now = new Date();
-    const h = now.getHours();
-    const m = String(now.getMinutes()).padStart(2, '0');
-    const ampm = h >= 12 ? 'PM' : 'AM';
-    const h12 = h % 12 || 12;
-    systemClock.textContent = `${h12}:${m} ${ampm}`;
-}
-
-updateClock();
-setInterval(updateClock, 30000);
+// Real-time clock is DISABLED — ingame clock is managed by 9_daycycle.js
+// function updateClock() { ... } — removed to avoid overwriting ingame time
 
 function showDesktop() {
     Object.keys(desktopWindows).forEach(appId => {

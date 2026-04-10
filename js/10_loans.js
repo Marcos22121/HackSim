@@ -190,11 +190,14 @@ function confirmLoan() {
 }
 
 function _sendLoanEmail(amount, dueDay) {
+    const day = (typeof gameState !== 'undefined') ? (gameState.currentDay || 1) : 1;
+    const dateStr = (typeof getInGameDateStr === 'function') ? getInGameDateStr(day) : `Day ${day}`;
+
     const mail = {
         id:          'm_loan_' + Date.now(),
         sender:      'FirstNet Bank <noreply@firstnetbank.com>',
         subject:     `Loan Approval — $${amount.toFixed(2)} Deposited`,
-        date:        new Date().toLocaleDateString('es-AR'),
+        date:        dateStr,
         body:
             `<p>Dear BlueCode_Hacker,</p>` +
             `<p>Your personal loan application has been <strong>approved and processed</strong>.</p>` +
@@ -261,21 +264,27 @@ function repayLoan() {
 }
 
 function _sendRepayEmail(amount) {
-    if (typeof inboxEmails === 'undefined') return;
+    const day = (typeof gameState !== 'undefined') ? (gameState.currentDay || 1) : 1;
+    const dateStr = (typeof getInGameDateStr === 'function') ? getInGameDateStr(day) : `Day ${day}`;
     const mail = {
         id:      'm_loan_repay_' + Date.now(),
         sender:  'FirstNet Bank <noreply@firstnetbank.com>',
         subject: `Loan Repayment Confirmed — $${amount.toFixed(2)}`,
-        date:    new Date().toLocaleDateString('es-AR'),
+        date:    dateStr,
         body:
             `<p>Dear BlueCode_Hacker,</p>` +
             `<p>We have received your repayment of <strong>$${amount.toFixed(2)}</strong>. Your loan has been <strong style="color:green;">fully paid off.</strong></p>` +
             `<p>Thank you for choosing FirstNet Bank. You may apply for a new loan after a 10-day cooldown period.</p>` +
-            `<p style="color:#888; font-size:10px;">FirstNet Bank · Member FDIC · Est. 1984</p>`,
+            `<p style="color:#888; font-size:10px;">FirstNet Bank &middot; Member FDIC &middot; Est. 1984</p>`,
         read: false,
+        unread: true,
+        attachment: false,
     };
-    inboxEmails.unshift(mail);
-    if (typeof renderInbox             === 'function') renderInbox();
+    if (typeof addEmailToList === 'function') {
+        addEmailToList(mail);
+    } else {
+        inboxEmails.unshift(mail);
+    }
     if (typeof playMailSound           === 'function') playMailSound();
     if (typeof renderNotificationPanel === 'function') renderNotificationPanel();
 }
