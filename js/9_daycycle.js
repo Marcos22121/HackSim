@@ -112,6 +112,11 @@ function startDayAfterLogin() {
     // Start the day clock after login animation (3s + 800ms fade = ~4s)
     setTimeout(() => {
         startDayCycle();
+
+        // Check for rent email 2 seconds after desktop appears
+        setTimeout(() => {
+            if (typeof checkAndSendRentEmail === 'function') checkAndSendRentEmail();
+        }, 2000);
     }, 4000);
 }
 
