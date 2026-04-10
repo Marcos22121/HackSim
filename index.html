@@ -824,7 +824,6 @@
             <!-- ════════════════════════════════════════════════════════════
              BLUEMIUM BROWSER WINDOW
              ════════════════════════════════════════════════════════════ -->
-<<<<<<< HEAD
         <div id="bluemium-window" class="window desktop-window" style="display:none; z-index:103; width:1000px; height:640px; top:40px; left:80px;">
             <div class="title-bar" id="bluemium-title-bar">
                 <div class="title-bar-text">Bluemium — Web Browser</div>
@@ -859,85 +858,8 @@
                     <button class="bluemium-go-btn" onclick="browserNavigate()">Go</button>
                     <div class="bluemium-spinning-globe" id="browser-loading-icon">
                         <img src="assets/icon-bluemium.png" alt="" style="width:22px;height:22px;">
-=======
-            <div id="bluemium-window" class="window desktop-window"
-                style="display:none; z-index:103; width:1000px; height:640px; top:40px; left:80px;">
-                <div class="title-bar" id="bluemium-title-bar">
-                    <div class="title-bar-text">Bluemium — Web Browser</div>
-                    <div class="title-bar-controls">
-                        <button aria-label="Minimize" id="btn-bluemium-minimize"></button>
-                        <button aria-label="Maximize" id="btn-bluemium-maximize"></button>
-                        <button aria-label="Close" id="btn-bluemium-close"></button>
->>>>>>> 497174ec3d89d2b5b057764434075665e702e586
                     </div>
                 </div>
-                <div class="window-body" id="bluemium-body"
-                    style="padding:0; display:flex; flex-direction:column; height:100%; overflow:hidden; background:#ece9d8;">
-
-                    <!-- Browser Menubar -->
-                    <div class="bluemium-menubar">
-                        <span class="bluemium-menu-item">File</span>
-                        <span class="bluemium-menu-item">Edit</span>
-                        <span class="bluemium-menu-item">View</span>
-                        <span class="bluemium-menu-item">Favorites</span>
-                        <span class="bluemium-menu-item">Tools</span>
-                        <span class="bluemium-menu-item">Help</span>
-                    </div>
-
-<<<<<<< HEAD
-                <!-- Browser Content Area -->
-                <div id="bluemium-content" style="flex:1; overflow:hidden; position:relative;">
-
-                    <!-- ── PAGE: New Tab ── -->
-                    <div id="browser-page-newtab" class="browser-page" style="display:flex;">
-                        <div class="bluemium-newtab">
-                            <div class="bluemium-newtab-logo">
-                                <img src="assets/icon-bluemium.png" alt="" style="width:64px; height:64px;">
-                                <span class="bluemium-brand">Bluemium</span>
-                            </div>
-                            <div class="bluemium-search-box">
-                                <input type="text" id="bluemium-home-search-input" placeholder="Search or enter address" class="bluemium-search-input" onkeydown="if(event.key === 'Enter') { document.getElementById('bluemium-url-input').value = this.value; browserNavigate(); }">
-                                <button class="bluemium-search-btn" onclick="document.getElementById('bluemium-url-input').value = document.getElementById('bluemium-home-search-input').value; browserNavigate();">Search</button>
-                            </div>
-                            <div class="bluemium-quicklinks">
-                                <div class="bluemium-quicklink" onclick="browserOpenShop()">
-                                    <div class="bluemium-ql-icon" style="background:#c0392b;">🛒</div>
-                                    <span>PC Parts</span>
-                                </div>
-                                <div class="bluemium-quicklink" style="opacity:0.5;">
-                                    <div class="bluemium-ql-icon" style="background:#2c3e50;">📰</div>
-                                    <span>Tech News</span>
-                                </div>
-                                <div class="bluemium-quicklink" style="opacity:0.5;">
-                                    <div class="bluemium-ql-icon" style="background:#27ae60;">🎮</div>
-                                    <span>Games</span>
-                                </div>
-                                <div class="bluemium-quicklink" style="opacity:0.5;">
-                                    <div class="bluemium-ql-icon" style="background:#8e44ad;">📧</div>
-                                    <span>WebMail</span>
-                                </div>
-                            </div>
-=======
-                    <!-- Browser Toolbar -->
-                    <div class="bluemium-toolbar">
-                        <button class="bluemium-nav-btn" id="btn-browser-back" onclick="browserGoBack()"
-                            title="Back">&#9664;</button>
-                        <button class="bluemium-nav-btn" id="btn-browser-forward" onclick="browserGoForward()"
-                            title="Forward">&#9654;</button>
-                        <button class="bluemium-nav-btn" onclick="browserRefresh()" title="Refresh">&#10227;</button>
-                        <button class="bluemium-nav-btn" onclick="browserGoHome()" title="Home">&#127968;</button>
-                        <div class="bluemium-address-bar">
-                            <img src="assets/icon-bluemium.png" class="bluemium-favicon" alt="">
-                            <input type="text" id="bluemium-url-input" class="bluemium-url-field"
-                                value="bluemium://newtab" readonly>
-                        </div>
-                        <button class="bluemium-go-btn" onclick="browserNavigate()">Go</button>
-                        <div class="bluemium-spinning-globe" id="browser-loading-icon">
-                            <img src="assets/icon-bluemium.png" alt="" style="width:22px;height:22px;">
->>>>>>> 497174ec3d89d2b5b057764434075665e702e586
-                        </div>
-                    </div>
-
                     <!-- Links bar -->
                     <div class="bluemium-links-bar">
                         <span style="font-weight:bold; margin-right:8px;">Links:</span>
@@ -983,7 +905,6 @@
                             </div>
                         </div>
 
-<<<<<<< HEAD
                     <!-- ── PAGE: 404 Not Found ── -->
                     <div id="browser-page-404" class="browser-page" style="display:none;">
                         <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; width:100%; background:#f0f2f5; text-align:center; padding:20px;">
@@ -995,8 +916,6 @@
                         </div>
                     </div>
 
-                </div><!-- /bluemium-content -->
-=======
                         <!-- ── PAGE: PC Parts Shop ── -->
                         <div id="browser-page-shop" class="browser-page" style="display:none;">
                             <div class="pcshop-page">
@@ -1014,7 +933,6 @@
                                         <span class="pcshop-nav-item">Cart 🛒</span>
                                     </div>
                                 </div>
->>>>>>> 497174ec3d89d2b5b057764434075665e702e586
 
                                 <!-- Shop Banner -->
                                 <div class="pcshop-banner">
