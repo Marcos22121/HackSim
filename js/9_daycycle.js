@@ -22,7 +22,11 @@ let isNightLocked     = false;
 function getGameDate(day) {
     const d = new Date(BASE_DATE);
     d.setDate(d.getDate() + (day - 1));
-    return d.toLocaleDateString('es-AR', { day: 'numeric', month: 'long', year: 'numeric' });
+    const dayOfMonth = d.getDate();
+    const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    const monthName = months[d.getMonth()];
+    const year = d.getFullYear();
+    return `${dayOfMonth} of ${monthName}, ${year}`;
 }
 
 function getInGameTime() {
@@ -39,70 +43,113 @@ function formatInGameTime(h, m) {
     return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
 }
 
-// ─── Lobby Screen ─────────────────────────────────────────────────────────────
-function showLobby() {
-    const lobbyEl       = document.getElementById('lobby-screen');
-    const shutdownEl    = document.getElementById('shutdown-overlay');
-    const loginEl       = document.getElementById('login-screen');
-    const desktopEl     = document.getElementById('xp-desktop');
+// ─── Transition Screen (New) ──────────────────────────────────────────────────
+let pcTurningOnAudio = null;
 
-    if (shutdownEl)  shutdownEl.classList.remove('active');
-    if (loginEl)     { loginEl.style.display = 'none'; loginEl.classList.remove('fade-out'); }
-    if (desktopEl)   desktopEl.style.display = 'none';
-    if (lobbyEl)     { lobbyEl.style.display = 'flex'; lobbyEl.style.opacity = '1'; }
+function startDayTransition() {
+    const bootScreen = document.getElementById('boot-screen');
+    const bootTextContainer = document.getElementById('boot-text-container');
+    const bootDayText = document.getElementById('boot-day-text');
+    const bootDateText = document.getElementById('boot-date-text');
+    const shutdownEl = document.getElementById('shutdown-overlay');
+    const loginEl = document.getElementById('login-screen');
+    const desktopEl = document.getElementById('xp-desktop');
 
-    updateLobbyDisplay();
+    // Reset everything
+    if (shutdownEl) shutdownEl.classList.remove('active');
+    if (loginEl) { loginEl.style.display = 'none'; loginEl.style.opacity = '0'; }
+    if (desktopEl) desktopEl.style.display = 'none';
+
+    // Show black screen
+    if (bootScreen) {
+        bootScreen.classList.remove('fade-out');
+        bootScreen.classList.add('active');
+    }
+    if (bootTextContainer) bootTextContainer.classList.remove('show');
+
+    const day = (typeof gameState !== 'undefined') ? gameState.currentDay : 1;
+    if (bootDayText) bootDayText.textContent = `Day ${day}`;
+    if (bootDateText) bootDateText.textContent = getGameDate(day);
+
+    // Sequence
+    setTimeout(() => {
+        // 2s after shutdown -> pcON
+        const pcOnSound = new Audio('./SFX/pcON.mp3');
+        pcOnSound.volume = 0.6;
+        pcOnSound.play().catch(() => {
+            // If blocked, we'll try to play it later or wait for interaction
+        });
+
+        // Shortly after -> pcTurningOn
+        setTimeout(() => {
+            if (!pcTurningOnAudio) {
+                pcTurningOnAudio = new Audio('./SFX/pcTurningOn.mp3');
+                pcTurningOnAudio.volume = 0.5;
+                pcTurningOnAudio.loop = true;
+            }
+            pcTurningOnAudio.play().catch(() => {});
+            
+            // Show text when turning on starts
+            if (bootTextContainer) bootTextContainer.classList.add('show');
+
+            // Stay on black screen with text for 4 seconds
+            setTimeout(() => {
+                // Prepare login screen BEHIND the boot screen
+                if (loginEl) {
+                    loginEl.style.display = 'flex';
+                    loginEl.style.opacity = '1';
+                    loginEl.classList.remove('fade-out');
+                    loginEl.classList.remove('fade-in'); // We'll reveal it via boot screen fade out
+                }
+
+                // Smoothly fade out the black boot screen to reveal login screen
+                if (bootScreen) {
+                    bootScreen.style.transition = "opacity 2s ease-in-out";
+                    bootScreen.classList.add('fade-out');
+                }
+                
+                setTimeout(() => {
+                    if (bootScreen) bootScreen.classList.remove('active');
+                    
+                    // Start login sequence (which handles the desktop transition)
+                    setTimeout(() => {
+                        if (typeof startLoginSequence === 'function') {
+                            startDayAfterLogin();
+                        }
+                        
+                        // Stop pcTurningOn 1s after login starts
+                        setTimeout(() => {
+                            if (pcTurningOnAudio) {
+                                let fadeInterval = setInterval(() => {
+                                    if (pcTurningOnAudio.volume > 0.05) {
+                                        pcTurningOnAudio.volume -= 0.05;
+                                    } else {
+                                        pcTurningOnAudio.pause();
+                                        pcTurningOnAudio = null;
+                                        clearInterval(fadeInterval);
+                                    }
+                                }, 100);
+                            }
+                        }, 1000);
+
+                    }, 100);
+                }, 2000); // Wait for the 2s fade out
+
+            }, 4000);
+
+        }, 500);
+
+    }, 2000);
 }
 
-function updateLobbyDisplay() {
-    const day  = (typeof gameState !== 'undefined') ? gameState.currentDay : 1;
-    const dayEl  = document.getElementById('lobby-day-text');
-    const dateEl = document.getElementById('lobby-date-text');
-    if (dayEl)  dayEl.textContent  = `Day ${day}`;
-    if (dateEl) dateEl.textContent = getGameDate(day);
+function showLobby() {
+    // Repurposed to use the new transition
+    startDayTransition();
 }
 
 // ─── Power On ─────────────────────────────────────────────────────────────────
 function powerOnPC() {
-    const flash   = document.getElementById('power-flash');
-    const lobbyEl = document.getElementById('lobby-screen');
-
-    // Play power-on sound
-    try {
-        const pcOnSound = new Audio('./SFX/pcON.mp3');
-        pcOnSound.volume = 0.8;
-        pcOnSound.play().catch(() => {});
-    } catch(_) {}
-
-    // Flash animation
-    if (flash) {
-        flash.classList.add('flash-on');
-        setTimeout(() => {
-            flash.classList.remove('flash-on');
-        }, 200);
-    }
-
-    setTimeout(() => {
-        // Hide lobby
-        if (lobbyEl) {
-            lobbyEl.style.opacity = '0';
-            setTimeout(() => { lobbyEl.style.display = 'none'; }, 800);
-        }
-
-        // Start login sequence
-        const loginEl = document.getElementById('login-screen');
-        if (loginEl) {
-            loginEl.style.display = 'flex';
-            loginEl.style.opacity = '1';
-        }
-
-        // After login completes: start day cycle
-        setTimeout(() => {
-            if (typeof startLoginSequence === 'function') {
-                startDayAfterLogin();
-            }
-        }, 100);
-    }, 200);
+    startDayTransition();
 }
 
 function startDayAfterLogin() {

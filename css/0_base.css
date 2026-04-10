@@ -36,6 +36,15 @@ button {
     transition: opacity 0.8s ease-out;
 }
 
+#login-screen.fade-in {
+    animation: loginFadeIn 1s forwards;
+}
+
+@keyframes loginFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
 #login-screen.fade-out {
     opacity: 0;
     pointer-events: none;

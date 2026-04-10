@@ -19,6 +19,7 @@
     <link rel="stylesheet" href="css/5_animations.css">
     <link rel="stylesheet" href="css/6_bluemium.css">
     <link rel="stylesheet" href="css/7_lobby.css">
+    <link rel="stylesheet" href="css/8_boot.css">
 </head>
 
 <body>
@@ -26,7 +27,7 @@
     <!-- ================================================================
          LOBBY SCREEN — Hacker Room
          ================================================================ -->
-    <div id="lobby-screen">
+    <div id="lobby-screen" style="display:none;">
 
         <!-- Room back wall -->
         <div class="lobby-wall">
@@ -136,6 +137,14 @@
 
     <!-- White flash overlay for power-on effect -->
     <div id="power-flash"></div>
+
+    <!-- Minimalist Boot Screen -->
+    <div id="boot-screen">
+        <div class="boot-text-container" id="boot-text-container">
+            <div class="boot-day" id="boot-day-text">Day 1</div>
+            <div class="boot-date" id="boot-date-text">1 of May, 2001</div>
+        </div>
+    </div>
 
     <!-- Shutdown overlay -->
     <div id="shutdown-overlay">

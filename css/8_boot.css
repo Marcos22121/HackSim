@@ -1,0 +1,63 @@
+/* =============================================
+   8_boot.css - Minimalist Boot Transition
+   ============================================= */
+
+#boot-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    z-index: 99999; /* Way above everything */
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-family: 'Tahoma', sans-serif;
+    text-align: center;
+    pointer-events: none;
+    opacity: 0;
+}
+
+#boot-screen.active {
+    display: flex;
+    animation: fadeInOverlay 1s forwards;
+}
+
+#boot-screen.fade-out {
+    animation: fadeOutOverlay 1s forwards;
+}
+
+.boot-text-container {
+    opacity: 0;
+    transition: opacity 1.5s ease-in-out;
+}
+
+.boot-text-container.show {
+    opacity: 1;
+}
+
+.boot-day {
+    font-size: 32px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    letter-spacing: 2px;
+}
+
+.boot-date {
+    font-size: 18px;
+    color: #ccc;
+    font-weight: normal;
+}
+
+@keyframes fadeInOverlay {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes fadeOutOverlay {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
