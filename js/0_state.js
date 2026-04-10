@@ -76,7 +76,11 @@ const gameState = {
         psu:  { level: 0, basePrice: 20, multiplier: 1.25, name: "Power Supply" },
         mb:   { level: 0, basePrice: 35, multiplier: 1.35, name: "Motherboard" },
         case: { level: 0, basePrice: 10, multiplier: 1.15, name: "Gabinete" }
-    }
+    },
+    // Rent system
+    lastRentPaidDay: 0,    // Day when rent was last paid
+    rentDueDay: 7,         // Next day rent is due
+    rentOwed: 0,           // Current unpaid rent amount
 };
 
 function applyStoryState() {
@@ -220,6 +224,9 @@ function loadGame() {
             gameState.transactions = data.gameState.transactions || [];
             gameState.storyProgress = data.gameState.storyProgress || 0;
             gameState.currentDay    = data.gameState.currentDay    || 1;
+            gameState.lastRentPaidDay = data.gameState.lastRentPaidDay || 0;
+            gameState.rentDueDay    = data.gameState.rentDueDay    || 7;
+            gameState.rentOwed      = data.gameState.rentOwed      || 0;
             if (data.gameState.pcParts) {
                 // Merge loaded parts carefully to preserve structure if updates happen
                 for (let key in data.gameState.pcParts) {

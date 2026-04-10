@@ -324,17 +324,18 @@ function updatePallPayActivity() {
         }
         
         txs.forEach(t => {
+            const isSent = t.amount < 0;
             const item = document.createElement('div');
             item.style.cssText = 'display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid #f2f2f2;';
             item.innerHTML = `
                 <div style="display:flex; align-items:center; gap:8px;">
-                    <div style="width:24px; height:24px; background:#eef5fc; border-radius:50%; display:flex; align-items:center; justify-content:center; color:#0070ba; font-weight:bold; font-size:10px;">OW</div>
+                    <div style="width:24px; height:24px; background:${isSent ? '#fef3e8' : '#eef5fc'}; border-radius:50%; display:flex; align-items:center; justify-content:center; color:${isSent ? '#d35400' : '#0070ba'}; font-weight:bold; font-size:10px;">${isSent ? '↑' : 'OW'}</div>
                     <div>
                         <div style="font-size:11px; font-weight:bold; color:#333;">${t.source}</div>
                         <div style="font-size:9px; color:#999;">${t.date} • ${t.id}</div>
                     </div>
                 </div>
-                <div style="font-size:12px; font-weight:bold; color:#28a745;">+$${t.amount.toLocaleString(undefined, {minimumFractionDigits: 2})}</div>
+                <div style="font-size:12px; font-weight:bold; color:${isSent ? '#d00' : '#28a745'};">${isSent ? '-' : '+'}$${Math.abs(t.amount).toLocaleString(undefined, {minimumFractionDigits: 2})}</div>
             `;
             container.appendChild(item);
         });
@@ -402,14 +403,12 @@ function renderPallPaySection(container, section) {
     } else if (section === 'send') {
         container.innerHTML = `
             <div class="pp-section section-send" style="padding:10px;">
-                <h3 style="margin:0 0 15px 0; font-size:16px;">Send & Request</h3>
-                <div style="background:#f9f9f9; padding:20px; border-radius:8px; border:1px dashed #ccc; text-align:center;">
-                    <p style="font-size:13px; color:#666;">Enter recipient email or mobile number</p>
-                    <input type="text" placeholder="Email, name or number" style="width:100%; padding:10px; margin:10px 0; border:1px solid #ccc; border-radius:4px;">
-                    <button class="pp-btn" style="background:#0070ba; color:#fff; border:none; padding:10px 25px; border-radius:20px; width:100%; font-weight:bold;">Next</button>
+                <h3 style="margin:0 0 15px 0; font-size:16px;">Send Money</h3>
+                <div style="display:flex; flex-direction:column; gap:8px;" id="pp-contacts-list">
                 </div>
             </div>
         `;
+        renderPallPayContacts();
     } else if (section === 'help') {
         container.innerHTML = `
             <div class="pp-section section-help">
@@ -423,6 +422,279 @@ function renderPallPaySection(container, section) {
         `;
     }
     updatePallPayActivity();
+}
+
+// ─── PallPay Contacts ────────────────────────────────────────────────────────
+
+const pallpayContacts = [
+    {
+        id: 'landlord',
+        name: 'Gerald M. (Landlord)',
+        email: 'gerald.m@realtormail.com',
+        avatar: '🏠',
+        avatarBg: '#e8d5b7'
+    }
+];
+
+function renderPallPayContacts() {
+    const list = document.getElementById('pp-contacts-list');
+    if (!list) return;
+
+    list.innerHTML = '';
+    pallpayContacts.forEach(contact => {
+        const hasDebt = contact.id === 'landlord' && gameState.rentOwed > 0;
+        const item = document.createElement('div');
+        item.style.cssText = `display:flex; align-items:center; gap:12px; padding:12px; background:#fff; border:1px solid ${hasDebt ? '#f5c6cb' : '#e0e0e0'}; border-radius:8px; cursor:pointer; transition:all 0.15s;`;
+        item.innerHTML = `
+            <div style="width:40px; height:40px; background:${contact.avatarBg}; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0;">${contact.avatar}</div>
+            <div style="flex:1; min-width:0;">
+                <div style="font-size:13px; font-weight:bold; color:#333;">${contact.name}</div>
+                <div style="font-size:10px; color:#888; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${contact.email}</div>
+                ${hasDebt ? `<div style="font-size:10px; color:#d00; font-weight:bold; margin-top:2px;">⚠ Rent due: $${gameState.rentOwed.toLocaleString(undefined, {minimumFractionDigits:2})}</div>` : ''}
+            </div>
+            <div style="font-size:18px; color:#0070ba;">›</div>
+        `;
+        item.onmouseenter = () => { item.style.background = '#f0f7ff'; item.style.borderColor = '#0070ba'; };
+        item.onmouseleave = () => { item.style.background = '#fff'; item.style.borderColor = hasDebt ? '#f5c6cb' : '#e0e0e0'; };
+        item.onclick = () => openPaymentView(contact);
+        list.appendChild(item);
+    });
+}
+
+function openPaymentView(contact) {
+    const contentArea = document.querySelector('#pallpay-window .pp-content-area');
+    if (!contentArea) return;
+
+    const suggestedAmount = (contact.id === 'landlord' && gameState.rentOwed > 0) ? gameState.rentOwed : '';
+    const debtWarning = (contact.id === 'landlord' && gameState.rentOwed > 0)
+        ? `<div style="background:#fff3cd; border:1px solid #ffc107; border-radius:6px; padding:10px; margin-bottom:15px; font-size:11px; color:#856404;">
+               <strong>⚠ Rent payment due:</strong> $${gameState.rentOwed.toLocaleString(undefined, {minimumFractionDigits:2})}
+               <br><span style="font-size:10px;">Pay the full amount to clear your balance.</span>
+           </div>`
+        : '';
+
+    contentArea.innerHTML = `
+        <div class="pp-section section-send-detail" style="padding:10px;">
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:20px;">
+                <button class="pp-back-btn" style="background:none; border:none; font-size:18px; cursor:pointer; color:#0070ba; padding:0 5px;">←</button>
+                <h3 style="margin:0; font-size:16px;">Send to ${contact.name}</h3>
+            </div>
+            <div style="display:flex; align-items:center; gap:12px; padding:15px; background:#f7f9fc; border-radius:8px; margin-bottom:20px; border:1px solid #e0e0e0;">
+                <div style="width:48px; height:48px; background:${contact.avatarBg}; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:24px;">${contact.avatar}</div>
+                <div>
+                    <div style="font-weight:bold; color:#333;">${contact.name}</div>
+                    <div style="font-size:11px; color:#888;">${contact.email}</div>
+                </div>
+            </div>
+            ${debtWarning}
+            <div style="text-align:center; margin-bottom:20px;">
+                <div style="font-size:11px; color:#888; margin-bottom:5px;">Amount to send</div>
+                <div style="display:flex; align-items:center; justify-content:center; gap:4px;">
+                    <span style="font-size:32px; color:#333;">$</span>
+                    <input type="number" id="pp-send-amount" min="0.01" step="0.01" placeholder="0.00" value="${suggestedAmount}"
+                        style="font-size:32px; border:none; border-bottom:2px solid #0070ba; width:180px; text-align:center; outline:none; color:#333; background:transparent;">
+                </div>
+                <div style="font-size:10px; color:#999; margin-top:5px;">Available: $<span class="cash-sync-internal">${gameState.cash.toLocaleString(undefined, {minimumFractionDigits:2})}</span></div>
+            </div>
+            <button id="btn-pp-send-money" data-contact="${contact.id}"
+                style="width:100%; background:#0070ba; color:#fff; border:none; padding:12px; border-radius:25px; font-weight:bold; font-size:14px; cursor:pointer; transition:filter 0.15s;">
+                Send Payment
+            </button>
+            <div id="pp-send-status" style="text-align:center; margin-top:10px; font-size:12px; min-height:18px;"></div>
+        </div>
+    `;
+
+    // Wire back button
+    const backBtn = contentArea.querySelector('.pp-back-btn');
+    if (backBtn) backBtn.addEventListener('click', () => renderPallPaySection(contentArea, 'send'));
+
+    // Wire send button
+    const sendBtn = document.getElementById('btn-pp-send-money');
+    if (sendBtn) sendBtn.addEventListener('click', () => processPallPaySend(contact.id));
+
+    // Hover effect
+    if (sendBtn) {
+        sendBtn.onmouseenter = () => sendBtn.style.filter = 'brightness(1.15)';
+        sendBtn.onmouseleave = () => sendBtn.style.filter = '';
+    }
+}
+
+function processPallPaySend(contactId) {
+    const amountInput = document.getElementById('pp-send-amount');
+    const statusEl = document.getElementById('pp-send-status');
+    if (!amountInput || !statusEl) return;
+
+    const amount = parseFloat(amountInput.value);
+    if (isNaN(amount) || amount <= 0) {
+        statusEl.textContent = '⚠ Enter a valid amount.';
+        statusEl.style.color = '#d00';
+        return;
+    }
+    if (amount > gameState.cash) {
+        statusEl.textContent = '⚠ Insufficient funds.';
+        statusEl.style.color = '#d00';
+        return;
+    }
+
+    // Deduct cash
+    gameState.cash -= amount;
+    gameState.cash = Math.round(gameState.cash * 100) / 100;
+
+    if (contactId === 'landlord') {
+        if (gameState.rentOwed > 0) {
+            const paid = Math.min(amount, gameState.rentOwed);
+            gameState.rentOwed = Math.round((gameState.rentOwed - paid) * 100) / 100;
+            if (gameState.rentOwed <= 0) {
+                gameState.rentOwed = 0;
+                gameState.lastRentPaidDay = gameState.currentDay;
+                statusEl.innerHTML = '✅ <strong>Rent fully paid!</strong> Gerald will leave you alone... for now.';
+                statusEl.style.color = '#28a745';
+            } else {
+                statusEl.innerHTML = `⚠ Partial payment. You still owe $${gameState.rentOwed.toFixed(2)}.`;
+                statusEl.style.color = '#e67e00';
+            }
+        } else {
+            statusEl.innerHTML = '✅ Payment sent to Gerald M.';
+            statusEl.style.color = '#28a745';
+        }
+    } else {
+        statusEl.innerHTML = '✅ Payment sent successfully.';
+        statusEl.style.color = '#28a745';
+    }
+
+    // Record transaction
+    const transId = Math.random().toString(36).substr(2, 9).toUpperCase();
+    const contact = pallpayContacts.find(c => c.id === contactId);
+    gameState.transactions.unshift({
+        id: 'PP-' + transId,
+        amount: -amount,
+        date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+        source: contact ? contact.name : 'Unknown'
+    });
+    if (gameState.transactions.length > 20) gameState.transactions.pop();
+
+    if (typeof updateCashDisplay === 'function') updateCashDisplay();
+    if (typeof playCashSound === 'function') playCashSound();
+    if (typeof saveGame === 'function') saveGame();
+
+    // Update available display
+    amountInput.value = '';
+}
+
+// ─── Rent Calculation ────────────────────────────────────────────────────────
+
+const BASE_RENT = 1000;
+
+function getTotalUpgradeLevel() {
+    let total = 0;
+    for (const key in gameState.pcParts) {
+        total += gameState.pcParts[key].level;
+    }
+    return total;
+}
+
+function calculateRent() {
+    const totalLevels = getTotalUpgradeLevel();
+    // Each component level adds 5% to rent.
+    // 7 components × multiple levels = significant scaling.
+    // At total level 10: $1500, level 20: $2000, level 30: $2500, etc.
+    const rentMultiplier = 1 + (totalLevels * 0.05);
+    return Math.round(BASE_RENT * rentMultiplier);
+}
+
+// ─── Landlord Email System ───────────────────────────────────────────────────
+
+const landlordMessages = [
+    "Hey, rent's due. You know the drill. Don't make me come knock on your door.",
+    "It's that time again. Pay up or I swear I'm changing the locks this time.",
+    "Rent. Now. I'm not running a charity here, you know.",
+    "I got bills too, genius. Your rent is due. Wire it over.",
+    "Before you forget AGAIN — your rent is due. Don't test me.",
+    "Listen, I don't care what you do in there all day. Just pay your damn rent.",
+    "Your rent is overdue the SECOND you open this email. Pay. Now.",
+    "Another week, another reminder that you owe me money. Shocking.",
+    "I can hear your PC running through the walls. Must be nice. Rent. Pay it.",
+    "Hey. You. The one who's always home. Rent. Today. No excuses.",
+    "Look, I like you, but not enough to let you live here for free. Pay up.",
+    "Do I need to slide a note under your door again? Rent is DUE.",
+];
+
+const landlordElectricityComplaints = [
+    "Also, whatever the hell you're doing with that PC of yours is driving the electric bill through the roof. I'm adding extra to cover it.",
+    "P.S. Your electricity usage is insane. What are you running in there, a server farm? The extra cost is on you.",
+    "And don't think I haven't noticed the power bill going up. That machine of yours is eating electricity like crazy.",
+    "By the way, the power company called ME about YOUR unit. Whatever you upgraded in that computer, it's costing ME more. So now it costs YOU more.",
+    "Also — the electric meter on your unit is spinning like a helicopter blade. I bumped the rent to cover it. Deal with it.",
+    "Side note: your power usage doubled since last month. I don't know what kind of Frankenstein PC you built but YOU'RE paying for the extra juice.",
+    "One more thing — the fuse on your floor keeps tripping. That PC is a monster. Extra charge for electricity, non-negotiable.",
+    "P.S. The electrician says your unit alone pulls more power than the rest of the floor combined. Congratulations, your rent went up.",
+];
+
+function checkAndSendRentEmail() {
+    const day = gameState.currentDay;
+
+    // Only trigger on rent due days (every 7 days)
+    if (day < gameState.rentDueDay) return;
+
+    // Don't send duplicate for the same due day
+    const rentMailId = `m_rent_day${gameState.rentDueDay}`;
+    if (typeof inboxEmails !== 'undefined' && inboxEmails.find(m => m.id === rentMailId)) return;
+
+    const rentAmount = calculateRent();
+    gameState.rentOwed += rentAmount;
+    gameState.rentDueDay = gameState.rentDueDay + 7; // Next due in 7 more days
+
+    // Pick random message
+    const baseMsg = landlordMessages[Math.floor(Math.random() * landlordMessages.length)];
+
+    // Add electricity complaint if upgrades exist
+    const totalLevels = getTotalUpgradeLevel();
+    let electricityMsg = '';
+    if (totalLevels >= 3) {
+        electricityMsg = '<br><br>' + landlordElectricityComplaints[Math.floor(Math.random() * landlordElectricityComplaints.length)];
+    }
+
+    const rentFormatted = rentAmount.toLocaleString(undefined, { minimumFractionDigits: 2 });
+
+    const emailBody = `
+        <div style="font-family: sans-serif; color: #333; line-height: 1.6;">
+            <p>${baseMsg}</p>
+            ${electricityMsg ? `<p style="color:#8b4513;">${electricityMsg}</p>` : ''}
+            <div style="background:#f9f3e8; border:1px solid #d4a574; padding:15px; border-radius:6px; margin:15px 0;">
+                <div style="font-size:11px; color:#8b6914; text-transform:uppercase; font-weight:bold; margin-bottom:5px;">RENT + UTILITIES</div>
+                <div style="font-size:28px; font-weight:bold; color:#333;">$${rentFormatted}</div>
+                ${totalLevels > 0 ? `<div style="font-size:10px; color:#999; margin-top:3px;">Includes $${Math.round(rentAmount - BASE_RENT).toLocaleString()} electricity surcharge</div>` : ''}
+            </div>
+            <button onclick="if(typeof openDesktopWindow==='function'){openDesktopWindow('pallpay');} setTimeout(function(){var tabs=document.querySelectorAll('.pp-tab');tabs.forEach(function(t){if(t.dataset.target==='send'){t.click();}});},300);"
+                style="background:#0070ba; color:#fff; border:none; padding:10px 25px; border-radius:20px; font-weight:bold; cursor:pointer; font-size:13px; display:inline-flex; align-items:center; gap:8px;">
+                <img src="assets/icon-pallpay.png" width="16" height="16" style="vertical-align:middle;"> PallPay me the money
+            </button>
+            <p style="font-size:11px; color:#888; margin-top:15px;">— Gerald M., Unit Manager</p>
+        </div>
+    `;
+
+    if (typeof playMailSound === 'function') playMailSound();
+
+    const popup = document.createElement('div');
+    popup.className = 'mail-notification';
+    popup.style.borderLeft = '4px solid #d4a574';
+    popup.innerHTML = `<img src="assets/icon-topmail.svg" width="24" height="24"> <div><strong>Landlord</strong><br>Rent due: $${rentFormatted}</div>`;
+    document.body.appendChild(popup);
+    setTimeout(() => popup.remove(), 6000);
+
+    if (typeof addEmailToList === 'function') {
+        addEmailToList({
+            id: rentMailId,
+            sender: 'Gerald M. (Landlord)',
+            date: typeof getGameDate === 'function' ? getGameDate(day) : 'Now',
+            subject: `Rent Due — $${rentFormatted}`,
+            body: emailBody,
+            unread: true,
+            attachment: false
+        });
+    }
+
+    if (typeof saveGame === 'function') saveGame();
 }
 
 // ─── Wiring ──────────────────────────────────────────────────────────────────
@@ -443,3 +715,8 @@ const btnTransferLaunder = document.getElementById('btn-launder-transfer');
 if (btnTransferLaunder) btnTransferLaunder.addEventListener('click', transferCleanFunds);
 
 initPallPayTabs();
+
+// Export globals
+window.checkAndSendRentEmail = checkAndSendRentEmail;
+window.calculateRent = calculateRent;
+window.openPaymentView = openPaymentView;

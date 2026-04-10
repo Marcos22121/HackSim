@@ -12,9 +12,9 @@ const mailViewBody = document.getElementById('mail-view-body');
 const mailViewAttachBar = document.getElementById('mail-view-attachments-bar');
 
 var inboxEmails = [
-    { id: 'm3', sender: 'Aiden', date: 'Oct 14, 2026', subject: 'When are you going to pay me back?', body: 'Man, I lent you that money a month ago. I really need it now. Dont make me come look for you. Pay up.', unread: false, attachment: false },
-    { id: 'm2', sender: 'Bank of America', date: 'Oct 12, 2026', subject: 'Debts Due', body: 'Your credit card is maxed out. Immediate payment of $3,500 is required to avoid legal action.', unread: false, attachment: false },
-    { id: 'm1', sender: 'Landlord', date: 'Oct 10, 2026', subject: 'Rent Due', body: 'You are two months behind on rent. Pay up this week or you are out on the street.', unread: false, attachment: false },
+    { id: 'm3', sender: 'Aiden', date: 'Oct 14, 2001', subject: 'When are you going to pay me back?', body: 'Man, I lent you that money a month ago. I really need it now. Dont make me come look for you. Pay up.', unread: false, attachment: false },
+    { id: 'm2', sender: 'Bank of America', date: 'Oct 12, 2001', subject: 'Debts Due', body: 'Your credit card is maxed out. Immediate payment of $3,500 is required to avoid legal action.', unread: false, attachment: false },
+    { id: 'm1', sender: 'Landlord', date: 'Oct 10, 2001', subject: 'Rent Due', body: 'You are two months behind on rent. Pay up this week or you are out on the street.', unread: false, attachment: false },
 ];
 
 var selectedMailId = null;
@@ -45,7 +45,7 @@ function renderInbox() {
         `;
         emailsContainer.appendChild(div);
     });
-    
+
     // Update notifications badge
     if (typeof renderNotificationPanel === 'function') {
         renderNotificationPanel();
@@ -56,17 +56,17 @@ function selectMail(id) {
     selectedMailId = id;
     const mail = inboxEmails.find(m => m.id === id);
     if (!mail) return;
-    
+
     if (mail.unread) {
         mail.unread = false;
         if (typeof saveGame === 'function') saveGame();
     }
-    
+
     if (mailViewSender) mailViewSender.textContent = mail.sender;
     if (mailViewDate) mailViewDate.textContent = mail.date;
     if (mailViewSubject) mailViewSubject.textContent = mail.subject;
     if (mailViewBody) mailViewBody.innerHTML = mail.body;
-    
+
     if (mail.attachment) {
         if (mailViewAttachBar) {
             mailViewAttachBar.style.display = 'flex';
@@ -78,23 +78,23 @@ function selectMail(id) {
     } else {
         if (mailViewAttachBar) mailViewAttachBar.style.display = 'none';
     }
-    
+
     renderInbox();
 }
 
 function receiveStoryMail() {
     if (gameState.storyProgress !== 0) return;
     if (inboxEmails.find(m => m.id === 'm_story')) return;
-    
-    playMailSound(); 
-    
+
+    playMailSound();
+
     const popup = document.createElement('div');
     popup.className = 'mail-notification';
     popup.innerHTML = `<img src="assets/icon-topmail.svg" width="24" height="24"> <div><strong>New Email</strong><br>Unknown: Need money?</div>`;
     document.body.appendChild(popup);
-    
+
     setTimeout(() => { popup.remove(); }, 6000);
-    
+
     addEmailToList({
         id: 'm_story', sender: 'Unknown', date: 'Now', subject: 'Need money?',
         body: "I'll make it quick, if you need money, all you need are these two apps, with your skills, I'm sure you'll figure it out in no time, just get to work.",
@@ -105,16 +105,16 @@ function receiveStoryMail() {
 function receiveTutorialMail() {
     if (gameState.documentsUnlocked.includes('doc-tutorial')) return;
     if (inboxEmails.find(m => m.id === 'm_tutorial')) return;
-    
-    playMailSound(); 
-    
+
+    playMailSound();
+
     const popup = document.createElement('div');
     popup.className = 'mail-notification';
     popup.innerHTML = `<img src="assets/icon-topmail.svg" width="24" height="24"> <div><strong>New Email</strong><br>Zero: Terminal Manual</div>`;
     document.body.appendChild(popup);
-    
+
     setTimeout(() => { popup.remove(); }, 6000);
-    
+
     addEmailToList({
         id: 'm_tutorial', sender: 'Zero', date: 'Now', subject: 'Terminal Manual',
         body: "I heard you had a system wipe and lost your skills. I've attached your old manual. Read it, then start making money. We have a debt to clear.",
@@ -144,16 +144,16 @@ function simulateDocumentDownload(filename, docId, callback) {
     document.body.appendChild(popup);
 
     let progress = 0;
-    const totalSize = (Math.random() * 15 + 5).toFixed(1); 
+    const totalSize = (Math.random() * 15 + 5).toFixed(1);
     const bar = document.getElementById(`dl-bar-${docId}`);
     const status = document.getElementById(`dl-status-${docId}`);
 
     const interval = setInterval(() => {
         progress += Math.random() * 20 + 10;
         if (progress >= 100) progress = 100;
-        
+
         if (bar) bar.style.width = `${progress}%`;
-        
+
         const currentSize = ((progress / 100) * totalSize).toFixed(1);
         if (status) status.textContent = `${currentSize} / ${totalSize} KB`;
 
@@ -175,14 +175,14 @@ if (btnAttachment) {
     btnAttachment.addEventListener('click', () => {
         const mail = inboxEmails.find(m => m.id === selectedMailId);
         if (!mail) return;
-        
+
         if (mail.id === 'm_story') {
             if (typeof openDesktopWindow === 'function') openDesktopWindow('installer');
-            
+
             const pbar = document.getElementById('installer-progress-bar');
             const title = document.getElementById('installer-title');
             const text = document.getElementById('installer-text');
-            
+
             if (title) title.textContent = 'Installing components...';
             if (text) text.textContent = 'Extracting BlueCode and DarkNet.';
 
@@ -193,7 +193,7 @@ if (btnAttachment) {
                 pbar.style.transition = 'width 5s linear';
                 pbar.style.width = '100%';
             }
-            
+
             setTimeout(() => {
                 if (typeof closeDesktopWindow === 'function') closeDesktopWindow('installer');
                 gameState.storyProgress = 1;
@@ -206,7 +206,7 @@ if (btnAttachment) {
                 simulateDocumentDownload('HOW_TO_HACK.txt', 'doc-tutorial', () => {
                     gameState.documentsUnlocked.push('doc-tutorial');
                     if (typeof saveGame === 'function') saveGame();
-                    
+
                     if (typeof desktopWindows !== 'undefined' && desktopWindows['documents'] && desktopWindows['documents'].state !== 'hidden') {
                         if (typeof renderDocumentsList === 'function') renderDocumentsList();
                     }
@@ -223,7 +223,7 @@ if (btnAttachment) {
                 simulateDocumentDownload('OnionWeb.txt', 'doc-onionweb', () => {
                     gameState.documentsUnlocked.push('doc-onionweb');
                     if (typeof saveGame === 'function') saveGame();
-                    
+
                     if (typeof desktopWindows !== 'undefined' && desktopWindows['documents'] && desktopWindows['documents'].state !== 'hidden') {
                         if (typeof renderDocumentsList === 'function') renderDocumentsList();
                     }
@@ -245,18 +245,18 @@ function receiveDarkNetMail() {
     if (typeof saveGame === 'function') saveGame();
 
     if (inboxEmails.find(m => m.id === 'm_darknet')) return;
-    
+
     // Simulate delay before email arrives so user is looking at darknet
     setTimeout(() => {
-        playMailSound(); 
-        
+        playMailSound();
+
         const popup = document.createElement('div');
         popup.className = 'mail-notification';
         popup.innerHTML = `<img src="assets/icon-topmail.svg" width="24" height="24"> <div><strong>New Email</strong><br>Unknown: The Net that must not be named</div>`;
         document.body.appendChild(popup);
-        
+
         setTimeout(() => { popup.remove(); }, 6000);
-        
+
         addEmailToList({
             id: 'm_darknet', sender: 'Unknown', date: 'Now', subject: 'The Net that must not be named',
             body: "I noticed you turned on Dark Net. You are going to need this if you want to clean your money.\n\nOpen the attached file and put its contents in the search bar. Do not lose it.",
