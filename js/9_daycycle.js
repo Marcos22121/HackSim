@@ -11,7 +11,10 @@ const INGAME_END_HOUR    = 23;                 // 11:00 PM
 const INGAME_HOURS_TOTAL = INGAME_END_HOUR - INGAME_START_HOUR; // 17 hours
 
 // Base date: May 1st, 2001
-const BASE_DATE = new Date(2001, 4, 1); // month is 0-indexed
+const BASE_DATE = new Date(2001, 4, 1); // month is 0-indexed (actual day: Tuesday)
+
+const DAY_NAMES   = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const MONTH_NAMES = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
 // ─── State ─────────────────────────────────────────────────────────────────────
 let dayStartTimestamp = null;
@@ -19,15 +22,27 @@ let dayCycleInterval  = null;
 let isNightLocked     = false;
 
 // ─── Date helpers ─────────────────────────────────────────────────────────────
-function getGameDate(day) {
+function getGameDateObj(day) {
     const d = new Date(BASE_DATE);
     d.setDate(d.getDate() + (day - 1));
-    const dayOfMonth = d.getDate();
-    const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-    const monthName = months[d.getMonth()];
-    const year = d.getFullYear();
-    return `${dayOfMonth} of ${monthName}, ${year}`;
+    return d;
 }
+
+// Long format for whiteboard: "1 of May, 2001"
+function getGameDate(day) {
+    const d = getGameDateObj(day);
+    const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    return `${d.getDate()} of ${months[d.getMonth()]}, ${d.getFullYear()}`;
+}
+
+// Short XP tray format: "Tue 1 May (Day 1)"
+function getInGameDateStr(day) {
+    const d   = getGameDateObj(day);
+    return `${DAY_NAMES[d.getDay()]} ${d.getDate()} ${MONTH_NAMES[d.getMonth()]} (Day ${day})`;
+}
+
+// Exposed globally for emails, receipts, etc.
+window.getInGameDateStr = getInGameDateStr;
 
 function getInGameTime() {
     if (!dayStartTimestamp) return { h: INGAME_START_HOUR, m: 0, pct: 0 };
@@ -42,6 +57,7 @@ function getInGameTime() {
 function formatInGameTime(h, m) {
     return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
 }
+
 
 // ─── Transition Screen (New) ──────────────────────────────────────────────────
 let pcTurningOnAudio = null;
@@ -191,11 +207,16 @@ function stopDayCycle() {
 }
 
 function tickDayCycle() {
-    const { h, m, pct } = getInGameTime();
+    const { h, m } = getInGameTime();
+    const day = (typeof gameState !== 'undefined') ? (gameState.currentDay || 1) : 1;
 
-    // Update system clock to show in-game time
+    // Update system clock
     const clockEl = document.getElementById('system-clock');
     if (clockEl) clockEl.textContent = formatInGameTime(h, m);
+
+    // Update system date label
+    const dateEl = document.getElementById('system-date');
+    if (dateEl) dateEl.textContent = getInGameDateStr(day);
 
     // Check for end of day
     if (h >= INGAME_END_HOUR && !isNightLocked) {

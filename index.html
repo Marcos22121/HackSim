@@ -1328,7 +1328,10 @@
                         style="display:flex; flex-direction:column; max-height:180px; overflow-y:auto; font-size:11px;">
                     </div>
                 </div>
-                <span id="system-clock"></span>
+                <div style="display:flex; flex-direction:column; align-items:flex-end; justify-content:center; padding:0 6px; border-left:1px solid rgba(255,255,255,0.15); line-height:1.3;">
+                    <span id="system-clock" style="font-size:11px;"></span>
+                    <span id="system-date" style="font-size:9px; color:rgba(255,255,255,0.8); white-space:nowrap;"></span>
+                </div>
             </div>
             <!-- Show Desktop Button (far right) -->
             <div id="show-desktop-button" onclick="showDesktop()"></div>

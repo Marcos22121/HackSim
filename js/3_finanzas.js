@@ -229,11 +229,14 @@ function transferCleanFunds() {
     // Send automated Receipt
     if (typeof sendPallPayReceipt === 'function') sendPallPayReceipt(amountTransferred, sharedTransId);
     
+    const day = (typeof gameState !== 'undefined') ? (gameState.currentDay || 1) : 1;
+    const dateStr = (typeof window.getInGameDateStr === 'function') ? window.getInGameDateStr(day) : `Day ${day}`;
+    
     // Store in internal transaction history
     gameState.transactions.unshift({
         id: 'PP-' + sharedTransId,
         amount: amountTransferred,
-        date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+        date: dateStr,
         source: 'OnionWeb Mixer'
     });
     if (gameState.transactions.length > 5) gameState.transactions.pop();
@@ -247,8 +250,14 @@ function transferCleanFunds() {
 }
 
 function sendPallPayReceipt(amount, transId) {
-    const dateStr = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-    const timeStr = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+    const day = (typeof gameState !== 'undefined') ? (gameState.currentDay || 1) : 1;
+    const dateStr = (typeof window.getInGameDateStr === 'function') ? window.getInGameDateStr(day) : `Day ${day}`;
+    
+    let timeStr = "12:00";
+    if (typeof window.getInGameTime === 'function' && typeof window.formatInGameTime === 'function') {
+        const {h, m} = window.getInGameTime();
+        timeStr = window.formatInGameTime(h, m);
+    }
     if (!transId) transId = Math.random().toString(36).substr(2, 9).toUpperCase();
     
     const receiptHtml = `
@@ -680,10 +689,13 @@ function processPallPaySend(contactId) {
     // Record transaction
     const transId = Math.random().toString(36).substr(2, 9).toUpperCase();
     const contact = pallpayContacts.find(c => c.id === contactId);
+    const day = (typeof gameState !== 'undefined') ? (gameState.currentDay || 1) : 1;
+    const dateStr = (typeof window.getInGameDateStr === 'function') ? window.getInGameDateStr(day) : `Day ${day}`;
+
     gameState.transactions.unshift({
         id: 'PP-' + transId,
         amount: -amount,
-        date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+        date: dateStr,
         source: contact ? contact.name : 'Unknown'
     });
     if (gameState.transactions.length > 20) gameState.transactions.pop();
