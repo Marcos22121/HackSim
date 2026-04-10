@@ -275,7 +275,7 @@ function sendPallPayReceipt(amount, transId) {
                 </tr>
                 <tr>
                     <td style="padding: 15px 0; color: #666; font-size: 16px; border-top: 1px solid #eee;">Amount Received:</td>
-                    <td style="padding: 15px 0; text-align: right; font-size: 18px; font-weight: bold; color: #28a745; border-top: 1px solid #eee;">+$${amount.toLocaleString(undefined, {minimumFractionDigits: 2})}</td>
+                    <td style="padding: 15px 0; text-align: right; font-size: 18px; font-weight: bold; color: #28a745; border-top: 1px solid #eee;">+$${amount.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
                 </tr>
             </table>
             
@@ -335,7 +335,7 @@ function updatePallPayActivity() {
                         <div style="font-size:9px; color:#999;">${t.date} • ${t.id}</div>
                     </div>
                 </div>
-                <div style="font-size:12px; font-weight:bold; color:${isSent ? '#d00' : '#28a745'};">${isSent ? '-' : '+'}$${Math.abs(t.amount).toLocaleString(undefined, {minimumFractionDigits: 2})}</div>
+                <div style="font-size:12px; font-weight:bold; color:${isSent ? '#d00' : '#28a745'};">${isSent ? '-' : '+'}$${Math.abs(t.amount).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</div>
             `;
             container.appendChild(item);
         });
@@ -383,10 +383,10 @@ function renderPallPaySection(container, section) {
                         <span class="logo-pall" style="font-style:italic; font-weight:bold;">Pall</span><span class="logo-pay" style="font-style:italic; font-weight:bold;">Pay</span> balance
                     </div>
                     <div style="font-size:${isDesktop ? '32px' : '24px'}; color:#333; margin-bottom:${isDesktop ? '20px' : '10px'};">
-                        $<span class="cash-sync-internal">${gameState.cash.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
+                        $<span class="cash-sync-internal">${gameState.cash.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
                     </div>
                     <div style="display:flex; gap:10px;">
-                        <button class="pp-btn" style="background:#0070ba; color:#fff; border:none; padding:8px 20px; border-radius:20px; font-weight:bold; font-size:12px; cursor:pointer;">Transfer Funds</button>
+                        <button class="pp-btn" onclick="const ppTabSend = this.closest('.pallpay-app-container').querySelector('.pp-tab[data-target=\\'send\\']'); if (ppTabSend) ppTabSend.click();" style="background:#0070ba; color:#fff; border:none; padding:8px 20px; border-radius:20px; font-weight:bold; font-size:12px; cursor:pointer;">Transfer Funds</button>
                     </div>
                 </div>
                 <h4 style="margin:0 0 10px 0; font-size:13px; color:#333;">Recent Activity</h4>
@@ -464,7 +464,7 @@ function renderPallPaySection(container, section) {
             <div id="loan-form" style="background:#fff; border:2px inset #ccc; padding:16px; margin-top:14px;">
                 <div style="font-weight:bold; color:#003080; margin-bottom:12px; font-size:12px; border-bottom:1px solid #3060c0; padding-bottom:4px;">💲 PERSONAL LOAN APPLICATION</div>
                 <table style="width:100%; font-size:11px; font-family:'Tahoma'; border-collapse:collapse;">
-                    <tr><td style="padding:6px 0; color:#444; width:45%;">Applicant Name:</td><td><strong>BlueCode_Hacker</strong></td></tr>
+                    <tr><td style="padding:6px 0; color:#444; width:45%;">Applicant Name:</td><td><strong class="os-username-text">BlueCode_Hacker</strong></td></tr>
                     <tr><td style="padding:6px 0; color:#444;">Repayment Period:</td><td style="color:#cc0000; font-weight:bold;">10 days from approval</td></tr>
                     <tr><td style="padding:6px 0; color:#444;">Amount Range:</td><td>$500 — $10,000</td></tr>
                 </table>
@@ -548,13 +548,24 @@ function renderPallPayContacts() {
             <div style="flex:1; min-width:0;">
                 <div style="font-size:13px; font-weight:bold; color:#333;">${contact.name}</div>
                 <div style="font-size:10px; color:#888; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${contact.email}</div>
-                ${hasDebt ? `<div style="font-size:10px; color:#d00; font-weight:bold; margin-top:2px;">⚠ Rent due: $${gameState.rentOwed.toLocaleString(undefined, {minimumFractionDigits:2})}</div>` : ''}
+                ${hasDebt ? `<div style="font-size:10px; color:#d00; font-weight:bold; margin-top:2px;">⚠ Rent due: $${gameState.rentOwed.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2})}</div>` : ''}
             </div>
             <div style="font-size:18px; color:#0070ba;">›</div>
         `;
-        item.onmouseenter = () => { item.style.background = '#f0f7ff'; item.style.borderColor = '#0070ba'; };
-        item.onmouseleave = () => { item.style.background = '#fff'; item.style.borderColor = hasDebt ? '#f5c6cb' : '#e0e0e0'; };
-        item.onclick = () => openPaymentView(contact);
+        
+        if (contact.id === 'landlord' && (gameState.currentDay % 7 !== 0)) {
+            item.style.opacity = '0.5';
+            item.style.cursor = 'not-allowed';
+            item.title = "Gerald only accepts payments on Day 7, 14, 21, etc.";
+            item.onclick = null;
+            item.onmouseenter = null;
+            item.onmouseleave = null;
+        } else {
+            item.onmouseenter = () => { item.style.background = '#f0f7ff'; item.style.borderColor = '#0070ba'; };
+            item.onmouseleave = () => { item.style.background = '#fff'; item.style.borderColor = hasDebt ? '#f5c6cb' : '#e0e0e0'; };
+            item.onclick = () => openPaymentView(contact);
+        }
+        
         list.appendChild(item);
     });
 }
@@ -566,7 +577,7 @@ function openPaymentView(contact) {
     const suggestedAmount = (contact.id === 'landlord' && gameState.rentOwed > 0) ? gameState.rentOwed : '';
     const debtWarning = (contact.id === 'landlord' && gameState.rentOwed > 0)
         ? `<div style="background:#fff3cd; border:1px solid #ffc107; border-radius:6px; padding:10px; margin-bottom:15px; font-size:11px; color:#856404;">
-               <strong>⚠ Rent payment due:</strong> $${gameState.rentOwed.toLocaleString(undefined, {minimumFractionDigits:2})}
+               <strong>⚠ Rent payment due:</strong> $${gameState.rentOwed.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2})}
                <br><span style="font-size:10px;">Pay the full amount to clear your balance.</span>
            </div>`
         : '';
@@ -592,7 +603,7 @@ function openPaymentView(contact) {
                     <input type="number" id="pp-send-amount" min="0.01" step="0.01" placeholder="0.00" value="${suggestedAmount}"
                         style="font-size:32px; border:none; border-bottom:2px solid #0070ba; width:180px; text-align:center; outline:none; color:#333; background:transparent;">
                 </div>
-                <div style="font-size:10px; color:#999; margin-top:5px;">Available: $<span class="cash-sync-internal">${gameState.cash.toLocaleString(undefined, {minimumFractionDigits:2})}</span></div>
+                <div style="font-size:10px; color:#999; margin-top:5px;">Available: $<span class="cash-sync-internal">${gameState.cash.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2})}</span></div>
             </div>
             <button id="btn-pp-send-money" data-contact="${contact.id}"
                 style="width:100%; background:#0070ba; color:#fff; border:none; padding:12px; border-radius:25px; font-weight:bold; font-size:14px; cursor:pointer; transition:filter 0.15s;">
@@ -630,6 +641,12 @@ function processPallPaySend(contactId) {
     }
     if (amount > gameState.cash) {
         statusEl.textContent = '⚠ Insufficient funds.';
+        statusEl.style.color = '#d00';
+        return;
+    }
+    
+    if (contactId === 'landlord' && (gameState.currentDay % 7 !== 0)) {
+        statusEl.textContent = '⚠ Gerald only accepts payments on Day 7, 14, 21, etc.';
         statusEl.style.color = '#d00';
         return;
     }
@@ -752,7 +769,7 @@ function checkAndSendRentEmail() {
         electricityMsg = '<br><br>' + landlordElectricityComplaints[Math.floor(Math.random() * landlordElectricityComplaints.length)];
     }
 
-    const rentFormatted = rentAmount.toLocaleString(undefined, { minimumFractionDigits: 2 });
+    const rentFormatted = rentAmount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
     const emailBody = `
         <div style="font-family: sans-serif; color: #333; line-height: 1.6;">
@@ -761,7 +778,7 @@ function checkAndSendRentEmail() {
             <div style="background:#f9f3e8; border:1px solid #d4a574; padding:15px; border-radius:6px; margin:15px 0;">
                 <div style="font-size:11px; color:#8b6914; text-transform:uppercase; font-weight:bold; margin-bottom:5px;">RENT + UTILITIES</div>
                 <div style="font-size:28px; font-weight:bold; color:#333;">$${rentFormatted}</div>
-                ${totalLevels > 0 ? `<div style="font-size:10px; color:#999; margin-top:3px;">Includes $${Math.round(rentAmount - BASE_RENT).toLocaleString()} electricity surcharge</div>` : ''}
+                ${totalLevels > 0 ? `<div style="font-size:10px; color:#999; margin-top:3px;">Includes $${Math.round(rentAmount - BASE_RENT).toLocaleString('en-US')} electricity surcharge</div>` : ''}
             </div>
             <button onclick="if(typeof openDesktopWindow==='function'){openDesktopWindow('pallpay');} setTimeout(function(){var tabs=document.querySelectorAll('.pp-tab');tabs.forEach(function(t){if(t.dataset.target==='send'){t.click();}});},300);"
                 style="background:#0070ba; color:#fff; border:none; padding:10px 25px; border-radius:20px; font-weight:bold; cursor:pointer; font-size:13px; display:inline-flex; align-items:center; gap:8px;">

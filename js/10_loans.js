@@ -196,7 +196,7 @@ function _sendLoanEmail(amount, dueDay) {
         subject:     `Loan Approval — $${amount.toFixed(2)} Deposited`,
         date:        new Date().toLocaleDateString('es-AR'),
         body:
-            `<p>Dear BlueCode_Hacker,</p>` +
+            `<p>Dear ${window.OS_USERNAME || 'BlueCode_Hacker'},</p>` +
             `<p>Your personal loan application has been <strong>approved and processed</strong>.</p>` +
             `<table style="border-collapse:collapse; width:100%; font-size:12px; font-family:Tahoma; margin:10px 0;">` +
             `<tr style="background:#1a3a6e; color:#fff;"><th style="padding:6px 10px; text-align:left;">Detail</th><th style="padding:6px 10px; text-align:right;">Amount</th></tr>` +
@@ -268,7 +268,7 @@ function _sendRepayEmail(amount) {
         subject: `Loan Repayment Confirmed — $${amount.toFixed(2)}`,
         date:    new Date().toLocaleDateString('es-AR'),
         body:
-            `<p>Dear BlueCode_Hacker,</p>` +
+            `<p>Dear ${window.OS_USERNAME || 'BlueCode_Hacker'},</p>` +
             `<p>We have received your repayment of <strong>$${amount.toFixed(2)}</strong>. Your loan has been <strong style="color:green;">fully paid off.</strong></p>` +
             `<p>Thank you for choosing FirstNet Bank. You may apply for a new loan after a 10-day cooldown period.</p>` +
             `<p style="color:#888; font-size:10px;">FirstNet Bank · Member FDIC · Est. 1984</p>`,

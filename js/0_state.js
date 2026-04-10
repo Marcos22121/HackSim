@@ -4,6 +4,21 @@
 
 'use strict';
 
+// ─── Initializer & Global Vars ────────────────────────────────────────────────
+window.OS_USERNAME = 'BlueCode_Hacker';
+
+fetch('/api/username')
+    .then(r => r.json())
+    .then(data => {
+        if (data && data.username) {
+            window.OS_USERNAME = data.username;
+            document.querySelectorAll('.os-username-text').forEach(el => {
+                el.textContent = window.OS_USERNAME;
+            });
+        }
+    })
+    .catch(() => console.log('Using default username.'));
+
 // ─── Core DOM Elements ───────────────────────────────────────────────────────
 const xpDesktop         = document.getElementById('xp-desktop');
 const loginScreen       = document.getElementById('login-screen');
@@ -139,7 +154,7 @@ function updateHashDisplay() {
 }
 
 function updateCashDisplay() {
-    const formatted = gameState.cash.toLocaleString(undefined, { minimumFractionDigits: 2 });
+    const formatted = gameState.cash.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     
     // Legacy support
     if (cashValueEl)   cashValueEl.textContent   = formatted;
