@@ -1,0 +1,686 @@
+/* =============================================
+   7_lobby.css - Hacker Room Lobby
+   ============================================= */
+
+/* ─── Lobby Screen ──────────────────────────────── */
+#lobby-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 5000;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    font-family: 'Tahoma', sans-serif;
+    transition: opacity 0.8s ease;
+    background: #0a0d14;
+}
+
+#lobby-screen.fade-out {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* ─── Back Wall ─────────────────────────────────── */
+.lobby-wall {
+    flex: 1;
+    position: relative;
+    background:
+        /* Blue ambient glow from top */
+        radial-gradient(ellipse 80% 60% at 60% 0%, rgba(30, 80, 180, 0.25) 0%, transparent 70%),
+        /* PC glow from right */
+        radial-gradient(ellipse 40% 80% at 95% 60%, rgba(0, 200, 80, 0.12) 0%, transparent 60%),
+        /* Base wall color */
+        linear-gradient(180deg, #0e1520 0%, #0a0e18 100%);
+    display: flex;
+    align-items: flex-start;
+    padding: 4vh 6vw 0;
+    /* Subtle wall texture */
+    background-size: auto;
+}
+
+/* Wall edge shadow */
+.lobby-wall::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+        linear-gradient(90deg, rgba(0,0,0,0.5) 0%, transparent 15%, transparent 85%, rgba(0,0,0,0.5) 100%),
+        linear-gradient(0deg, rgba(0,0,0,0.7) 0%, transparent 35%);
+    pointer-events: none;
+}
+
+/* ─── Whiteboard (hanging on wall, left) ─────────── */
+.wall-whiteboard {
+    position: absolute;
+    left: 7vw;
+    top: 5vh;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* Wire/string hanging */
+    padding-top: 18px;
+}
+
+.wall-whiteboard::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 2px;
+    height: 18px;
+    background: #888;
+}
+
+.wall-whiteboard::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 2px;
+    background: #666;
+    border-radius: 1px;
+}
+
+.whiteboard-frame {
+    width: 260px;
+    background: #c8baa0;
+    border: 10px solid #a89070;
+    border-radius: 4px;
+    padding: 4px;
+    box-shadow:
+        inset 0 0 0 2px #b8a080,
+        4px 6px 20px rgba(0,0,0,0.6),
+        0 0 0 1px #8a6a40;
+}
+
+.whiteboard-surface {
+    background: #f5f2ee;
+    min-height: 160px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 20px 15px;
+    box-shadow: inset 0 0 12px rgba(0,0,0,0.08);
+}
+
+.wb-day {
+    font-size: 46px;
+    font-weight: bold;
+    color: #111;
+    font-family: 'Courier New', monospace;
+    letter-spacing: 2px;
+    line-height: 1;
+    text-shadow: 1px 1px 0 rgba(0,0,0,0.15);
+}
+
+.wb-divider {
+    width: 80%;
+    height: 2px;
+    background: #ddd;
+    border-radius: 1px;
+}
+
+.wb-date {
+    font-size: 13px;
+    color: #555;
+    font-family: 'Tahoma', sans-serif;
+    text-align: center;
+    letter-spacing: 0.5px;
+}
+
+.whiteboard-tray {
+    width: 240px;
+    height: 14px;
+    background: linear-gradient(180deg, #8a6a40, #6a4a20);
+    border-radius: 0 0 3px 3px;
+    margin-top: -1px;
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    gap: 6px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.4);
+}
+
+.marker {
+    width: 28px;
+    height: 8px;
+    background: #222;
+    border-radius: 20px;
+    box-shadow: inset 0 1px 2px rgba(255,255,255,0.1);
+}
+
+/* PC Wall Glow */
+.pc-wall-glow {
+    position: absolute;
+    right: 5%;
+    top: 0;
+    width: 280px;
+    height: 100%;
+    background: radial-gradient(ellipse 80% 100% at 70% 40%, rgba(0, 220, 80, 0.08), transparent 70%);
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* ─── Desk ──────────────────────────────────────── */
+.lobby-desk {
+    position: relative;
+    height: 42vh;
+    background:
+        linear-gradient(180deg, #d8d0c0 0%, #c0b8a8 60%, #b0a898 100%);
+    border-top: 3px solid #e8e0d0;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding-bottom: 0;
+    gap: 0;
+    /* Blue ambient light from PC reflecting off desk */
+    box-shadow:
+        0 -5px 30px rgba(30, 80, 180, 0.15),
+        inset 0 -10px 20px rgba(0,0,0,0.15);
+}
+
+/* Desk left/right edge shadows for depth */
+.lobby-desk::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+        linear-gradient(90deg, rgba(0,0,0,0.35) 0%, transparent 12%, transparent 88%, rgba(0,0,0,0.35) 100%);
+    pointer-events: none;
+    z-index: 5;
+}
+
+/* ─── Monitor Area ──────────────────────────────── */
+.desk-monitor-area {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 3;
+}
+
+.monitor-body {
+    width: 280px;
+    background: linear-gradient(160deg, #d8d4cc 0%, #c0bbb0 100%);
+    border-radius: 6px 6px 0 0;
+    border: 3px solid #aaa;
+    box-shadow:
+        inset -3px -3px 6px rgba(0,0,0,0.2),
+        0 -2px 10px rgba(30, 80, 180, 0.1),
+        2px 2px 12px rgba(0,0,0,0.5);
+    overflow: hidden;
+}
+
+.monitor-screen {
+    width: 100%;
+    height: 180px;
+    background: #111;
+    border: 4px solid #888;
+    border-bottom: none;
+    position: relative;
+    overflow: hidden;
+}
+
+.monitor-screen-off {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, #0d0d0d 0%, #1a1a1a 100%);
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+    padding: 6px;
+    /* Faint reflection */
+}
+
+.monitor-screen-off::before {
+    content: '';
+    position: absolute;
+    top: 5%;
+    left: 5%;
+    width: 40%;
+    height: 30%;
+    background: rgba(255,255,255,0.02);
+    transform: skewX(-10deg);
+}
+
+.monitor-brand {
+    font-size: 9px;
+    color: rgba(255,255,255,0.15);
+    font-family: Arial, sans-serif;
+    letter-spacing: 2px;
+}
+
+.monitor-bottom-bar {
+    background: linear-gradient(180deg, #c5c0b8, #b0aa9f);
+    height: 22px;
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    gap: 8px;
+}
+
+.monitor-led {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    border: 1px solid #777;
+}
+
+.monitor-led.off { background: #555; }
+.monitor-led.on  { background: #2aff6a; box-shadow: 0 0 5px #2aff6a; }
+
+.monitor-stand-neck {
+    width: 18px;
+    height: 20px;
+    background: linear-gradient(90deg, #bbb, #ddd, #bbb);
+    margin-bottom: -2px;
+    z-index: 1;
+}
+
+.monitor-stand-base {
+    width: 120px;
+    height: 12px;
+    background: linear-gradient(180deg, #c0bbb0, #aaa59a);
+    border-radius: 3px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+}
+
+/* ─── Keyboard ──────────────────────────────────── */
+.keyboard {
+    margin-top: 10px;
+    width: 260px;
+    background: linear-gradient(160deg, #d0ccc4, #bfbbb0);
+    border-radius: 5px;
+    border: 1px solid #aaa;
+    box-shadow:
+        inset -2px -2px 4px rgba(0,0,0,0.15),
+        0 2px 8px rgba(0,0,0,0.3);
+    padding: 8px 10px 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.keyboard-row {
+    height: 10px;
+    background: linear-gradient(180deg, #bcb8b0, #aaa59a);
+    border-radius: 3px;
+    border: 1px solid #999;
+    box-shadow: inset 0 1px 2px rgba(255,255,255,0.2), 0 1px 2px rgba(0,0,0,0.2);
+}
+
+.keyboard-spacebar {
+    width: 50%;
+    height: 10px;
+    background: linear-gradient(180deg, #bcb8b0, #aaa59a);
+    border-radius: 3px;
+    border: 1px solid #999;
+    box-shadow: inset 0 1px 2px rgba(255,255,255,0.2), 0 1px 2px rgba(0,0,0,0.2);
+    margin-top: 2px;
+}
+
+/* ─── Mouse ─────────────────────────────────────── */
+.desk-mouse {
+    position: absolute;
+    right: -60px;
+    bottom: 12px;
+    width: 38px;
+    height: 58px;
+    background: linear-gradient(160deg, #d5d0c8, #bfbab0);
+    border-radius: 50% 50% 40% 40% / 60% 60% 40% 40%;
+    border: 1px solid #aaa;
+    box-shadow:
+        inset -2px -2px 5px rgba(0,0,0,0.15),
+        2px 3px 8px rgba(0,0,0,0.3);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 6px;
+    gap: 2px;
+    overflow: hidden;
+}
+
+.mouse-btn {
+    width: 15px;
+    height: 18px;
+    background: linear-gradient(180deg, #cac5bc, #b5b0a8);
+    border-radius: 3px;
+    border: 1px solid #999;
+}
+
+.mouse-scroll {
+    width: 5px;
+    height: 10px;
+    background: #888;
+    border-radius: 3px;
+    margin-top: 2px;
+}
+
+/* ─── PC Tower ──────────────────────────────────── */
+.pc-tower-area {
+    position: absolute;
+    right: 8vw;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 4;
+}
+
+.pc-tower-body {
+    width: 120px;
+    height: 340px;
+    background: linear-gradient(160deg, #d4d0c8 0%, #c0bbb3 40%, #aca89f 100%);
+    border-radius: 6px 6px 2px 2px;
+    border: 2px solid #b0aba3;
+    box-shadow:
+        inset -6px 0 10px rgba(0,0,0,0.12),
+        inset 0 -6px 10px rgba(0,0,0,0.08),
+        5px 5px 20px rgba(0,0,0,0.5),
+        /* Green power glow */
+        -5px 0 40px rgba(0, 220, 80, 0.18),
+        0 0 60px rgba(0, 200, 70, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 10px 10px;
+    cursor: default;
+    position: relative;
+}
+
+.tower-led-strip {
+    width: 100%;
+    height: 5px;
+    background: linear-gradient(90deg, #3a6fd8, #4a8af0, #3a6fd8);
+    border-radius: 0;
+    margin-bottom: 12px;
+    box-shadow: 0 0 8px rgba(74, 138, 240, 0.8);
+}
+
+.tower-brand {
+    font-size: 8px;
+    color: #888;
+    letter-spacing: 2px;
+    font-family: Arial, sans-serif;
+    margin-bottom: 10px;
+    align-self: flex-start;
+}
+
+.tower-drive {
+    width: 90px;
+    height: 12px;
+    background: linear-gradient(180deg, #aaa399, #958e84);
+    border: 1px solid #888;
+    border-radius: 2px;
+    margin-bottom: 8px;
+    align-self: flex-start;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.3);
+}
+
+.tower-drive.cdrom {
+    height: 14px;
+    position: relative;
+    padding-right: 14px;
+}
+
+.cdrom-btn {
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 6px;
+    height: 6px;
+    background: #ccc;
+    border-radius: 50%;
+    border: 1px solid #999;
+}
+
+/* ─── Power Button — Big & Prominent ────────────── */
+.tower-power-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 10px;
+}
+
+.tower-power-btn {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 38% 35%, #4dff88, #1acc55 45%, #0f9940 100%);
+    border: 3px solid #0a7a30;
+    box-shadow:
+        0 0 12px rgba(0, 220, 80, 0.8),
+        0 0 28px rgba(0, 180, 60, 0.5),
+        0 0 50px rgba(0, 160, 50, 0.25),
+        inset 0 2px 4px rgba(255,255,255,0.3),
+        inset 0 -2px 4px rgba(0,0,0,0.3);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255,255,255,0.9);
+    transition: all 0.15s ease;
+    animation: powerGlow 2.5s ease-in-out infinite;
+    outline: none;
+}
+
+.tower-power-btn svg {
+    width: 26px;
+    height: 26px;
+    filter: drop-shadow(0 0 3px rgba(255,255,255,0.5));
+}
+
+.tower-power-btn:hover {
+    transform: scale(1.08);
+    box-shadow:
+        0 0 20px rgba(0, 240, 90, 1),
+        0 0 40px rgba(0, 200, 70, 0.7),
+        0 0 70px rgba(0, 160, 50, 0.4),
+        inset 0 2px 4px rgba(255,255,255,0.4),
+        inset 0 -2px 5px rgba(0,0,0,0.3);
+}
+
+.tower-power-btn:active {
+    transform: scale(0.94);
+    background: radial-gradient(circle at 38% 35%, #88ffaa, #33dd77 45%, #1aaa50 100%);
+}
+
+.power-label {
+    font-size: 8px;
+    color: #777;
+    letter-spacing: 3px;
+    font-family: Arial, sans-serif;
+}
+
+@keyframes powerGlow {
+    0%, 100% {
+        box-shadow:
+            0 0 12px rgba(0, 220, 80, 0.8),
+            0 0 28px rgba(0, 180, 60, 0.5),
+            0 0 50px rgba(0, 160, 50, 0.25),
+            inset 0 2px 4px rgba(255,255,255,0.3),
+            inset 0 -2px 4px rgba(0,0,0,0.3);
+    }
+    50% {
+        box-shadow:
+            0 0 20px rgba(0, 240, 90, 1),
+            0 0 40px rgba(0, 200, 70, 0.65),
+            0 0 70px rgba(0, 160, 50, 0.35),
+            inset 0 2px 4px rgba(255,255,255,0.3),
+            inset 0 -2px 4px rgba(0,0,0,0.3);
+    }
+}
+
+/* USB Ports */
+.tower-usb-area {
+    display: flex;
+    gap: 6px;
+    margin-top: 4px;
+    align-self: flex-start;
+}
+
+.usb-port {
+    width: 10px;
+    height: 6px;
+    background: #555;
+    border-radius: 1px;
+    border: 1px solid #333;
+}
+
+.tower-base-feet {
+    display: flex;
+    gap: 60px;
+    margin-top: -1px;
+}
+
+.foot {
+    width: 18px;
+    height: 8px;
+    background: #999;
+    border-radius: 0 0 3px 3px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+/* ─── Floor ─────────────────────────────────────── */
+.lobby-floor {
+    height: 10vh;
+    background: linear-gradient(180deg, #1a1c20 0%, #141618 100%);
+    border-top: 2px solid #2a2c30;
+}
+
+/* Cable on floor */
+.cable-on-floor {
+    position: absolute;
+    bottom: 10vh;
+    right: 12vw;
+    width: 80px;
+    height: 3px;
+    background: #333;
+    border-radius: 2px;
+    transform: rotate(-15deg);
+    box-shadow: 5px 5px 0 #2a2a2a, -3px 8px 0 #2a2a2a;
+}
+
+/* ─── White Flash Effect ─────────────────────────── */
+#power-flash {
+    position: fixed;
+    inset: 0;
+    background: white;
+    z-index: 9999;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s ease-in-out;
+}
+
+#power-flash.flash-on {
+    opacity: 1;
+}
+
+/* ─── Day End Banner ─────────────────────────────── */
+#day-end-banner {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 4000;
+    background: linear-gradient(90deg, #5c0a0a, #7a1010, #5c0a0a);
+    border-bottom: 2px solid #d33c3c;
+    padding: 5px 20px;
+    color: #ffaaaa;
+    font-size: 12px;
+    font-family: 'Tahoma', sans-serif;
+    text-align: center;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+}
+
+#day-end-banner.visible {
+    display: block;
+}
+
+/* ─── Turn Off Button in Taskbar ─────────────────── */
+#btn-turn-off-pc {
+    display: none;
+    background: linear-gradient(180deg, #cc2020, #991010);
+    color: #fff;
+    border: 1px solid #880000;
+    border-radius: 3px;
+    padding: 2px 10px;
+    font-size: 11px;
+    font-family: 'Tahoma', sans-serif;
+    font-weight: bold;
+    cursor: pointer;
+    margin-right: 6px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+}
+
+#btn-turn-off-pc.visible {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+/* ─── Shutdown Overlay ───────────────────────────── */
+#shutdown-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: #000;
+    z-index: 9998;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-family: 'Tahoma', sans-serif;
+}
+
+#shutdown-overlay.active {
+    display: flex;
+}
+
+.shutdown-logo {
+    width: 80px;
+    margin-bottom: 30px;
+    opacity: 0.7;
+}
+
+.shutdown-text {
+    font-size: 14px;
+    color: #8899bb;
+    letter-spacing: 2px;
+    margin-bottom: 30px;
+}
+
+.shutdown-dots {
+    display: flex;
+    gap: 8px;
+}
+
+.shutdown-dots span {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #4a6fd8;
+    animation: shutdownDot 1.2s ease-in-out infinite;
+}
+
+.shutdown-dots span:nth-child(2) { animation-delay: 0.2s; }
+.shutdown-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes shutdownDot {
+    0%, 100% { opacity: 0.2; transform: scale(0.8); }
+    50%       { opacity: 1;   transform: scale(1); }
+}

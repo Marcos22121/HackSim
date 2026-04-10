@@ -64,6 +64,7 @@ const gameState = {
     cash:     0,
     dirtyCash: 0,
     cleanCash: 0,
+    currentDay: 1,
     documentsUnlocked: [],
     transactions: [],
     storyProgress: 0, // 0 = Intro, 1 = Tools unlocked
@@ -218,6 +219,7 @@ function loadGame() {
             gameState.documentsUnlocked = data.gameState.documentsUnlocked || [];
             gameState.transactions = data.gameState.transactions || [];
             gameState.storyProgress = data.gameState.storyProgress || 0;
+            gameState.currentDay    = data.gameState.currentDay    || 1;
             if (data.gameState.pcParts) {
                 // Merge loaded parts carefully to preserve structure if updates happen
                 for (let key in data.gameState.pcParts) {

@@ -25,23 +25,30 @@ function startLoginSequence() {
                     if (typeof receiveStoryMail === 'function') setTimeout(receiveStoryMail, 4000); 
                     if (typeof receiveTutorialMail === 'function') setTimeout(receiveTutorialMail, 7000); 
                 } else if (typeof gameState !== 'undefined') {
-                    // Ensure tutorial mail eventually gets sent if they skipped it but story is 1
                     if (typeof inboxEmails !== 'undefined' && !gameState.documentsUnlocked.includes('doc-tutorial') && !inboxEmails.find(m => m.id === 'm_tutorial')) {
                         if (typeof receiveTutorialMail === 'function') setTimeout(receiveTutorialMail, 2000);
                     }
                 }
-            }, 800); // matches CSS transition duration
+            }, 800);
         }
     }, 3000);
 }
 
 // ─── Entry Point ─────────────────────────────────────────────────────────────
 
-startLoginSequence();
+// Load saved data first
 if (typeof loadGame === 'function') loadGame();
 
+// Start at lobby (not auto-login)
+if (typeof showLobby === 'function') {
+    showLobby();
+} else {
+    // Fallback: auto-start login if daycycle not loaded
+    startLoginSequence();
+}
+
 if (typeof gameState !== 'undefined') {
-    console.log(`[HackOS] v${gameState.version} initialized. Currency: ${gameState.currency}`);
+    console.log(`[HackOS] v${gameState.version} Day ${gameState.currentDay} initialized.`);
 }
 
 window.startLoginSequence = startLoginSequence;

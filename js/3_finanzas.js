@@ -60,6 +60,10 @@ const btnStartDecodify    = document.getElementById('btn-start-decodify');
 var isDecoding = false;
 var decodifyTimer = null;
 
+// Looping decode sound
+const decodifySound = new Audio('./SFX/terminal/decodify.mp3');
+decodifySound.loop = true;
+
 if (decodifyAmountInput) {
     decodifyAmountInput.addEventListener('input', () => {
         if(isDecoding) return;
@@ -102,6 +106,10 @@ function startDecodingSequence() {
     if (decodifyProgressBar) decodifyProgressBar.style.width = '0%';
     if (decodifyStatusText) decodifyStatusText.textContent = `Target locked. Decoding process started...`;
 
+    // Start looping decode sound
+    decodifySound.currentTime = 0;
+    decodifySound.play().catch(() => {});
+
     const totalTime = 45000; // 45 seconds
     const intervalTime = 100;
     let elapsedTime = 0;
@@ -125,6 +133,10 @@ function startDecodingSequence() {
 }
 
 function completeDecoding(hashAmount) {
+    // Stop decode loop sound
+    decodifySound.pause();
+    decodifySound.currentTime = 0;
+
     if (typeof playCashSound === 'function') playCashSound();
     const cashGained = hashAmount * 1.5;
     gameState.dirtyCash += cashGained; 

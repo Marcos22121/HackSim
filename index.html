@@ -18,14 +18,142 @@
     <link rel="stylesheet" href="css/4_mail.css">
     <link rel="stylesheet" href="css/5_animations.css">
     <link rel="stylesheet" href="css/6_bluemium.css">
+    <link rel="stylesheet" href="css/7_lobby.css">
 </head>
 
 <body>
 
     <!-- ================================================================
+         LOBBY SCREEN — Hacker Room
+         ================================================================ -->
+    <div id="lobby-screen">
+
+        <!-- Room back wall -->
+        <div class="lobby-wall">
+
+            <!-- Whiteboard hanging on the wall (left) -->
+            <div class="wall-whiteboard">
+                <div class="whiteboard-frame">
+                    <div class="whiteboard-surface">
+                        <div class="wb-day" id="lobby-day-text">Day 1</div>
+                        <div class="wb-divider"></div>
+                        <div class="wb-date" id="lobby-date-text">1 de mayo de 2001</div>
+                    </div>
+                </div>
+                <!-- Whiteboard tray -->
+                <div class="whiteboard-tray">
+                    <div class="marker"></div>
+                    <div class="marker" style="background:#3a7bd5;"></div>
+                    <div class="marker" style="background:#e74c3c;"></div>
+                </div>
+            </div>
+
+            <!-- PC Tower glow on wall -->
+            <div class="pc-wall-glow"></div>
+
+        </div>
+
+        <!-- Desk surface -->
+        <div class="lobby-desk">
+
+            <!-- Monitor (center) -->
+            <div class="desk-monitor-area">
+                <div class="monitor-stand-neck"></div>
+                <div class="monitor-body">
+                    <div class="monitor-screen">
+                        <div class="monitor-screen-off">
+                            <div class="monitor-brand">PACKARD BELL</div>
+                        </div>
+                    </div>
+                    <div class="monitor-bottom-bar">
+                        <div class="monitor-led off"></div>
+                    </div>
+                </div>
+                <div class="monitor-stand-base"></div>
+                <!-- Keyboard -->
+                <div class="keyboard">
+                    <div class="keyboard-row" style="width:95%"></div>
+                    <div class="keyboard-row" style="width:90%"></div>
+                    <div class="keyboard-row" style="width:85%"></div>
+                    <div class="keyboard-row" style="width:80%"></div>
+                    <div class="keyboard-spacebar"></div>
+                </div>
+                <!-- Mouse -->
+                <div class="desk-mouse">
+                    <div class="mouse-btn left"></div>
+                    <div class="mouse-btn right"></div>
+                    <div class="mouse-scroll"></div>
+                </div>
+            </div>
+
+            <!-- PC Tower (right of desk) -->
+            <div class="pc-tower-area">
+                <div class="pc-tower-body">
+                    <!-- Top LED strip -->
+                    <div class="tower-led-strip"></div>
+                    <!-- Brand label -->
+                    <div class="tower-brand">PACKARD BELL</div>
+                    <!-- Floppy drive -->
+                    <div class="tower-drive floppy"></div>
+                    <!-- CD-ROM drive -->
+                    <div class="tower-drive cdrom">
+                        <div class="cdrom-btn"></div>
+                    </div>
+                    <!-- Spacer -->
+                    <div style="flex:1;"></div>
+                    <!-- POWER BUTTON — big and prominent -->
+                    <div class="tower-power-section">
+                        <button class="tower-power-btn" id="btn-power-on" onclick="powerOnPC()" title="Encender PC">
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 3V12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                                <path d="M7.01 5.49A9 9 0 1 0 17 5.5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                            </svg>
+                        </button>
+                        <div class="power-label">POWER</div>
+                    </div>
+                    <!-- USB ports area -->
+                    <div class="tower-usb-area">
+                        <div class="usb-port"></div>
+                        <div class="usb-port"></div>
+                    </div>
+                </div>
+                <div class="tower-base-feet">
+                    <div class="foot"></div>
+                    <div class="foot"></div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Floor -->
+        <div class="lobby-floor"></div>
+
+        <!-- Ambient cable on floor -->
+        <div class="cable-on-floor"></div>
+
+    </div>
+
+    <!-- White flash overlay for power-on effect -->
+    <div id="power-flash"></div>
+
+    <!-- Shutdown overlay -->
+    <div id="shutdown-overlay">
+        <img src="assets/logo.png" class="shutdown-logo" alt="">
+        <div class="shutdown-text">Shutting down...</div>
+        <div class="shutdown-dots">
+            <span></span><span></span><span></span>
+        </div>
+    </div>
+
+    <!-- Day End Banner (shown at 23:00) -->
+    <div id="day-end-banner">
+        ⚠&nbsp; Los servidores se restaurarán mañana a las 6:00 AM &nbsp;— BlueCode y DarkNet offline
+    </div>
+
+    <!-- ================================================================
          LOGIN SCREEN — Blue XP-style login with animated dots
          ================================================================ -->
-    <div id="login-screen">
+    <div id="login-screen" style="display:none;">
         <div id="login-content">
             <img id="login-logo" src="assets/logo.png" alt="BlueCode Logo">
             <div id="login-text">
@@ -921,6 +1049,7 @@
                 <img src="assets/logo.png" alt="" class="start-logo">
                 <span>Bluecode</span>
             </button>
+            <button id="btn-turn-off-pc" onclick="shutdownPC()" title="Apagar la PC">⏻ Turn Off</button>
             <div id="taskbar-divider"></div>
             <div id="taskbar-apps"></div>
             <div id="system-tray" style="position:relative; display:flex; align-items:center;">
@@ -949,6 +1078,7 @@
     <script src="js/3_finanzas.js"></script>
     <script src="js/5_apps.js"></script>
     <script src="js/8_bluemium.js"></script>
+    <script src="js/9_daycycle.js"></script>
     <script src="js/7_init.js"></script>
 
 </body>
