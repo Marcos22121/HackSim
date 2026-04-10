@@ -21,6 +21,11 @@ const browserPages = {
         title: 'TechCore PC Parts Shop',
         el:    'browser-page-shop',
     },
+    page404: {
+        url:   '', // dynamic
+        title: '404 Not Found',
+        el:    'browser-page-404',
+    }
 };
 
 // ─── Navigation Helpers ──────────────────────────────────────────────────────
@@ -104,12 +109,55 @@ function browserGoForward() {
 
 function browserRefresh() {
     browserShowLoading('');
-    setTimeout(() => browserNavigateTo(browserCurrentPage), 500);
+    setTimeout(() => {
+        const urlInput = document.getElementById('bluemium-url-input');
+        if (urlInput && urlInput.value) {
+            browserNavigate(true);
+        } else {
+            browserNavigateTo(browserCurrentPage);
+        }
+    }, 500);
 }
 
-function browserNavigate() {
-    // For now, just refresh (no real URL parsing)
-    browserRefresh();
+function browserNavigate(isRefresh = false) {
+    const urlInput = document.getElementById('bluemium-url-input');
+    if (!urlInput) return;
+    
+    let targetUrl = urlInput.value.trim().toLowerCase();
+    
+    // Auto-prepend www. if they just typed techcore... etc.
+    if (!targetUrl.startsWith('www.') && !targetUrl.startsWith('bluemium://') && targetUrl.includes('.')) {
+        // Just optional UX logic, leave as is since user wants exactly what they type.
+    }
+
+    if (targetUrl === '') {
+        browserGoHome();
+        return;
+    }
+
+    // Find if the URL matches any of our registered pages
+    let foundPageId = null;
+    for (const [id, page] of Object.entries(browserPages)) {
+        if (id === 'page404') continue; 
+        if (page.url.toLowerCase() === targetUrl) {
+            foundPageId = id;
+            break;
+        }
+    }
+
+    // Default to 404 if not found
+    if (!foundPageId) {
+        foundPageId = 'page404';
+        browserPages['page404'].url = urlInput.value; // keep what they typed
+    }
+
+    browserShowLoading(foundPageId === 'page404' ? 'Site' : targetUrl);
+    
+    if (!isRefresh && foundPageId !== browserCurrentPage) {
+        browserPushHistory(foundPageId);
+    }
+    
+    setTimeout(() => browserNavigateTo(foundPageId), 500);
 }
 
 function getComponentCost(key) {

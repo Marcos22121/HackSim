@@ -748,7 +748,7 @@
                     <button class="bluemium-nav-btn" onclick="browserGoHome()" title="Home">&#127968;</button>
                     <div class="bluemium-address-bar">
                         <img src="assets/icon-bluemium.png" class="bluemium-favicon" alt="">
-                        <input type="text" id="bluemium-url-input" class="bluemium-url-field" value="bluemium://newtab" readonly>
+                        <input type="text" id="bluemium-url-input" class="bluemium-url-field" value="bluemium://newtab" onkeydown="if(event.key === 'Enter') browserNavigate()">
                     </div>
                     <button class="bluemium-go-btn" onclick="browserNavigate()">Go</button>
                     <div class="bluemium-spinning-globe" id="browser-loading-icon">
@@ -776,8 +776,8 @@
                                 <span class="bluemium-brand">Bluemium</span>
                             </div>
                             <div class="bluemium-search-box">
-                                <input type="text" placeholder="Search or enter address" class="bluemium-search-input" readonly>
-                                <button class="bluemium-search-btn">Search</button>
+                                <input type="text" id="bluemium-home-search-input" placeholder="Search or enter address" class="bluemium-search-input" onkeydown="if(event.key === 'Enter') { document.getElementById('bluemium-url-input').value = this.value; browserNavigate(); }">
+                                <button class="bluemium-search-btn" onclick="document.getElementById('bluemium-url-input').value = document.getElementById('bluemium-home-search-input').value; browserNavigate();">Search</button>
                             </div>
                             <div class="bluemium-quicklinks">
                                 <div class="bluemium-quicklink" onclick="browserOpenShop()">
@@ -940,6 +940,17 @@
                             </div>
                         </div>
                     </div><!-- /browser-page-shop -->
+
+                    <!-- ── PAGE: 404 Not Found ── -->
+                    <div id="browser-page-404" class="browser-page" style="display:none;">
+                        <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; width:100%; background:#f0f2f5; text-align:center; padding:20px;">
+                            <img src="assets/icon-bluemium.png" style="width:100px; filter:grayscale(1); opacity:0.5; margin-bottom:20px;">
+                            <h1 style="color:#555; text-shadow: 1px 1px #fff;">404 - Server Not Found</h1>
+                            <p style="color:#777; max-width:400px; margin-top:10px; font-family:'Tahoma'; font-size:13px;">
+                                Bluemium can't find the server at the requested URL. Check the address for typing errors such as <strong>ww.example.com</strong> instead of <strong>www.example.com</strong>.
+                            </p>
+                        </div>
+                    </div>
 
                 </div><!-- /bluemium-content -->
 
