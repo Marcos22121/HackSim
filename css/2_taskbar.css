@@ -91,29 +91,40 @@
     max-width: 200px;
     font-size: 11px;
     font-weight: bold;
-    color: #fff;
-    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.4);
-    background: linear-gradient(180deg, #3a81f1 0%, #1d5ed1 100%);
-    border: 1px solid #104193;
-    border-radius: 2px;
+    color: #fff !important;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.6);
+    background: linear-gradient(180deg, #3c81f3 0%, #3072e6 12%, #225cce 50%, #1449b8 100%) !important;
+    border: 1px solid #104193 !important;
+    border-radius: 3px !important;
     cursor: pointer;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     flex-shrink: 0;
-    box-shadow: inset 1px 1px 1px rgba(255,255,255,0.4);
+    box-shadow: 
+        inset 1px 1px 1px rgba(255,255,255,0.4),
+        inset -1px -1px 2px rgba(0,0,0,0.2) !important;
     -webkit-appearance: none;
     appearance: none;
+    transition: none;
 }
 
 .taskbar-app-tab:hover {
-    background: linear-gradient(180deg, #4b8df2 0%, #2e69d6 100%);
+    background: linear-gradient(180deg, #4b8df2 0%, #3d7ee0 12%, #2d6cd4 50%, #1a56cc 100%) !important;
+    box-shadow: 
+        inset 1px 1px 2px rgba(255,255,255,0.6),
+        inset -1px -1px 2px rgba(0,0,0,0.3) !important;
 }
 
 .taskbar-app-tab.active {
-    background: linear-gradient(180deg, #1d4b9f 0%, #123473 100%);
-    border-color: #0b224c;
-    box-shadow: inset 1px 1px 4px rgba(0,0,0,0.7);
+    background: linear-gradient(180deg, #1b4b9b 0%, #174288 15%, #13346e 50%, #0d2858 100%) !important;
+    border-color: #0b224c !important;
+    color: #dfdfdf !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8) !important;
+    box-shadow: 
+        inset 2px 2px 5px rgba(0, 0, 0, 0.6),
+        inset 0 0 12px rgba(0, 0, 0, 0.5),
+        inset -1px -1px 1px rgba(255, 255, 255, 0.1) !important;
 }
 
 .taskbar-app-tab img {
