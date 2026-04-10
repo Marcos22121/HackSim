@@ -39,12 +39,37 @@ function startLoginSequence() {
 // Load saved data first
 if (typeof loadGame === 'function') loadGame();
 
-// Start at lobby (not auto-login)
-if (typeof showLobby === 'function') {
-    showLobby();
+// Check Main Menu before starting
+if (!sessionStorage.getItem('mainMenuShown')) {
+    const mmOverlay = document.getElementById('main-menu-overlay');
+    if (mmOverlay) {
+        mmOverlay.style.display = 'flex';
+        
+        const btnPlay = document.getElementById('btn-mm-play');
+        if (btnPlay) {
+            btnPlay.addEventListener('click', () => {
+                sessionStorage.setItem('mainMenuShown', 'true');
+                mmOverlay.style.display = 'none';
+                
+                // Play sound for opening/start if desired (optional)
+                
+                // Now proceed with normal start
+                if (typeof showLobby === 'function') {
+                    showLobby();
+                } else {
+                    startLoginSequence();
+                }
+            });
+        }
+    }
 } else {
-    // Fallback: auto-start login if daycycle not loaded
-    startLoginSequence();
+    // Start at lobby (not auto-login) normally
+    if (typeof showLobby === 'function') {
+        showLobby();
+    } else {
+        // Fallback: auto-start login if daycycle not loaded
+        startLoginSequence();
+    }
 }
 
 if (typeof gameState !== 'undefined') {

@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="BlueCode — A cyberpunk hacker simulator with Windows XP aesthetics">
     <title>BlueCode — Hacker Simulator</title>
+    <link rel="icon" type="image/png" href="assets/icon-bluemium.png">
 
     <!-- XP.css — Windows XP UI Library -->
     <link rel="stylesheet" href="node_modules/xp.css/dist/XP.css">
@@ -24,6 +25,76 @@
 
 <body>
 
+    <!-- ================================================================
+         MAIN MENU (First time open)
+         ================================================================ -->
+    <div id="main-menu-overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; z-index:99999; background: url('assets/wallpaper.png') no-repeat center center fixed; background-size: cover; align-items:center; justify-content:center;">
+        <div class="window desktop-window main-menu-window" style="position:relative; top:auto; left:auto; width: 75vw; height: 75vh; box-shadow: 0 10px 30px rgba(0,0,0,0.6);">
+            <div class="title-bar">
+                <div class="title-bar-text">BlueCode v0.1 — Main Menu</div>
+                <div class="title-bar-controls">
+                    <button aria-label="Minimize" disabled></button>
+                    <button aria-label="Maximize" disabled></button>
+                    <button aria-label="Close" disabled></button>
+                </div>
+            </div>
+            <div class="window-body" style="background:#ece9d8; padding: 0; display:flex; flex-direction:column; align-items:stretch; flex: 1; overflow: auto;">
+                
+                <!-- Main Content Area -->
+                <div style="flex:1; display:flex; flex-direction:column; padding: 25px 40px; align-items:center; justify-content:center; position:relative;">
+                    
+                    <!-- Header Image (Transparent) -->
+                    <div style="width: 100%; text-align:center; margin-bottom: 40px;">
+                        <img src="./assets/BlueCodeLogo.png" alt="BlueCode Logo" style="max-width: 400px; width: 35%; height:auto; display:block; margin:0 auto; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));">
+                    </div>
+
+                    <!-- Layout: Left (Info/text) and Right (Buttons) -->
+                    <div style="display:flex; width: 100%; gap: 40px; flex:1; max-height: 400px;">
+                        
+                        <!-- Left Side: XP-style text/info box -->
+                        <div style="flex: 1; display:flex; flex-direction:column; gap: 15px;">
+                            <div style="background:#fff; border:2px inset #ccc; padding: 20px; font-family:'Tahoma', sans-serif; font-size:14px; color:#333; height: 100%;">
+                                <h4 style="margin:0 0 10px 0; color:#003080; border-bottom:1px solid #aaa; padding-bottom:5px; font-size:16px;">System Information</h4>
+                                <p style="margin:0 0 10px 0;"><strong>OS:</strong> HackOS v2.0 (Build 2600)</p>
+                                <p style="margin:0 0 10px 0;"><strong>User:</strong> Subject_84</p>
+                                <p style="margin:0 0 10px 0;"><strong>Status:</strong> Awaiting connection...</p>
+                                <div style="margin-top: 20px; padding-top:15px; border-top:1px dashed #ccc; font-size:12px; color:#666; line-height:1.5;">
+                                    Welcome to the BlueCode environment. Ensure your connection is secure before proceeding. All activities are monitored by the system administrator.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Side: Action Buttons -->
+                        <div style="flex: 1; display:flex; flex-direction:column; gap: 15px; justify-content: center;">
+                            <button id="btn-mm-play" style="width: 100%; padding: 15px; font-weight:bold; font-size:16px; cursor:pointer;" title="Start Day">
+                                Play Game
+                            </button>
+                            <button id="btn-mm-load" style="width: 100%; padding: 12px; font-size:14px; cursor:pointer;" onclick="alert('Load Profile functionality coming soon.')">
+                                Load Profile
+                            </button>
+                            <button id="btn-mm-options" style="width: 100%; padding: 12px; font-size:14px; cursor:not-allowed;" disabled>
+                                Options
+                            </button>
+                            <button id="btn-mm-credits" style="width: 100%; padding: 12px; font-size:14px; cursor:not-allowed;" disabled>
+                                Credits
+                            </button>
+                            <button id="btn-mm-exit" style="width: 100%; padding: 12px; font-size:14px; cursor:not-allowed;" disabled>
+                                Exit to Desktop
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- XP Status Bar -->
+                <div class="status-bar" style="margin-top: auto; font-family:'Tahoma', sans-serif; font-size:12px;">
+                    <p class="status-bar-field">Ready</p>
+                    <p class="status-bar-field" style="flex:1;">© 2001 BlueCode Systems Inc.</p>
+                    <p class="status-bar-field">V 0.1.0</p>
+                </div>
+
+            </div>
+        </div>
+    </div>
     <!-- ================================================================
          LOBBY SCREEN — Hacker Room
          ================================================================ -->
