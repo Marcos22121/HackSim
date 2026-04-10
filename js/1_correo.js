@@ -86,7 +86,7 @@ function receiveStoryMail() {
     if (gameState.storyProgress !== 0) return;
     if (inboxEmails.find(m => m.id === 'm_story')) return;
     
-    playSuccessSound(); 
+    playMailSound(); 
     
     const popup = document.createElement('div');
     popup.className = 'mail-notification';
@@ -106,7 +106,7 @@ function receiveTutorialMail() {
     if (gameState.documentsUnlocked.includes('doc-tutorial')) return;
     if (inboxEmails.find(m => m.id === 'm_tutorial')) return;
     
-    playSuccessSound(); 
+    playMailSound(); 
     
     const popup = document.createElement('div');
     popup.className = 'mail-notification';
@@ -123,6 +123,53 @@ function receiveTutorialMail() {
 }
 
 // ─── Attachments & Installer Logic ───────────────────────────────────────────
+
+function simulateDocumentDownload(filename, docId, callback) {
+    const popup = document.createElement('div');
+    popup.className = 'mail-notification';
+    popup.style.flexDirection = 'column';
+    popup.style.gap = '5px';
+    popup.innerHTML = `
+        <div style="display:flex; gap:12px; align-items:center; width:100%;">
+            <img src="assets/icon-documents.svg" width="24" height="24">
+            <div style="flex:1;">
+                <strong>Downloading...</strong><br>
+                <span id="dl-status-${docId}" style="color:#555;">0.0 / 12.4 KB</span>
+            </div>
+        </div>
+        <div style="width:100%; height:10px; background:#e0dfdc; border:1px solid #999; border-right-color:#fff; border-bottom-color:#fff; margin-top:2px;">
+            <div id="dl-bar-${docId}" style="width:0%; height:100%; background:#2b5cd7; transition: width 0.1s linear;"></div>
+        </div>
+    `;
+    document.body.appendChild(popup);
+
+    let progress = 0;
+    const totalSize = (Math.random() * 15 + 5).toFixed(1); 
+    const bar = document.getElementById(`dl-bar-${docId}`);
+    const status = document.getElementById(`dl-status-${docId}`);
+
+    const interval = setInterval(() => {
+        progress += Math.random() * 20 + 10;
+        if (progress >= 100) progress = 100;
+        
+        if (bar) bar.style.width = `${progress}%`;
+        
+        const currentSize = ((progress / 100) * totalSize).toFixed(1);
+        if (status) status.textContent = `${currentSize} / ${totalSize} KB`;
+
+        if (progress >= 100) {
+            clearInterval(interval);
+            setTimeout(() => {
+                popup.style.flexDirection = '';
+                popup.innerHTML = `<img src="assets/icon-documents.svg" width="24" height="24"> <div><strong>Download Complete</strong><br>${filename} saved to Documents</div>`;
+                if (typeof playSuccessSound === 'function') playSuccessSound();
+                callback();
+                setTimeout(() => popup.remove(), 4000);
+            }, 400);
+        }
+    }, 150);
+}
+
 const btnAttachment = document.getElementById('btn-attachment-download');
 if (btnAttachment) {
     btnAttachment.addEventListener('click', () => {
@@ -133,6 +180,12 @@ if (btnAttachment) {
             if (typeof openDesktopWindow === 'function') openDesktopWindow('installer');
             
             const pbar = document.getElementById('installer-progress-bar');
+            const title = document.getElementById('installer-title');
+            const text = document.getElementById('installer-text');
+            
+            if (title) title.textContent = 'Installing components...';
+            if (text) text.textContent = 'Extracting BlueCode and DarkNet.';
+
             if (pbar) {
                 pbar.style.width = '0%';
                 pbar.style.transition = 'none';
@@ -150,19 +203,14 @@ if (btnAttachment) {
             }, 5100);
         } else if (mail.id === 'm_tutorial') {
             if (!gameState.documentsUnlocked.includes('doc-tutorial')) {
-                gameState.documentsUnlocked.push('doc-tutorial');
-                if (typeof saveGame === 'function') saveGame();
-                playSuccessSound();
-                
-                const popup = document.createElement('div');
-                popup.className = 'mail-notification';
-                popup.innerHTML = `<img src="assets/icon-documents.svg" width="24" height="24"> <div><strong>Download Complete</strong><br>HOW_TO_HACK.txt saved to Documents</div>`;
-                document.body.appendChild(popup);
-                setTimeout(() => popup.remove(), 4000);
-                
-                if (typeof desktopWindows !== 'undefined' && desktopWindows['documents'] && desktopWindows['documents'].state !== 'hidden') {
-                    if (typeof renderDocumentsList === 'function') renderDocumentsList();
-                }
+                simulateDocumentDownload('HOW_TO_HACK.txt', 'doc-tutorial', () => {
+                    gameState.documentsUnlocked.push('doc-tutorial');
+                    if (typeof saveGame === 'function') saveGame();
+                    
+                    if (typeof desktopWindows !== 'undefined' && desktopWindows['documents'] && desktopWindows['documents'].state !== 'hidden') {
+                        if (typeof renderDocumentsList === 'function') renderDocumentsList();
+                    }
+                });
             } else {
                 const popup = document.createElement('div');
                 popup.className = 'mail-notification';
@@ -172,19 +220,14 @@ if (btnAttachment) {
             }
         } else if (mail.id === 'm_darknet') {
             if (!gameState.documentsUnlocked.includes('doc-onionweb')) {
-                gameState.documentsUnlocked.push('doc-onionweb');
-                if (typeof saveGame === 'function') saveGame();
-                playSuccessSound();
-                
-                const popup = document.createElement('div');
-                popup.className = 'mail-notification';
-                popup.innerHTML = `<img src="assets/icon-documents.svg" width="24" height="24"> <div><strong>Download Complete</strong><br>OnionWeb.txt saved to Documents</div>`;
-                document.body.appendChild(popup);
-                setTimeout(() => popup.remove(), 4000);
-                
-                if (typeof desktopWindows !== 'undefined' && desktopWindows['documents'] && desktopWindows['documents'].state !== 'hidden') {
-                    if (typeof renderDocumentsList === 'function') renderDocumentsList();
-                }
+                simulateDocumentDownload('OnionWeb.txt', 'doc-onionweb', () => {
+                    gameState.documentsUnlocked.push('doc-onionweb');
+                    if (typeof saveGame === 'function') saveGame();
+                    
+                    if (typeof desktopWindows !== 'undefined' && desktopWindows['documents'] && desktopWindows['documents'].state !== 'hidden') {
+                        if (typeof renderDocumentsList === 'function') renderDocumentsList();
+                    }
+                });
             } else {
                 const popup = document.createElement('div');
                 popup.className = 'mail-notification';
@@ -205,7 +248,7 @@ function receiveDarkNetMail() {
     
     // Simulate delay before email arrives so user is looking at darknet
     setTimeout(() => {
-        playSuccessSound(); 
+        playMailSound(); 
         
         const popup = document.createElement('div');
         popup.className = 'mail-notification';

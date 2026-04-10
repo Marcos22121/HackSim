@@ -222,7 +222,10 @@
                         <div id="decodify-form">
                             <div class="field-row">
                                 <label for="decodify-amount">Hashes to decode (Min 1):</label>
-                                <input type="number" id="decodify-amount" min="1" step="0.01" placeholder="0.00">
+                                <div style="display:flex; gap:5px;">
+                                    <input type="number" id="decodify-amount" min="1" step="0.01" placeholder="0.00" style="flex: 1;">
+                                    <button id="btn-decodify-all" style="width: 40px; font-size: 11px;">All</button>
+                                </div>
                             </div>
                             <div class="projected-payout">Projected Payout: $<span id="projected-cash">0.00</span></div>
                         </div>
@@ -284,7 +287,7 @@
 
             <!-- ── DARKNET BROWSER WINDOW ── -->
             <div id="darknet-window" class="window desktop-window" style="display:none; z-index: 100; width: 800px; height: 600px;">
-                <div class="title-bar" id="darknet-title-bar" style="background: linear-gradient(90deg, #333333, #000000);">
+                <div class="title-bar" id="darknet-title-bar" style="background: linear-gradient(90deg, #b02a2a, #5c1111);">
                     <div class="title-bar-text">Dark Net Web Browser v0.9</div>
                     <div class="title-bar-controls">
                         <button aria-label="Minimize" id="btn-darknet-minimize"></button>
@@ -292,21 +295,75 @@
                         <button aria-label="Close"    id="btn-darknet-close"></button>
                     </div>
                 </div>
-                <div class="window-body" id="darknet-body" style="padding:0; display:flex; flex-direction:column; background:#111; height:100%; overflow:hidden;">
-                    <!-- Dark Net Toolbar -->
-                    <div class="darknet-toolbar" style="background:#222; padding:8px 12px; display:flex; align-items:center; gap:10px; border-bottom:1px solid #444;">
-                        <span style="color:#f00; font-family:monospace; font-weight:bold; font-size:14px; margin-right:5px;">[ONION]</span>
-                        <div style="flex:1; background:#000; border:1px solid #666; padding:4px 8px; display:flex; align-items:center;">
-                            <input type="text" id="darknet-url-bar" value="http://gateway.darknet" style="flex:1; background:transparent; border:none; color:#cfcfcf; font-family:monospace; font-size:13px; outline:none;">
+                <div class="window-body" id="darknet-body" style="padding:0; display:flex; flex-direction:column; background:#ece9d8; height:100%; overflow:hidden;">
+                    <!-- Dark Net Toolbar - XP Style -->
+                    <div class="darknet-toolbar" style="background:#ece9d8; border-bottom: 2px solid #ccc; padding:4px 8px; display:flex; align-items:center; gap:8px;">
+                        <div style="display:flex; gap:2px; padding-right:8px; border-right:1px solid #aaa;">
+                            <button style="background:transparent; border:none; display:flex; align-items:center; gap:4px; font-size:11px; font-family:Tahoma, sans-serif; cursor:pointer;" onclick="document.getElementById('darknet-url-bar').value='http://dark.web/search'; document.getElementById('btn-darknet-go').click();">
+                                <span style="font-size:16px; font-weight:bold; color:#3b65a5;">←</span> Back
+                            </button>
+                            <button style="background:transparent; border:none; display:flex; align-items:center; gap:4px; font-size:11px; font-family:Tahoma, sans-serif; cursor:not-allowed; color:#888;">
+                                <span style="font-size:16px; font-weight:bold; color:#888;">→</span>
+                            </button>
+                            <button style="background:transparent; border:none; display:flex; align-items:center; gap:4px; font-size:11px; font-family:Tahoma, sans-serif; cursor:pointer; margin-left:4px;" onclick="document.getElementById('btn-darknet-go').click();">
+                                <span style="font-size:16px; color:#4caf50;">↻</span>
+                            </button>
+                            <button style="background:transparent; border:none; display:flex; align-items:center; gap:4px; font-size:11px; font-family:Tahoma, sans-serif; cursor:pointer; margin-left:4px;" onclick="document.getElementById('darknet-url-bar').value='http://dark.web/search'; document.getElementById('btn-darknet-go').click();">
+                                <span style="font-size:16px; color:#3b65a5;">⌂</span>
+                            </button>
                         </div>
-                        <button id="btn-darknet-go" style="background:#d33c3c; color:#fff; border:none; padding:4px 15px; font-weight:bold; cursor:pointer;">GO</button>
+                        <span style="font-family:Tahoma, sans-serif; font-size:11px; color:#000;">Address</span>
+                        <div style="flex:1; background:#fff; border:1px inset #ccc; padding:2px 4px; display:flex; align-items:center;">
+                            <img src="assets/icon-darknet.svg" width="14" style="margin-right:5px; filter: grayscale(1);">
+                            <input type="text" id="darknet-url-bar" value="http://dark.web/search" style="flex:1; background:transparent; border:none; color:#000; font-family:Tahoma, sans-serif; font-size:12px; outline:none;">
+                        </div>
+                        <button id="btn-darknet-go" style="background:#f0f0f0; border:1px outset #fff; padding:2px 10px; font-size:11px; display:flex; align-items:center; gap:4px; font-family:Tahoma, sans-serif; cursor:pointer;">
+                            <img src="assets/icon-hackos.png" width="12" alt=""> Go
+                        </button>
+                    </div>
+                    <!-- Loading Overlay (Sibling to content so it doesn't get wiped) -->
+                    <div id="darknet-loading-overlay" style="display:none; position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(26, 5, 5, 0.9); z-index:100; align-items:center; justify-content:center; flex-direction:column;">
+                        <div style="width:30px; height:30px; border:4px solid #d33c3c; border-top:4px solid transparent; border-radius:50%; animation: spin 1s linear infinite;"></div>
+                        <p style="color:#d33c3c; font-size:12px; margin-top:10px;">Resolving node proxy...</p>
                     </div>
                     <!-- Browser Contents -->
-                    <div id="darknet-content" style="flex:1; overflow-y:auto; background:#000; color:#fff; font-family:monospace; padding:15px; position:relative;">
-                        <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; padding-top:40px;">
-                            <img src="assets/icon-darknet.svg" width="120" style="filter: drop-shadow(0 0 10px rgba(255,0,0,0.5));" alt="">
-                            <h1 style="color:#d33c3c; font-size:32px; margin-top:20px; text-shadow:2px 2px #000;">THE DARK NET</h1>
-                            <p style="color:#888; font-size:14px;">Browse the undetectable web. Your identity is hidden.</p>
+                    <div id="darknet-content" style="flex:1; overflow-y:auto; background:#1a0505; color:#e0c0c0; font-family:'Verdana', sans-serif; position:relative;">
+                        <div style="max-width:600px; margin:0 auto; padding:20px;">
+                            <div style="text-align:center; padding:30px 0 20px 0; border-bottom:1px solid #4a1515;">
+                                <img src="assets/icon-darknet.svg" width="80" style="filter: drop-shadow(0 0 5px rgba(255,0,0,0.5));" alt="">
+                                <h1 style="color:#d33c3c; font-size:36px; margin:10px 0 5px 0; text-shadow:1px 1px #000;">BloodHound Search</h1>
+                                <p style="color:#a85b5b; font-size:12px;">Indexing 8,241 hidden nodes</p>
+                            </div>
+                            
+                            <!-- Search Bar inside the content -->
+                            <div style="margin:20px 0; display:flex; justify-content:center; gap:10px;">
+                                <input type="text" placeholder="Search the unindexed web..." style="width:70%; padding:8px; border:1px solid #d33c3c; background:#2a0a0a; color:#fff; outline:none;">
+                                <button style="background:#d33c3c; color:#fff; border:none; padding:8px 15px; cursor:pointer; font-weight:bold;">Search</button>
+                            </div>
+
+                            <h3 style="color:#d33c3c; border-bottom:1px dashed #d33c3c; padding-bottom:5px; margin-top:30px; font-size:14px;">Recent Directory Updates</h3>
+                            <ul style="list-style:none; padding:0; display:flex; flex-direction:column; gap:15px; margin-top:15px;">
+                                <li>
+                                    <a href="#" onclick="document.getElementById('darknet-url-bar').value='onion.web/laundering_service'; document.getElementById('btn-darknet-go').click(); return false;" style="color:#ff6b6b; font-weight:bold; font-size:13px; text-decoration:none;">Laundering Gateway Access</a>
+                                    <p style="margin:2px 0 0 0; font-size:11px; color:#a85b5b;">onion.web/laundering_service</p>
+                                    <p style="margin:4px 0 0 0; font-size:11px; color:#888;">Secure digital asset washer. Fast transactions. Low fees.</p>
+                                </li>
+                                <li>
+                                    <a href="#" style="color:#ff6b6b; font-weight:bold; font-size:13px; text-decoration:none;">Unregistered Firearms & Ammunition</a>
+                                    <p style="margin:2px 0 0 0; font-size:11px; color:#a85b5b;">dark.node/weapons_2911</p>
+                                    <p style="margin:4px 0 0 0; font-size:11px; color:#888;">Quality surplus. No background checks required. Worldwide shipping.</p>
+                                </li>
+                                <li>
+                                    <a href="#" style="color:#ff6b6b; font-weight:bold; font-size:13px; text-decoration:none;">Stolen Identity Market</a>
+                                    <p style="margin:2px 0 0 0; font-size:11px; color:#a85b5b;">proxy.net/ids</p>
+                                    <p style="margin:4px 0 0 0; font-size:11px; color:#888;">Full profiles (SSN, DOB, Address). Clean history guarantee.</p>
+                                </li>
+                                <li>
+                                    <a href="#" style="color:#ff6b6b; font-weight:bold; font-size:13px; text-decoration:none;">Zero-Day Exploits Vault</a>
+                                    <p style="margin:2px 0 0 0; font-size:11px; color:#a85b5b;">shadow.net/exploits</p>
+                                    <p style="margin:4px 0 0 0; font-size:11px; color:#888;">Premium exploits for modern systems. Escalation privileges.</p>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                 </div>
@@ -418,15 +475,15 @@
                     <div class="title-bar-text">Setup — System Tools</div>
                     <div class="title-bar-controls"></div>
                 </div>
-                <div class="window-body" style="padding: 15px; display: flex; flex-direction: column; gap: 15px;">
-                    <div style="display:flex; align-items:flex-start;">
+                <div class="window-body" style="flex: 1; padding: 15px; display: flex; flex-direction: column; background:#ece9d8;">
+                    <div style="display:flex; align-items:flex-start; flex: 1;">
                         <img src="assets/icon-hackos.png" style="width:32px; height:32px; margin-right:15px;" alt="">
                         <div>
-                            <h4 style="margin:0 0 5px 0;">Installing components...</h4>
-                            <p style="margin:0;font-size:11px;">Extracting BlueCode and DarkNet.</p>
+                            <h4 id="installer-title" style="margin:0 0 5px 0;">Installing components...</h4>
+                            <p id="installer-text" style="margin:0;font-size:11px;">Extracting files...</p>
                         </div>
                     </div>
-                    <div class="progress-bar-container" style="flex-shrink: 0; width: 100%;">
+                    <div class="progress-bar-container" style="flex-shrink: 0; width: 100%; box-sizing: border-box; margin-top: auto;">
                         <div id="installer-progress-bar" style="height:100%; width:0%; background: repeating-linear-gradient(90deg, #2b5cd7, #2b5cd7 12px, transparent 12px, transparent 14px);"></div>
                     </div>
                 </div>
@@ -484,7 +541,7 @@
             <!-- ════════════════════════════════════════════════════════════
                  CALCULATOR XP - REBUILT
                  ════════════════════════════════════════════════════════════ -->
-            <div id="calc-window" class="window desktop-window" style="display:none; z-index: 102; width:250px; height:350px; top:150px; left:250px;">
+            <div id="calc-window" class="window desktop-window" style="display:none; z-index: 102; width:1000px; height:350px; top:150px; left:250px;">
                 <div class="title-bar" id="calc-title-bar">
                     <div class="title-bar-text">Calculator</div>
                     <div class="title-bar-controls">

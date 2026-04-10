@@ -46,6 +46,13 @@ function playCashSound() {
     cashSound.play().catch(() => {});
 }
 
+const mailSound = new Audio('./SFX/correo/noticorreo.mp3');
+
+function playMailSound() {
+    mailSound.currentTime = 0;
+    mailSound.play().catch(() => {});
+}
+
 document.addEventListener('click', e => {
     if (e.target.tagName === 'BUTTON') playClick();
 });

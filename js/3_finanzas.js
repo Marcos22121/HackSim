@@ -69,6 +69,18 @@ if (decodifyAmountInput) {
     });
 }
 
+const btnDecodifyAll = document.getElementById('btn-decodify-all');
+if (btnDecodifyAll) {
+    btnDecodifyAll.addEventListener('click', () => {
+        if (isDecoding) return;
+        if (typeof playClick === 'function') playClick();
+        if (typeof gameState !== 'undefined') {
+            decodifyAmountInput.value = gameState.balance.toFixed(2);
+            decodifyAmountInput.dispatchEvent(new Event('input')); // trigger projected cash update
+        }
+    });
+}
+
 function startDecodingSequence() {
     if(isDecoding) return;
     const val = parseFloat(decodifyAmountInput.value);
@@ -273,7 +285,9 @@ function sendPallPayReceipt(amount, transId) {
 
     if (typeof addEmailToList === 'function') addEmailToList(newMail);
     
-    // Visual Notification
+    // Visual and Audio Notification
+    if (typeof playMailSound === 'function') playMailSound();
+    
     const popup = document.createElement('div');
     popup.className = 'mail-notification';
     popup.style.borderLeft = '4px solid #0070ba';

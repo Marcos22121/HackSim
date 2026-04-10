@@ -117,9 +117,9 @@ function toggleMaximizeDesktopWindow(appId) {
         saveDesktopWindowGeometry(appId);
         win.state = 'maximized';
         win.windowEl.classList.add('is-maximized');
-        win.windowEl.style.top    = '0';
-        win.windowEl.style.left   = '0';
-        win.windowEl.style.width  = '100%';
+        win.windowEl.style.top = '0';
+        win.windowEl.style.left = '0';
+        win.windowEl.style.width = '100%';
         win.windowEl.style.height = '100%';
     }
     focusDesktopWindow(appId);
@@ -129,33 +129,33 @@ function toggleMaximizeDesktopWindow(appId) {
 function applyDesktopWindowGeometry(appId) {
     const win = desktopWindows[appId];
     if (!win) return;
-    win.windowEl.style.top    = win.normalPos.top    + 'px';
-    win.windowEl.style.left   = win.normalPos.left   + 'px';
-    win.windowEl.style.width  = win.normalPos.width  + 'px';
+    win.windowEl.style.top = win.normalPos.top + 'px';
+    win.windowEl.style.left = win.normalPos.left + 'px';
+    win.windowEl.style.width = win.normalPos.width + 'px';
     win.windowEl.style.height = win.normalPos.height + 'px';
 }
 
 function saveDesktopWindowGeometry(appId) {
     const win = desktopWindows[appId];
     if (!win) return;
-    win.normalPos.top    = parseInt(win.windowEl.style.top)    || win.normalPos.top;
-    win.normalPos.left   = parseInt(win.windowEl.style.left)   || win.normalPos.left;
-    win.normalPos.width  = parseInt(win.windowEl.style.width)  || win.normalPos.width;
+    win.normalPos.top = parseInt(win.windowEl.style.top) || win.normalPos.top;
+    win.normalPos.left = parseInt(win.windowEl.style.left) || win.normalPos.left;
+    win.normalPos.width = parseInt(win.windowEl.style.width) || win.normalPos.width;
     win.normalPos.height = parseInt(win.windowEl.style.height) || win.normalPos.height;
 }
 
 // ─── Desktop Taskbar Tabs ─────────────────────────────────────────────────────
 const appTabConfig = {
-    'hackos':           { label: 'BlueCode v0.1',  icon: './assets/icon-hackos.png' },
-    'pallpay':          { label: 'PallPay',      icon: './assets/icon-pallpay.png' },
-    'terminal':         { label: 'H. Terminal',   icon: './assets/icon-terminal.png' },
-    'decodify':         { label: 'Decodifier',    icon: './assets/icon-hackos.png' },
-    'onionweb':         { label: 'OnionWeb',      icon: './assets/icon-darknet.svg' },
-    'darknet':          { label: 'Dark Net',      icon: './assets/icon-darknet.svg' },
-    'topmail':          { label: 'TopMail',      icon: './assets/icon-topmail.svg' },
-    'documents':        { label: 'Documents',    icon: './assets/icon-documents.svg' },
-    'notepad':          { label: 'Notepad',      icon: './assets/icon-documents.svg' },
-    'bluemium':         { label: 'Bluemium',      icon: './assets/icon-bluemium.png' },
+    'hackos': { label: 'BlueCode v0.1', icon: './assets/icon-hackos.png' },
+    'pallpay': { label: 'PallPay', icon: './assets/icon-pallpay.png' },
+    'terminal': { label: 'H. Terminal', icon: './assets/icon-terminal.png' },
+    'decodify': { label: 'Decodifier', icon: './assets/icon-hackos.png' },
+    'onionweb': { label: 'OnionWeb', icon: './assets/icon-darknet.svg' },
+    'darknet': { label: 'Dark Net', icon: './assets/icon-darknet.svg' },
+    'topmail': { label: 'TopMail', icon: './assets/icon-topmail.svg' },
+    'documents': { label: 'Documents', icon: './assets/icon-documents.svg' },
+    'notepad': { label: 'Notepad', icon: './assets/icon-documents.svg' },
+    'bluemium': { label: 'Bluemium', icon: './assets/icon-bluemium.png' },
 };
 
 function addDesktopTaskbarTab(appId) {
@@ -164,10 +164,10 @@ function addDesktopTaskbarTab(appId) {
     if (document.getElementById('dtab-' + appId)) return;
 
     const tab = document.createElement('button');
-    tab.id        = 'dtab-' + appId;
+    tab.id = 'dtab-' + appId;
     tab.className = 'taskbar-app-tab active';
     tab.innerHTML = `<img src="${cfg.icon}" alt=""><span>${cfg.label}</span>`;
-    tab.onclick   = () => {
+    tab.onclick = () => {
         const win = desktopWindows[appId];
         if (win.state === 'minimized') {
             restoreDesktopWindow(appId);
@@ -196,7 +196,7 @@ function updateDesktopTaskbarTab(appId) {
 
 // ─── Drag Logic ────────────────────────────────────────────────────────────────
 var desktopDragActive = false;
-var desktopDragAppId  = null;
+var desktopDragAppId = null;
 var desktopDragOffset = { x: 0, y: 0 };
 
 function initDesktopDrag(appId, e) {
@@ -205,7 +205,7 @@ function initDesktopDrag(appId, e) {
     if (e.target.tagName === 'BUTTON') return;
     if (win.state !== 'normal') return;
     desktopDragActive = true;
-    desktopDragAppId  = appId;
+    desktopDragAppId = appId;
     const rect = win.windowEl.getBoundingClientRect();
     desktopDragOffset.x = e.clientX - rect.left;
     desktopDragOffset.y = e.clientY - rect.top;
@@ -218,13 +218,13 @@ document.addEventListener('mousemove', e => {
         const win = desktopWindows[desktopDragAppId];
         const par = windowContainer.getBoundingClientRect();
         let newLeft = e.clientX - par.left - desktopDragOffset.x;
-        let newTop  = e.clientY - par.top  - desktopDragOffset.y;
-        newLeft = Math.max(0, Math.min(newLeft, par.width  - win.windowEl.offsetWidth));
-        newTop  = Math.max(0, Math.min(newTop,  par.height - win.windowEl.offsetHeight));
+        let newTop = e.clientY - par.top - desktopDragOffset.y;
+        newLeft = Math.max(0, Math.min(newLeft, par.width - win.windowEl.offsetWidth));
+        newTop = Math.max(0, Math.min(newTop, par.height - win.windowEl.offsetHeight));
         win.windowEl.style.left = newLeft + 'px';
-        win.windowEl.style.top  = newTop  + 'px';
+        win.windowEl.style.top = newTop + 'px';
         win.normalPos.left = newLeft;
-        win.normalPos.top  = newTop;
+        win.normalPos.top = newTop;
     }
 });
 
@@ -233,11 +233,11 @@ document.addEventListener('mouseup', () => {
         if (typeof saveGame === 'function') saveGame();
     }
     desktopDragActive = false;
-    desktopDragAppId  = null;
+    desktopDragAppId = null;
 });
 
 // ─── Register Desktop Windows ─────────────────────────────────────────────────
-const hackosWindow   = document.getElementById('hackos-window');
+const hackosWindow = document.getElementById('hackos-window');
 const hackosTitleBar = document.getElementById('hackos-title-bar');
 if (hackosWindow && hackosTitleBar) {
     registerDesktopWindow('hackos', hackosWindow, hackosTitleBar,
@@ -246,7 +246,7 @@ if (hackosWindow && hackosTitleBar) {
     hackosWindow.addEventListener('mousedown', () => focusDesktopWindow('hackos'));
 }
 
-const pallpayWindow   = document.getElementById('pallpay-window');
+const pallpayWindow = document.getElementById('pallpay-window');
 const pallpayTitleBar = document.getElementById('pallpay-title-bar');
 if (pallpayWindow && pallpayTitleBar) {
     registerDesktopWindow('pallpay', pallpayWindow, pallpayTitleBar,
@@ -255,7 +255,7 @@ if (pallpayWindow && pallpayTitleBar) {
     pallpayWindow.addEventListener('mousedown', () => focusDesktopWindow('pallpay'));
 }
 
-const terminalWindow   = document.getElementById('terminal-window');
+const terminalWindow = document.getElementById('terminal-window');
 const terminalTitleBar = document.getElementById('terminal-title-bar');
 if (terminalWindow && terminalTitleBar) {
     registerDesktopWindow('terminal', terminalWindow, terminalTitleBar,
@@ -264,7 +264,7 @@ if (terminalWindow && terminalTitleBar) {
     terminalWindow.addEventListener('mousedown', () => focusDesktopWindow('terminal'));
 }
 
-const decodifyWindow   = document.getElementById('decodify-window');
+const decodifyWindow = document.getElementById('decodify-window');
 const decodifyTitleBar = document.getElementById('decodify-title-bar');
 if (decodifyWindow && decodifyTitleBar) {
     registerDesktopWindow('decodify', decodifyWindow, decodifyTitleBar,
@@ -273,7 +273,7 @@ if (decodifyWindow && decodifyTitleBar) {
     decodifyWindow.addEventListener('mousedown', () => focusDesktopWindow('decodify'));
 }
 
-const onionwebWindow   = document.getElementById('onionweb-window');
+const onionwebWindow = document.getElementById('onionweb-window');
 const onionwebTitleBar = document.getElementById('onionweb-title-bar');
 if (onionwebWindow && onionwebTitleBar) {
     registerDesktopWindow('onionweb', onionwebWindow, onionwebTitleBar,
@@ -282,7 +282,7 @@ if (onionwebWindow && onionwebTitleBar) {
     onionwebWindow.addEventListener('mousedown', () => focusDesktopWindow('onionweb'));
 }
 
-const topmailWindow   = document.getElementById('topmail-window');
+const topmailWindow = document.getElementById('topmail-window');
 const topmailTitleBar = document.getElementById('topmail-title-bar');
 if (topmailWindow && topmailTitleBar) {
     registerDesktopWindow('topmail', topmailWindow, topmailTitleBar,
@@ -322,16 +322,16 @@ const calcWindow = document.getElementById('calc-window');
 const calcTitleBar = document.getElementById('calc-title-bar');
 if (calcWindow && calcTitleBar) {
     registerDesktopWindow('calc', calcWindow, calcTitleBar,
-        { top: 150, left: 250, width: 250, height: 350 });
+        { top: 150, left: 250, width: 1000, height: 350 });
 }
-    
+
 const installerWindow = document.getElementById('installer-window');
 if (installerWindow) {
     registerDesktopWindow('installer', installerWindow, installerWindow.querySelector('.title-bar'),
-        { top: window.innerHeight/2 - 75, left: window.innerWidth/2 - 175, width: 350, height: 150 });
+        { top: window.innerHeight / 2 - 100, left: window.innerWidth / 2 - 175, width: 350, height: 200 });
 }
 
-const bluemiumWindow   = document.getElementById('bluemium-window');
+const bluemiumWindow = document.getElementById('bluemium-window');
 const bluemiumTitleBar = document.getElementById('bluemium-title-bar');
 if (bluemiumWindow && bluemiumTitleBar) {
     registerDesktopWindow('bluemium', bluemiumWindow, bluemiumTitleBar,
@@ -344,36 +344,36 @@ if (bluemiumWindow && bluemiumTitleBar) {
 
 // ─── Control Buttons ──────────────────────────────────────────────────────────
 const controlMap = {
-    'hackos-minimize':  () => minimizeDesktopWindow('hackos'),
-    'hackos-maximize':  () => toggleMaximizeDesktopWindow('hackos'),
-    'hackos-close':     () => closeDesktopWindow('hackos'),
+    'hackos-minimize': () => minimizeDesktopWindow('hackos'),
+    'hackos-maximize': () => toggleMaximizeDesktopWindow('hackos'),
+    'hackos-close': () => closeDesktopWindow('hackos'),
     'pallpay-minimize': () => minimizeDesktopWindow('pallpay'),
     'pallpay-maximize': () => toggleMaximizeDesktopWindow('pallpay'),
-    'pallpay-close':    () => closeDesktopWindow('pallpay'),
+    'pallpay-close': () => closeDesktopWindow('pallpay'),
     'terminal-minimize': () => minimizeDesktopWindow('terminal'),
     'terminal-maximize': () => toggleMaximizeDesktopWindow('terminal'),
-    'terminal-close':    () => closeDesktopWindow('terminal'),
+    'terminal-close': () => closeDesktopWindow('terminal'),
     'decodify-minimize': () => minimizeDesktopWindow('decodify'),
     'decodify-maximize': () => toggleMaximizeDesktopWindow('decodify'),
-    'decodify-close':    () => closeDesktopWindow('decodify'),
+    'decodify-close': () => closeDesktopWindow('decodify'),
     'onionweb-minimize': () => minimizeDesktopWindow('onionweb'),
     'onionweb-maximize': () => toggleMaximizeDesktopWindow('onionweb'),
-    'onionweb-close':    () => closeDesktopWindow('onionweb'),
+    'onionweb-close': () => closeDesktopWindow('onionweb'),
     'topmail-minimize': () => minimizeDesktopWindow('topmail'),
     'topmail-maximize': () => toggleMaximizeDesktopWindow('topmail'),
-    'topmail-close':    () => closeDesktopWindow('topmail'),
+    'topmail-close': () => closeDesktopWindow('topmail'),
     'minimize-documents': () => minimizeDesktopWindow('documents'),
     'maximize-documents': () => toggleMaximizeDesktopWindow('documents'),
-    'close-documents':    () => closeDesktopWindow('documents'),
-    'minimize-notepad':   () => minimizeDesktopWindow('notepad'),
-    'maximize-notepad':   () => toggleMaximizeDesktopWindow('notepad'),
-    'close-notepad':      () => closeDesktopWindow('notepad'),
-    'darknet-minimize':   () => minimizeDesktopWindow('darknet'),
-    'darknet-maximize':   () => toggleMaximizeDesktopWindow('darknet'),
-    'darknet-close':      () => closeDesktopWindow('darknet'),
-    'bluemium-minimize':  () => minimizeDesktopWindow('bluemium'),
-    'bluemium-maximize':  () => toggleMaximizeDesktopWindow('bluemium'),
-    'bluemium-close':     () => closeDesktopWindow('bluemium'),
+    'close-documents': () => closeDesktopWindow('documents'),
+    'minimize-notepad': () => minimizeDesktopWindow('notepad'),
+    'maximize-notepad': () => toggleMaximizeDesktopWindow('notepad'),
+    'close-notepad': () => closeDesktopWindow('notepad'),
+    'darknet-minimize': () => minimizeDesktopWindow('darknet'),
+    'darknet-maximize': () => toggleMaximizeDesktopWindow('darknet'),
+    'darknet-close': () => closeDesktopWindow('darknet'),
+    'bluemium-minimize': () => minimizeDesktopWindow('bluemium'),
+    'bluemium-maximize': () => toggleMaximizeDesktopWindow('bluemium'),
+    'bluemium-close': () => closeDesktopWindow('bluemium'),
 };
 
 Object.entries(controlMap).forEach(([id, fn]) => {
@@ -401,13 +401,13 @@ if (desktopIconsArea) {
             if (app === 'pallpay') { openDesktopWindow('pallpay'); if (typeof updatePallPayActivity === 'function') updatePallPayActivity(); }
             if (app === 'topmail') openDesktopWindow('topmail');
             if (app === 'documents') { openDesktopWindow('documents'); if (typeof renderDocumentsList === 'function') renderDocumentsList(); }
-            if (app === 'darknet') { 
-                openDesktopWindow('darknet'); 
-                if (typeof receiveDarkNetMail === 'function') receiveDarkNetMail(); 
+            if (app === 'darknet') {
+                openDesktopWindow('darknet');
+                if (typeof receiveDarkNetMail === 'function') receiveDarkNetMail();
             }
             if (app === 'onionweb') openDesktopWindow('onionweb');
             if (app === 'decodify') openDesktopWindow('decodify');
-            if (app === 'bluemium')  { openDesktopWindow('bluemium'); if (typeof browserNavigateTo === 'function') browserNavigateTo('newtab'); }
+            if (app === 'bluemium') { openDesktopWindow('bluemium'); if (typeof browserNavigateTo === 'function') browserNavigateTo('newtab'); }
             lastClickTime = 0;
             lastClickTarget = null;
         } else {
@@ -429,15 +429,15 @@ if (xpDesktop) {
 function updateClock() {
     if (!systemClock) return;
     const now = new Date();
-    const h   = now.getHours();
-    const m   = String(now.getMinutes()).padStart(2, '0');
+    const h = now.getHours();
+    const m = String(now.getMinutes()).padStart(2, '0');
     const ampm = h >= 12 ? 'PM' : 'AM';
-    const h12  = h % 12 || 12;
+    const h12 = h % 12 || 12;
     systemClock.textContent = `${h12}:${m} ${ampm}`;
 }
 
 updateClock();
-setInterval(updateClock, 30000); 
+setInterval(updateClock, 30000);
 
 function showDesktop() {
     Object.keys(desktopWindows).forEach(appId => {
@@ -469,8 +469,8 @@ document.addEventListener('click', e => {
 // Notifications
 const btnNotifications = document.getElementById('btn-notifications');
 const notificationPanel = document.getElementById('notification-panel');
-const notificationList  = document.getElementById('notification-list');
-const unreadBadge       = document.getElementById('unread-count');
+const notificationList = document.getElementById('notification-list');
+const unreadBadge = document.getElementById('unread-count');
 
 function renderNotificationPanel() {
     if (!notificationList) return;
@@ -478,16 +478,16 @@ function renderNotificationPanel() {
     if (typeof inboxEmails === 'undefined') return;
     const recent = inboxEmails.slice(0, 5);
     let unreadCount = 0;
-    
+
     recent.forEach(m => {
-        if(m.unread) unreadCount++;
+        if (m.unread) unreadCount++;
         const item = document.createElement('div');
         item.style.cssText = `padding: 5px; cursor: pointer; border-bottom: 1px solid #eee; background: ${m.unread ? '#fff' : 'transparent'}; font-weight: ${m.unread ? 'bold' : 'normal'};`;
         item.innerHTML = `<div style="color:#003399;">${m.sender}</div><div style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${m.subject}</div>`;
-        
+
         item.onmouseenter = () => item.style.backgroundColor = '#d4d0c8';
         item.onmouseleave = () => item.style.backgroundColor = m.unread ? '#fff' : 'transparent';
-        
+
         item.onclick = () => {
             openDesktopWindow('topmail');
             if (typeof selectMail === 'function') selectMail(m.id);
@@ -528,14 +528,14 @@ if (btnNotifications) {
 
 // ─── Dark Net Browser Logic ──────────────────────────────────────────────────
 const darknetUrlBar = document.getElementById('darknet-url-bar');
-const btnDarknetGo  = document.getElementById('btn-darknet-go');
+const btnDarknetGo = document.getElementById('btn-darknet-go');
 const darknetContent = document.getElementById('darknet-content');
 
 if (btnDarknetGo && darknetUrlBar) {
     btnDarknetGo.addEventListener('click', () => {
         handleDarkNetURL(darknetUrlBar.value.trim());
     });
-    
+
     darknetUrlBar.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') handleDarkNetURL(darknetUrlBar.value.trim());
     });
@@ -543,49 +543,129 @@ if (btnDarknetGo && darknetUrlBar) {
 
 function handleDarkNetURL(url) {
     if (!darknetContent) return;
-    
-    // Exact match for the hidden OnionWeb url
+
+    // Show loading overlay
+    const overlay = document.getElementById('darknet-loading-overlay');
+    if (overlay) overlay.style.display = 'flex';
+
+    setTimeout(() => {
+        if (overlay) overlay.style.display = 'none';
+
+        // Exact match for the hidden OnionWeb url
     if (url === 'http://onion.web/laundering_service' || url === 'onion.web/laundering_service') {
         if (gameState.addonInstalled) {
             darknetContent.innerHTML = `
-                <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; color:#fff; font-family:monospace;">
-                    <h2 style="color:#0f0;">AddOn ALREADY INSTALLED</h2>
-                    <p>Access the service from within BlueCode.</p>
+                <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; color:#d33c3c; font-family:'Verdana', sans-serif; text-shadow:0 0 1px #000;">
+                    <h2 style="color:#d33c3c; border-bottom:1px dashed #d33c3c; padding-bottom:10px;">AddOn ALREADY INSTALLED</h2>
+                    <p style="color:#a85b5b; margin-top:20px;">Access the service from within BlueCode.</p>
                 </div>
             `;
         } else {
             // Render Landing Page
             darknetContent.innerHTML = `
-                <div class="darknet-addon-landing">
-                    <img src="assets/icon-darknet.svg" width="80" alt="">
-                    <h2>OnionWeb Laundering AddOn</h2>
-                    <p>To access the untraceable laundering network, you must install the encrypted communication layer into your host system.</p>
-                    <button class="btn-turbina-download" onclick="startAddonInstaller()">Download & Install</button>
+                <div class="darknet-addon-landing" style="display:block; padding:10px 20px; font-family:'Courier New', monospace; color:#a85b5b;">
+                    <div style="border-bottom:3px double #d33c3c; padding-bottom:15px; margin-bottom:20px; display:flex; align-items:center; gap:20px;">
+                        <img src="assets/icon-darknet.svg" width="80" style="filter: drop-shadow(0 0 5px rgba(255,0,0,0.5)) grayscale(0.5) sepia(1) hue-rotate(310deg) saturate(3);" alt="">
+                        <div>
+                            <h2 style="color:#d33c3c; font-weight:bold; margin:0 0 5px 0; font-size:28px; text-transform:uppercase; letter-spacing:2px;">WASH-NET GATEWAY</h2>
+                            <p style="margin:0; font-size:12px; font-weight:bold;">[ VERIFIED PGP SIGNATURE: 0x9F82A1B ]</p>
+                        </div>
+                    </div>
+
+                    <div style="background:#2a0a0a; border:1px solid #4a1515; padding:15px; margin-bottom:20px; font-size:12px;">
+                        <h3 style="color:#d33c3c; margin-top:0;">/// SYSTEM NOTICE</h3>
+                        <p>Welcome to the premium unindexed mixer. Our service obfuscates digital footprints using multi-layered relay hashing mechanisms. We retain a standard 10% fee for network maintenance and anonymization protocols.</p>
+                        <p style="color:#ff6b6b; font-weight:bold; margin-bottom:0;">Strict NO-LOG policy explicitly enforced via code constraints.</p>
+                    </div>
+
+                    <div style="display:flex; gap:20px;">
+                        <div style="flex:2;">
+                            <h3 style="color:#d33c3c; border-bottom:1px solid #d33c3c; padding-bottom:5px;">/// INSTRUCTIONS</h3>
+                            <p style="font-size:12px;">Due to recent sweeps by federated authorities across the regular web, our gateway node is no longer accessible via standard browser layers. You MUST inject our proprietary routing add-on directly into your system binaries.</p>
+                            <p style="font-size:12px; color:#555;">(MD5 Hash: 5eb63bbbe01eeed093cb22bb8f5acdc3)</p>
+                            
+                            <div style="margin-top:25px; padding:20px; border:2px dashed #d33c3c; text-align:center; background:#110000;">
+                                <h4 style="margin:0 0 10px 0; color:#ff6b6b;">CLIENT BINARY V2.4</h4>
+                                <p style="font-size:11px; margin-bottom:15px;">Size: 844 KB <br> Format: Executable Payload</p>
+                                <button class="btn-turbina-download" onclick="startAddonInstaller()" style="background:#d33c3c; color:#fff; border:1px solid #ff6b6b; padding:12px 25px; font-weight:bold; cursor:pointer; font-size:14px; text-transform:uppercase;">[ DOWNL0AD ARCHIVE ]</button>
+                            </div>
+                        </div>
+                        
+                        <div style="flex:1; border-left:1px dashed #4a1515; padding-left:20px; font-size:11px; color:#774444; word-wrap: break-word;">
+                            <strong style="color:#a85b5b; display:block; margin-bottom:10px;">RECENT ACTIVITY LOGS</strong>
+                            <p>> addr:1x8f... clean out $10,400</p>
+                            <p>> addr:0xbb... clean out $85,000</p>
+                            <p>> addr:3xc2... clean out $2,100</p>
+                            <p>> addr:0x9a... clean out $19,500</p>
+                            <p style="color:#552222; margin-top:20px;">01001101 01101111 01101110 01100101 01111001 00100000 01101100 01100001 01110101 01101110 01100100 01100101 01110010 01101001 01101110 01100111</p>
+                        </div>
+                    </div>
                 </div>
             `;
         }
+    } else if (url === 'http://dark.web/search' || url === 'dark.web/search') {
+        darknetContent.innerHTML = `
+            <div style="max-width:600px; margin:0 auto; padding:20px;">
+                <div style="text-align:center; padding:30px 0 20px 0; border-bottom:1px solid #4a1515;">
+                    <img src="assets/icon-darknet.svg" width="80" style="filter: drop-shadow(0 0 5px rgba(255,0,0,0.5));" alt="">
+                    <h1 style="color:#d33c3c; font-size:36px; margin:10px 0 5px 0; text-shadow:1px 1px #000;">BloodHound Search</h1>
+                    <p style="color:#a85b5b; font-size:12px;">Indexing 8,241 hidden nodes</p>
+                </div>
+                
+                <!-- Search Bar inside the content -->
+                <div style="margin:20px 0; display:flex; justify-content:center; gap:10px;">
+                    <input type="text" placeholder="Search the unindexed web..." style="width:70%; padding:8px; border:1px solid #d33c3c; background:#2a0a0a; color:#fff; outline:none;">
+                    <button style="background:#d33c3c; color:#fff; border:none; padding:8px 15px; cursor:pointer; font-weight:bold;">Search</button>
+                </div>
+
+                <h3 style="color:#d33c3c; border-bottom:1px dashed #d33c3c; padding-bottom:5px; margin-top:30px; font-size:14px;">Recent Directory Updates</h3>
+                <ul style="list-style:none; padding:0; display:flex; flex-direction:column; gap:15px; margin-top:15px;">
+                    <li>
+                        <a href="#" onclick="document.getElementById('darknet-url-bar').value='onion.web/laundering_service'; document.getElementById('btn-darknet-go').click(); return false;" style="color:#ff6b6b; font-weight:bold; font-size:13px; text-decoration:none;">Laundering Gateway Access</a>
+                        <p style="margin:2px 0 0 0; font-size:11px; color:#a85b5b;">onion.web/laundering_service</p>
+                        <p style="margin:4px 0 0 0; font-size:11px; color:#888;">Secure digital asset washer. Fast transactions. Low fees.</p>
+                    </li>
+                    <li>
+                        <a href="#" style="color:#ff6b6b; font-weight:bold; font-size:13px; text-decoration:none;">Unregistered Firearms & Ammunition</a>
+                        <p style="margin:2px 0 0 0; font-size:11px; color:#a85b5b;">dark.node/weapons_2911</p>
+                        <p style="margin:4px 0 0 0; font-size:11px; color:#888;">Quality surplus. No background checks required. Worldwide shipping.</p>
+                    </li>
+                    <li>
+                        <a href="#" style="color:#ff6b6b; font-weight:bold; font-size:13px; text-decoration:none;">Stolen Identity Market</a>
+                        <p style="margin:2px 0 0 0; font-size:11px; color:#a85b5b;">proxy.net/ids</p>
+                        <p style="margin:4px 0 0 0; font-size:11px; color:#888;">Full profiles (SSN, DOB, Address). Clean history guarantee.</p>
+                    </li>
+                    <li>
+                        <a href="#" style="color:#ff6b6b; font-weight:bold; font-size:13px; text-decoration:none;">Zero-Day Exploits Vault</a>
+                        <p style="margin:2px 0 0 0; font-size:11px; color:#a85b5b;">shadow.net/exploits</p>
+                        <p style="margin:4px 0 0 0; font-size:11px; color:#888;">Premium exploits for modern systems. Escalation privileges.</p>
+                    </li>
+                </ul>
+            </div>
+        `;
     } else {
         // Generic 404 for darknet
         darknetContent.innerHTML = `
             <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; padding:20px; text-align:center;">
-                <h1 style="color:#f00; font-family:'Courier New', monospace; font-size:48px; margin-bottom:10px;">404</h1>
-                <p style="color:#a00; font-family:monospace; font-size:14px;">Node undiscoverable or offline.</p>
+                <h1 style="color:#d33c3c; font-family:'Verdana', sans-serif; font-size:48px; margin-bottom:10px;">404 Node Offline</h1>
+                <p style="color:#a85b5b; font-family:'Verdana', sans-serif; font-size:14px;">The specified hidden directory could not be reached or has been seized.</p>
             </div>
         `;
     }
+    }, 500);
 }
 
 // Global hook for the button injected above
-window.startAddonInstaller = function() {
+window.startAddonInstaller = function () {
     if (typeof openDesktopWindow === 'function') openDesktopWindow('installer');
-    
+
     const pbar = document.getElementById('installer-progress-bar');
     const title = document.getElementById('installer-title');
-    const desc = document.getElementById('installer-desc');
-    
+    const desc = document.getElementById('installer-text');
+
     if (title) title.textContent = 'BlueCode Detected';
     if (desc) desc.textContent = 'Installing OnionWeb AddOn securely...';
-    
+
     if (pbar) {
         pbar.style.width = '0%';
         pbar.style.transition = 'none';
@@ -593,21 +673,21 @@ window.startAddonInstaller = function() {
         pbar.style.transition = 'width 6s linear';
         pbar.style.width = '100%';
     }
-    
+
     setTimeout(() => {
         if (typeof closeDesktopWindow === 'function') closeDesktopWindow('installer');
         gameState.addonInstalled = true;
-        
+
         // Return to home page in browser
         if (darknetContent) {
             darknetContent.innerHTML = `
-                <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; color:#fff; font-family:monospace;">
-                    <h2 style="color:#0f0;">INSTALLATION COMPLETE</h2>
-                    <p>OnionWeb Laundering tools unlocked.</p>
+                <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; color:#d33c3c; font-family:'Verdana', sans-serif;">
+                    <h2 style="color:#d33c3c; border-bottom:1px dashed #d33c3c; padding-bottom:10px;">INSTALLATION COMPLETE</h2>
+                    <p style="color:#a85b5b; margin-top:20px;">OnionWeb Laundering tools unlocked.</p>
                 </div>
             `;
         }
-        
+
         if (typeof applyStoryState === 'function') applyStoryState();
         if (typeof saveGame === 'function') saveGame();
         playSuccessSound();
