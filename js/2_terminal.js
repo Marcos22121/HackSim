@@ -71,7 +71,9 @@ function lineComplete() {
     if (typeof gameState !== 'undefined' && gameState.pcParts && gameState.pcParts.cpu) {
         const cpuLevel = gameState.pcParts.cpu.level;
         if (cpuLevel > 0) {
-            reward = reward * (1 + (cpuLevel * 0.25));
+            const mbLevel = (gameState.pcParts.mb && gameState.pcParts.mb.level) || 0;
+            const mbBonus = 1 + (mbLevel * 0.05); // Motherboard gives small % to all upgrades except RAM and Gabinete
+            reward = reward * (1 + (cpuLevel * 0.25 * mbBonus));
         }
     }
 

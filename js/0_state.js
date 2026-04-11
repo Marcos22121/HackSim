@@ -114,6 +114,8 @@ const gameState = {
     cash:     0,
     dirtyCash: 0,
     cleanCash: 0,
+    blueCoins: 0,
+    isIPActive: false,
     currentDay: 1,
     documentsUnlocked: [],
     transactions: [],
@@ -177,6 +179,27 @@ function applyStoryState() {
             if (img) img.style.filter = 'grayscale(1)';
         }
     }
+
+    // IP Spoofer Sync
+    const statusEl = document.getElementById('ipchanger-status');
+    const btnEl = document.getElementById('btn-toggle-ip');
+    const pallpayOverlay = document.getElementById('pallpay-blocking-overlay');
+
+    if (gameState.isIPActive) {
+        if (statusEl) {
+            statusEl.textContent = 'CONNECTED (Spoofed)';
+            statusEl.style.color = '#1a6b0a';
+        }
+        if (btnEl) btnEl.textContent = 'Disconnect IP';
+        if (pallpayOverlay) pallpayOverlay.style.display = 'flex';
+    } else {
+        if (statusEl) {
+            statusEl.textContent = 'Disconnected';
+            statusEl.style.color = '#d33c3c';
+        }
+        if (btnEl) btnEl.textContent = 'Activate IP';
+        if (pallpayOverlay) pallpayOverlay.style.display = 'none';
+    }
 }
 
 // ─── Displays ────────────────────────────────────────────────────────────
@@ -201,6 +224,11 @@ function updateCashDisplay() {
     // New sync classes (used in sections)
     document.querySelectorAll('.cash-sync-desktop').forEach(el => el.textContent = formatted);
     document.querySelectorAll('.cash-sync-internal').forEach(el => el.textContent = formatted);
+}
+
+function updateBlueCoinDisplay() {
+    const formatted = gameState.blueCoins.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    document.querySelectorAll('.bluecoin-sync-internal').forEach(el => el.textContent = formatted);
 }
 
 function updateLaunderDisplay() {
@@ -267,6 +295,7 @@ function resetGameState() {
     gameState.cash = 0;
     gameState.dirtyCash = 0;
     gameState.cleanCash = 0;
+    gameState.blueCoins = 0;
     gameState.currentDay = 1;
     gameState.elapsedTimeInDay = 0;
     gameState.documentsUnlocked = [];
@@ -277,6 +306,7 @@ function resetGameState() {
     gameState.rentDueDay = 7;
     gameState.rentOwed = 0;
     gameState.activeLoan = null;
+    gameState.isIPActive = false;
 
     for (let key in gameState.pcParts) {
         if (gameState.pcParts[key]) gameState.pcParts[key].level = 0;
@@ -290,6 +320,7 @@ function resetGameState() {
     updateHashDisplay();
     updateCashDisplay();
     updateLaunderDisplay();
+    updateBlueCoinDisplay();
     if (typeof updatePallPayActivity === 'function') updatePallPayActivity();
     if (typeof updateLoanUI === 'function') updateLoanUI();
     applyStoryState();
@@ -316,6 +347,8 @@ function loadGame() {
             gameState.cash    = data.gameState.cash || 0;
             gameState.dirtyCash = data.gameState.dirtyCash || 0;
             gameState.cleanCash = data.gameState.cleanCash || 0;
+            gameState.blueCoins = data.gameState.blueCoins || 0;
+            gameState.isIPActive = data.gameState.isIPActive || false;
             gameState.documentsUnlocked = data.gameState.documentsUnlocked || [];
             gameState.transactions = data.gameState.transactions || [];
             gameState.storyProgress = data.gameState.storyProgress || 0;
@@ -336,6 +369,7 @@ function loadGame() {
             updateHashDisplay();
             updateCashDisplay();
             updateLaunderDisplay();
+            updateBlueCoinDisplay();
             if (typeof updatePallPayActivity === 'function') updatePallPayActivity();
             if (typeof updateLoanUI === 'function') updateLoanUI();
             applyStoryState();

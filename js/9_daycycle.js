@@ -228,6 +228,25 @@ function tickDayCycle() {
     const dateEl = document.getElementById('system-date');
     if (dateEl) dateEl.textContent = getInGameDateStr(day);
 
+    // BlueCoins Passive Generation
+    if (typeof gameState !== 'undefined' && gameState.pcParts && gameState.pcParts.gpu && gameState.pcParts.gpu.level > 0) {
+        const gpuLevel = gameState.pcParts.gpu.level;
+        const mbLevel = (gameState.pcParts.mb && gameState.pcParts.mb.level) || 0;
+        const mbBonus = 1 + (mbLevel * 0.05); // Motherboard gives small % to all upgrades except RAM and Gabinete 
+        // Generates 0.2 blueCoins per tick per GPU level
+        gameState.blueCoins += (gpuLevel * 0.2) * mbBonus;
+        
+        const gpuStatus = document.getElementById('bluecoin-gpu-status');
+        if (gpuStatus) gpuStatus.textContent = `Active (Lvl ${gpuLevel})`;
+        if (typeof updateBlueCoinDisplay === 'function') updateBlueCoinDisplay();
+    } else {
+        const gpuStatus = document.getElementById('bluecoin-gpu-status');
+        if (gpuStatus) {
+            gpuStatus.textContent = 'Offline (No GPU)';
+            gpuStatus.style.color = '#ef4444';
+        }
+    }
+
     // Check for end of day
     if (h >= INGAME_END_HOUR && !isNightLocked) {
         triggerEndOfDay();

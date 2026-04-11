@@ -110,7 +110,14 @@ function startDecodingSequence() {
     decodifySound.currentTime = 0;
     decodifySound.play().catch(() => {});
 
-    const totalTime = 45000; // 45 seconds
+    let totalTime = 45000; // 45 seconds base time
+    if (typeof gameState !== 'undefined' && gameState.pcParts) {
+        const ram1Level = gameState.pcParts.ram1 ? gameState.pcParts.ram1.level : 0;
+        const ram2Level = gameState.pcParts.ram2 ? gameState.pcParts.ram2.level : 0;
+        // 0.5s per level = 500ms
+        const reduction = (ram1Level * 500) + (ram2Level * 500);
+        totalTime = Math.max(5000, totalTime - reduction); // minimum 5 seconds
+    }
     const intervalTime = 100;
     let elapsedTime = 0;
 

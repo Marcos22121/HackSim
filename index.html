@@ -399,6 +399,15 @@
                                 <button id="btn-open-wallet">Open</button>
                             </div>
 
+                            <!-- Section: BlueCoin Wallet -->
+                            <div id="section-bluecoin">
+                                <div id="bluecoin-logo-bg">
+                                    <span class="logo-blue">Blue</span><span class="logo-coin">Coin</span>
+                                </div>
+                                <div id="bluecoin-label">BlueCoin Wallet</div>
+                                <button id="btn-open-bluecoin" onclick="if(typeof openDesktopWindow === 'function') openDesktopWindow('bluecoin');">Open</button>
+                            </div>
+
                         </div>
 
                         <!-- Columna derecha de secciones (pegada a la pared) -->
@@ -424,6 +433,15 @@
                                     style="font-weight:bold; margin-bottom:10px; font-size:13px; color:#d33c3c;">
                                     OnionWeb - Launder</div>
                                 <button id="btn-open-launder">Connect</button>
+                            </div>
+
+                            <!-- Section: IP Changer -->
+                            <div id="section-ipchanger" style="background-color: #d4d0c8; padding: 15px; padding-bottom: 15px; text-align: center; border: 2px outset #fff; margin-top: 20px; display: flex; flex-direction: column; align-items: center;">
+                                <div id="ipchanger-anim-box">
+                                    <div class="radar-sweep"></div>
+                                </div>
+                                <div id="ipchanger-label" style="font-weight:bold; margin-bottom:10px; font-size:13px; color:#1a6b0a;">IP Spoofer</div>
+                                <button id="btn-open-ipchanger" onclick="if(typeof openDesktopWindow === 'function') openDesktopWindow('ipchanger');" style="padding: 4px 15px;">Open</button>
                             </div>
 
                         </div>
@@ -499,6 +517,39 @@
                 </div>
             </div>
 
+            <!-- ── BLUECOIN WINDOW ── -->
+            <div id="bluecoin-window" class="window desktop-window" style="display:none; z-index: 100; width:450px; height:400px;">
+                <div class="title-bar" id="bluecoin-title-bar" style="background: linear-gradient(90deg, #1e3a8a, #0f172a);">
+                    <div class="title-bar-text" style="color:#bfdbfe;">BlueCoin — Decentralized CLI Wallet</div>
+                    <div class="title-bar-controls">
+                        <button aria-label="Minimize" id="btn-bluecoin-minimize"></button>
+                        <button aria-label="Maximize" id="btn-bluecoin-maximize"></button>
+                        <button aria-label="Close" id="btn-bluecoin-close"></button>
+                    </div>
+                </div>
+                <div class="window-body" id="bluecoin-body" style="padding:0; display:flex; flex-direction:column; background:#0f172a; height:100%; font-family:'Courier New', monospace; color:#60a5fa; overflow:hidden;">
+                    <div style="background:#1e293b; padding:15px; border-bottom:2px solid #3b82f6; display:flex; align-items:center; justify-content:center; gap:20px;">
+                        <span style="font-size:36px; font-weight:bold; color:#3b82f6; text-shadow:2px 2px 0px #1e40af, -1px -1px 0px #60a5fa, 0 0 10px #3b82f6; transform:skewX(-10deg); display:inline-block;">₿LUE</span>
+                        <span style="font-size:36px; font-weight:bold; color:#93c5fd; text-shadow:2px 2px 0px #2563eb, 0 0 10px #60a5fa; transform:skewX(-10deg); display:inline-block;">COIN</span>
+                    </div>
+                    <div style="flex:1; padding:20px; text-align:center; display:flex; flex-direction:column; justify-content:center;">
+                        <div style="font-size:14px; color:#94a3b8; margin-bottom:10px; font-weight:bold;">YOUR WALLET BALANCE</div>
+                        <div style="font-size:42px; font-weight:bold; color:#bfdbfe; margin-bottom:20px; text-shadow:0 0 10px rgba(191,219,254,0.5);">
+                            ₿ <span class="bluecoin-sync-internal">0.00</span>
+                        </div>
+                        <div style="background:#1e293b; border:1px solid #3b82f6; padding:15px; border-radius:5px; font-size:12px; color:#93c5fd; text-align:left; box-shadow:inset 0 0 10px rgba(0,0,0,0.5);">
+                            <div><strong style="color:#60a5fa;">Wallet Address:</strong> 0x71Cb...9f8A</div>
+                            <div style="margin-top:8px;"><strong style="color:#60a5fa;">Network:</strong> Mainnet (Secure)</div>
+                            <div style="margin-top:8px;"><strong style="color:#60a5fa;">Hashrate (GPU):</strong> <span id="bluecoin-gpu-status" style="color:#4ade80;">Active</span></div>
+                        </div>
+                        <button style="margin-top:20px; background:#3b82f6; color:#0f172a; border:2px inset #bfdbfe; padding:10px; font-size:14px; font-weight:bold; font-family:'Courier New', monospace; cursor:not-allowed; opacity:0.6;" disabled>SEND COINS (COMMING SOON)</button>
+                    </div>
+                    <div style="background:#1e293b; padding:5px; font-size:10px; color:#64748b; text-align:center; border-top:1px solid #334155;">
+                        Encrypted Connection established on port 8333.
+                    </div>
+                </div>
+            </div>
+
             <!-- ── ONIONWEB WINDOW ── -->
             <div id="onionweb-window" class="window desktop-window" style="display:none; z-index: 100; width:380px;">
                 <div class="title-bar" id="onionweb-title-bar"
@@ -557,6 +608,29 @@
                         </div>
                         <button id="btn-launder-transfer" style="width: 100%; font-weight: bold; height:32px;"
                             disabled>Push Clean Money to PallPay</button>
+                    </div>
+                </div>
+            </div>
+
+    <!-- ── IP CHANGER WINDOW ── -->
+            <div id="ipchanger-window" class="window desktop-window" style="display:none; z-index: 100; width: 320px; height: 180px;">
+                <div class="title-bar" id="ipchanger-title-bar">
+                    <div class="title-bar-text">IP Spoofer v2.1</div>
+                    <div class="title-bar-controls">
+                        <button aria-label="Minimize" id="btn-ipchanger-minimize"></button>
+                        <button aria-label="Close" id="btn-ipchanger-close"></button>
+                    </div>
+                </div>
+                <div class="window-body" id="ipchanger-body" style="background-color: #ece9d8; display:flex; flex-direction:column; align-items:center; padding: 20px;">
+                    <div style="font-family: Tahoma, sans-serif; font-size: 13px; margin-bottom: 20px; text-align: center;">
+                        <strong>Foreign IP Network</strong><br>
+                        Status: <span id="ipchanger-status" style="color: #d33c3c; font-weight: bold;">Disconnected</span>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:10px; margin-bottom: 10px;">
+                        <button id="btn-toggle-ip" style="padding: 5px 20px; font-weight: bold;" onclick="if(typeof toggleIPChanger === 'function') toggleIPChanger();">Activate IP</button>
+                    </div>
+                    <div style="font-family: Tahoma, sans-serif; font-size: 10px; color: #666; margin-top: auto;">
+                        Warning: Standard networking will be blocked while active.
                     </div>
                 </div>
             </div>
@@ -699,7 +773,17 @@
                     </div>
                 </div>
                 <div class="window-body" id="pallpay-body"
-                    style="padding:0; display:flex; flex-direction:column; background:#fff; height:100%; overflow:hidden;">
+                    style="padding:0; display:flex; flex-direction:column; background:#fff; height:100%; overflow:hidden; position:relative;">
+                    
+                    <div id="pallpay-blocking-overlay" style="display:none; position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.95); z-index:1000; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:20px; font-family:'Tahoma', sans-serif; box-sizing:border-box;">
+                        <div style="background:#f8d7da; border:1px solid #f5c6cb; color:#721c24; padding:30px; border-radius:4px; max-width:400px; box-shadow:0 8px 24px rgba(0,0,0,0.15);">
+                            <div style="font-size:48px; margin-bottom:15px;">🔒</div>
+                            <h3 style="margin-top:0; font-size:18px; text-transform:uppercase; letter-spacing:1px;">Network Restricted</h3>
+                            <p style="font-size:13px; line-height:1.5; margin-bottom:15px;">Secure financial nodes (FirstNet/PallPay) explicitly block access from known anonymization relays and spoofed IP headers.</p>
+                            <p style="font-size:12px; font-weight:bold; margin-bottom:0; color:#58151c;">Restore standard routing via BlueCode to unlock access.</p>
+                        </div>
+                    </div>
+
                     <div class="pallpay-app-container" style="display:flex; flex-direction:column; height:100%;">
                         <!-- PallPay Navbar -->
                         <div
@@ -1125,6 +1209,17 @@
                             </div>
                         </div>
 
+                    <!-- ── PAGE: Spoofed Blocked ── -->
+                    <div id="browser-page-spoofed" class="browser-page" style="display:none;">
+                        <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; width:100%; background:#f8d7da; text-align:center; padding:20px;">
+                            <img src="assets/icon-bluemium.png" style="width:100px; filter:grayscale(1) sepia(1) hue-rotate(-50deg); opacity:0.8; margin-bottom:20px;">
+                            <h1 style="color:#721c24; text-shadow: 1px 1px #fff; font-family:'Verdana'; font-size: 24px;">Connection Refused</h1>
+                            <p style="color:#721c24; max-width:400px; margin-top:10px; font-family:'Tahoma'; font-size:13px; font-weight: bold;">
+                                Standard network navigation is blocked while IP Spoofer is active.<br>Please disable it from BlueCode to restore access.
+                            </p>
+                        </div>
+                    </div>
+
                     <!-- ── PAGE: 404 Not Found ── -->
                     <div id="browser-page-404" class="browser-page" style="display:none;">
                         <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; width:100%; background:#f0f2f5; text-align:center; padding:20px;">
@@ -1179,7 +1274,7 @@
                                             <div class="pcshop-card-category">Processor</div>
                                             <div class="pcshop-card-name" id="shop-name-cpu">1st Gen Processor 2.0GHz
                                             </div>
-                                            <div class="pcshop-card-spec">+% Hash per code / Boosts computing power
+                                            <div class="pcshop-card-spec">+25% Hash gain per level / Boosts computing power
                                             </div>
                                             <div class="pcshop-card-price">$<span id="shop-price-cpu">349.99</span>
                                             </div>
@@ -1197,7 +1292,7 @@
                                         <div class="pcshop-card-info">
                                             <div class="pcshop-card-category">Graphics Card</div>
                                             <div class="pcshop-card-name" id="shop-name-gpu">Basic GPU 2GB</div>
-                                            <div class="pcshop-card-spec">Low power rendering card</div>
+                                            <div class="pcshop-card-spec">Generates BlueCoins passively over time</div>
                                             <div class="pcshop-card-price">$<span id="shop-price-gpu">799.99</span>
                                             </div>
                                         </div>
@@ -1214,7 +1309,7 @@
                                         <div class="pcshop-card-info">
                                             <div class="pcshop-card-category">Memory — Slot 1</div>
                                             <div class="pcshop-card-name" id="shop-name-ram1">RAM Module 4GB</div>
-                                            <div class="pcshop-card-spec">Standard speed memory chip</div>
+                                            <div class="pcshop-card-spec">Reduces Hash decode time by 0.5s per level</div>
                                             <div class="pcshop-card-price">$<span id="shop-price-ram1">129.99</span>
                                             </div>
                                         </div>
@@ -1231,7 +1326,7 @@
                                         <div class="pcshop-card-info">
                                             <div class="pcshop-card-category">Memory — Slot 2</div>
                                             <div class="pcshop-card-name" id="shop-name-ram2">RAM Module 4GB</div>
-                                            <div class="pcshop-card-spec">Standard speed memory chip</div>
+                                            <div class="pcshop-card-spec">Reduces Hash decode time by 0.5s per level</div>
                                             <div class="pcshop-card-price">$<span id="shop-price-ram2">129.99</span>
                                             </div>
                                         </div>
@@ -1266,7 +1361,7 @@
                                         <div class="pcshop-card-info">
                                             <div class="pcshop-card-category">Motherboard</div>
                                             <div class="pcshop-card-name" id="shop-name-mb">Base Board H61</div>
-                                            <div class="pcshop-card-spec">Connects all internal components</div>
+                                            <div class="pcshop-card-spec">Adds +5% efficiency to CPU and GPU per level</div>
                                             <div class="pcshop-card-price">$<span id="shop-price-mb">279.99</span></div>
                                         </div>
                                         <button class="pcshop-buy-btn" id="btn-buy-mb" onclick="buyComponent('mb')">Buy
@@ -1282,7 +1377,7 @@
                                         <div class="pcshop-card-info">
                                             <div class="pcshop-card-category">Case / Gabinete</div>
                                             <div class="pcshop-card-name" id="shop-name-case">Standard ATX Case</div>
-                                            <div class="pcshop-card-spec">Basic steel box without airflow fans</div>
+                                            <div class="pcshop-card-spec">Increases max upgrade level limit of all other components by 5</div>
                                             <div class="pcshop-card-price">$<span id="shop-price-case">149.99</span>
                                             </div>
                                         </div>

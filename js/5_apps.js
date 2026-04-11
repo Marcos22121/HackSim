@@ -140,3 +140,60 @@ window.calcOp = calcOp;
 window.calcEqual = calcEqual;
 window.updateCalcDisplay = updateCalcDisplay;
 window.renderDocumentsList = renderDocumentsList;
+
+// ─── IP Spoofer Logic ──────────────────────────────────────────────────────────
+function toggleIPChanger() {
+    if (typeof gameState === 'undefined') return;
+
+    const statusEl = document.getElementById('ipchanger-status');
+    const btnEl = document.getElementById('btn-toggle-ip');
+    if (!statusEl || !btnEl) return;
+
+    const targetState = !gameState.isIPActive;
+    btnEl.disabled = true;
+
+    if (targetState) {
+        statusEl.textContent = 'CONNECTING...';
+        statusEl.style.color = '#d39800';
+    } else {
+        statusEl.textContent = 'DISCONNECTING...';
+        statusEl.style.color = '#d39800';
+    }
+
+    setTimeout(() => {
+        gameState.isIPActive = targetState;
+        btnEl.disabled = false;
+
+        const pallpayOverlay = document.getElementById('pallpay-blocking-overlay');
+
+        if (gameState.isIPActive) {
+            statusEl.textContent = 'CONNECTED (Spoofed)';
+            statusEl.style.color = '#1a6b0a';
+            btnEl.textContent = 'Disconnect IP';
+
+            // Block Bluemium if it's open
+            if (typeof browserCurrentPage !== 'undefined' && browserCurrentPage !== 'spoofed') {
+                if (typeof browserNavigateTo === 'function') browserNavigateTo('spoofed');
+            }
+            
+            // Show PallPay blocking overlay
+            if (pallpayOverlay) pallpayOverlay.style.display = 'flex';
+
+        } else {
+            statusEl.textContent = 'Disconnected';
+            statusEl.style.color = '#d33c3c';
+            btnEl.textContent = 'Activate IP';
+
+            // Restore Bluemium if it was blocked
+            if (typeof browserCurrentPage !== 'undefined' && browserCurrentPage === 'spoofed') {
+                if (typeof browserNavigateTo === 'function') browserNavigateTo('newtab');
+            }
+
+            // Hide PallPay blocking overlay
+            if (pallpayOverlay) pallpayOverlay.style.display = 'none';
+        }
+        if (typeof saveGame === 'function') saveGame();
+    }, 1200);
+}
+
+window.toggleIPChanger = toggleIPChanger;

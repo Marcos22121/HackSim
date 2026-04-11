@@ -25,12 +25,20 @@ const browserPages = {
         url:   '', // dynamic
         title: '404 Not Found',
         el:    'browser-page-404',
+    },
+    spoofed: {
+        url:   'bluemium://connection-error',
+        title: 'Connection Refused',
+        el:    'browser-page-spoofed',
     }
 };
 
 // ─── Navigation Helpers ──────────────────────────────────────────────────────
 
 function browserNavigateTo(pageId) {
+    if (typeof gameState !== 'undefined' && gameState.isIPActive && pageId !== 'spoofed') {
+        pageId = 'spoofed';
+    }
     const page = browserPages[pageId];
     if (!page) return;
 
@@ -207,6 +215,24 @@ function renderShop() {
 function buyComponent(key) {
     const part = gameState.pcParts[key];
     if (!part) return;
+
+    if (key !== 'case') {
+        const caseLevel = gameState.pcParts.case ? gameState.pcParts.case.level : 0;
+        const maxLevel = 5 + (caseLevel * 5);
+        if (part.level >= maxLevel) {
+            const btnEl = document.getElementById(`btn-buy-${key}`);
+            if (btnEl) {
+                const originalText = btnEl.textContent;
+                btnEl.textContent = "Upgrade Gabinete first";
+                btnEl.style.background = "#d33c3c";
+                setTimeout(() => {
+                    btnEl.style.background = "";
+                    btnEl.textContent = originalText;
+                }, 1500);
+            }
+            return;
+        }
+    }
 
     const cost = getComponentCost(key);
     

@@ -170,6 +170,8 @@ const appTabConfig = {
     'notepad': { label: 'Notepad', icon: './assets/icon-documents.svg' },
     'bluemium': { label: 'Bluemium', icon: './assets/icon-bluemium.png' },
     'settings': { label: 'Settings', icon: './assets/icon-hackos.png' },
+    'bluecoin': { label: 'BlueCoin', icon: './assets/icon-hackos.png' },
+    'ipchanger': { label: 'IP Spoofer', icon: './assets/icon-hackos.png' },
 };
 
 function addDesktopTaskbarTab(appId) {
@@ -287,6 +289,24 @@ if (decodifyWindow && decodifyTitleBar) {
     decodifyWindow.addEventListener('mousedown', () => focusDesktopWindow('decodify'));
 }
 
+const bluecoinWindow = document.getElementById('bluecoin-window');
+const bluecoinTitleBar = document.getElementById('bluecoin-title-bar');
+if (bluecoinWindow && bluecoinTitleBar) {
+    registerDesktopWindow('bluecoin', bluecoinWindow, bluecoinTitleBar,
+        { top: 130, left: 320, width: 450, height: 400 });
+    bluecoinTitleBar.addEventListener('mousedown', e => initDesktopDrag('bluecoin', e));
+    bluecoinWindow.addEventListener('mousedown', () => focusDesktopWindow('bluecoin'));
+}
+
+const ipchangerWindow = document.getElementById('ipchanger-window');
+const ipchangerTitleBar = document.getElementById('ipchanger-title-bar');
+if (ipchangerWindow && ipchangerTitleBar) {
+    registerDesktopWindow('ipchanger', ipchangerWindow, ipchangerTitleBar,
+        { top: 150, left: 340, width: 320, height: 180 });
+    ipchangerTitleBar.addEventListener('mousedown', e => initDesktopDrag('ipchanger', e));
+    ipchangerWindow.addEventListener('mousedown', () => focusDesktopWindow('ipchanger'));
+}
+
 const onionwebWindow = document.getElementById('onionweb-window');
 const onionwebTitleBar = document.getElementById('onionweb-title-bar');
 if (onionwebWindow && onionwebTitleBar) {
@@ -380,6 +400,9 @@ const controlMap = {
     'decodify-minimize': () => minimizeDesktopWindow('decodify'),
     'decodify-maximize': () => toggleMaximizeDesktopWindow('decodify'),
     'decodify-close': () => closeDesktopWindow('decodify'),
+    'bluecoin-minimize': () => minimizeDesktopWindow('bluecoin'),
+    'bluecoin-maximize': () => toggleMaximizeDesktopWindow('bluecoin'),
+    'bluecoin-close': () => closeDesktopWindow('bluecoin'),
     'onionweb-minimize': () => minimizeDesktopWindow('onionweb'),
     'onionweb-maximize': () => toggleMaximizeDesktopWindow('onionweb'),
     'onionweb-close': () => closeDesktopWindow('onionweb'),
@@ -398,6 +421,8 @@ const controlMap = {
     'bluemium-minimize': () => minimizeDesktopWindow('bluemium'),
     'bluemium-maximize': () => toggleMaximizeDesktopWindow('bluemium'),
     'bluemium-close': () => closeDesktopWindow('bluemium'),
+    'ipchanger-minimize': () => minimizeDesktopWindow('ipchanger'),
+    'ipchanger-close': () => closeDesktopWindow('ipchanger'),
     'settings-minimize': () => minimizeDesktopWindow('settings'),
     'settings-close': () => closeDesktopWindow('settings'),
 };
