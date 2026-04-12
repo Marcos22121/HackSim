@@ -23,6 +23,10 @@ Get to work. We need that $3,500 by next week.`
     'doc-onionweb': {
         title: 'OnionWeb.txt',
         content: `Put this in the net that must not be named:\n\nhttp://onion.web/laundering_service`
+    },
+    'doc-weird-link': {
+        title: 'SECRET_LINK.txt',
+        content: `I don't know who you are, but I found this hidden node. It looks like it's still being built or protected. \n\nLink: 9fd8vgdf9.5333.bg \n\nBe careful.`
     }
 };
 

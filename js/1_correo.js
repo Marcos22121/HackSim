@@ -235,6 +235,23 @@ if (btnAttachment) {
                 document.body.appendChild(popup);
                 setTimeout(() => popup.remove(), 3000);
             }
+        } else if (mail.id === 'm_day2_weird') {
+            if (!gameState.documentsUnlocked.includes('doc-weird-link')) {
+                simulateDocumentDownload('SECRET_LINK.txt', 'doc-weird-link', () => {
+                    gameState.documentsUnlocked.push('doc-weird-link');
+                    if (typeof saveGame === 'function') saveGame();
+
+                    if (typeof desktopWindows !== 'undefined' && desktopWindows['documents'] && desktopWindows['documents'].state !== 'hidden') {
+                        if (typeof renderDocumentsList === 'function') renderDocumentsList();
+                    }
+                });
+            } else {
+                const popup = document.createElement('div');
+                popup.className = 'mail-notification';
+                popup.innerHTML = `<img src="assets/icon-documents.svg" width="24" height="24"> <div><strong>File Exists</strong><br>Already saved to Documents.</div>`;
+                document.body.appendChild(popup);
+                setTimeout(() => popup.remove(), 3000);
+            }
         }
     });
 }
@@ -264,4 +281,26 @@ function receiveDarkNetMail() {
         });
     }, 2000);
 }
+
+function receiveDay2SpecialMail() {
+    if (gameState.currentDay < 2) return;
+    if (inboxEmails.find(m => m.id === 'm_day2_weird')) return;
+
+    playMailSound();
+
+    const popup = document.createElement('div');
+    popup.className = 'mail-notification';
+    popup.innerHTML = `<img src="assets/icon-topmail.svg" width="24" height="24"> <div><strong>New Email</strong><br>A.R.8: A unique opportunity...</div>`;
+    document.body.appendChild(popup);
+
+    setTimeout(() => { popup.remove(); }, 6000);
+
+    addEmailToList({
+        id: 'm_day2_weird', sender: 'A.R.8', date: 'Now', subject: 'A unique opportunity...',
+        body: "Hey there. I've been watching your progress. You have talent, but you're working for crumbs. I found something out there that might interest you. Don't ask how I got this. Just... check it. The link is in the document.",
+        unread: true, attachment: true, attachName: 'SECRET_LINK.txt', attachIcon: 'assets/icon-documents.svg'
+    });
+}
+
+window.receiveDay2SpecialMail = receiveDay2SpecialMail;
 

@@ -644,6 +644,285 @@ function handleDarkNetURL(url) {
                 </div>
             `;
         }
+    } else if (url === 'http://onion.web/v3_access' || url === 'onion.web/v3_access') {
+        darknetContent.innerHTML = `
+            <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; padding:40px; background:#000; color:#fff; font-family:'Courier New', monospace; text-align:center;">
+                <div style="font-size:64px; margin-bottom:20px;">⚠️</div>
+                <h1 style="color:#ff0000; border:2px solid #ff0000; padding:10px 20px; font-size:24px; margin-bottom:30px;">SERVICE SUSPENDED</h1>
+                <p style="max-width:500px; line-height:1.6; color:#aaa;">This hidden service has been seized by international law enforcement agencies in coordination with the Cyber-Financial Crimes Division.</p>
+                <p style="margin-top:30px; font-size:12px; color:#555;">[ Error Code: 0x80040154 - Connection Refused by Remote Host ]</p>
+                <div style="margin-top:40px; display:flex; gap:15px;">
+                    <button onclick="document.getElementById('darknet-url-bar').value='dark.web/search'; document.getElementById('btn-darknet-go').click();" style="background:#333; color:#fff; border:1px solid #555; padding:8px 15px; cursor:pointer;">Return to Search</button>
+                </div>
+            </div>
+        `;
+    } else if (url === '9fd8vgdf9.5333.bg' || url === 'http://9fd8vgdf9.5333.bg') {
+        darknetContent.innerHTML = `
+        <div style="background:#000; min-height:100%; font-family:'Courier New', monospace; color:#00cc00; font-size:12px; padding:0;">
+
+            <!-- Marquee banner -->
+            <div style="background:#001100; border-top:2px solid #00aa00; border-bottom:2px solid #00aa00; padding:4px 0; overflow:hidden; white-space:nowrap;">
+                <span style="display:inline-block; animation: marquee 18s linear infinite; color:#00ff00; font-weight:bold;">
+                    ★ VERIFIED SELLER ★ ANONYMOUS PAYMENTS ONLY ★ NO LOGS ★ ENCRYPTED TRANSFERS ★ PGP KEY AVAILABLE ★ OPERATIONAL SINCE 1999 ★ FAST DELIVERY ★ NO REFUNDS ★ TOR RECOMMENDED ★
+                </span>
+            </div>
+            <style>
+                @keyframes marquee { from { transform: translateX(100%); } to { transform: translateX(-100%); } }
+                .virus-buy-btn { background:#001a00; color:#00ff00; border:1px solid #00aa00; padding:5px 14px; font-family:'Courier New', monospace; font-size:11px; font-weight:bold; cursor:not-allowed; letter-spacing:1px; }
+                .virus-buy-btn:hover { background:#003300; }
+                .virus-card { border:1px solid #005500; padding:14px; margin-bottom:14px; background:#000d00; }
+                .virus-card:hover { border-color:#00aa00; }
+                .virus-badge { display:inline-block; font-size:9px; padding:2px 6px; border:1px solid; margin-left:8px; vertical-align:middle; }
+                .badge-rare { color:#ffff00; border-color:#aaaa00; }
+                .badge-new { color:#00ffff; border-color:#008888; }
+                .badge-hot { color:#ff6600; border-color:#aa4400; }
+            </style>
+
+            <!-- Header -->
+            <div style="background:#000800; border-bottom:3px double #00aa00; padding:16px 20px;">
+                <table width="100%">
+                    <tr>
+                        <td>
+                            <div style="font-size:22px; font-weight:bold; color:#00ff00; text-shadow:0 0 8px #00ff00; letter-spacing:3px;">[ V1RU5-M4RK3T ]</div>
+                            <div style="font-size:10px; color:#006600; margin-top:3px;">// node: 9fd8vgdf9.5333.bg // encrypted via relay-9 // Anonymous Access Granted</div>
+                        </td>
+                        <td align="right" style="font-size:10px; color:#004400; vertical-align:top; line-height:1.7;">
+                            Server Time: 03:47:22 UTC<br>
+                            Visitors [today]: 847<br>
+                            PGP: 4A9F-8B21<br>
+                            Status: <span style="color:#00ff00">ONLINE</span>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- Nav -->
+            <div style="background:#001100; border-bottom:1px solid #003300; padding:5px 20px; font-size:10px; color:#005500;">
+                [ <span style="color:#00aa00; cursor:pointer;">HOME</span> ] &nbsp;|&nbsp;
+                [ <span style="color:#00aa00; cursor:pointer;">CATALOG</span> ] &nbsp;|&nbsp;
+                [ <span style="color:#006600; cursor:not-allowed;">MY ACCOUNT</span> ] &nbsp;|&nbsp;
+                [ <span style="color:#006600; cursor:not-allowed;">ORDERS</span> ] &nbsp;|&nbsp;
+                [ <span style="color:#006600; cursor:not-allowed;">SUPPORT</span> ]
+                <span style="float:right; color:#003300;">// Only accepts: XMR · BTC · BlueCoin [NEW]</span>
+            </div>
+
+            <!-- Body -->
+            <div style="display:flex; min-height:calc(100% - 120px);">
+
+                <!-- Sidebar -->
+                <div style="width:160px; min-width:160px; border-right:1px solid #003300; padding:12px; background:#000900;">
+                    <div style="color:#00aa00; font-weight:bold; border-bottom:1px solid #003300; padding-bottom:5px; margin-bottom:10px; font-size:11px;">CATEGORIES</div>
+                    <div style="color:#006600; line-height:2.2; font-size:10px;">
+                        &gt; <span style="color:#00cc00;">ALL PRODUCTS</span><br>
+                        &gt; Ransomware<br>
+                        &gt; Worms<br>
+                        &gt; Trojans<br>
+                        &gt; Spyware<br>
+                        &gt; Keyloggers<br>
+                        &gt; Rootkits<br>
+                        &gt; Botnets<br>
+                        &gt; <span style="color:#444;">[LOCKED]</span><br>
+                        &gt; <span style="color:#444;">[LOCKED]</span>
+                    </div>
+
+                    <div style="color:#00aa00; font-weight:bold; border-bottom:1px solid #003300; border-top:1px solid #003300; padding:5px 0; margin:12px 0; font-size:11px;">PAYMENT</div>
+                    <div style="font-size:10px; color:#006600; line-height:1.8;">
+                        ✔ Monero (XMR)<br>
+                        ✔ Bitcoin (BTC)<br>
+                        ✔ BlueCoin ★<br>
+                        ✘ Credit Cards<br>
+                        ✘ PayPal
+                    </div>
+
+                    <div style="margin-top:14px; font-size:10px; color:#004400; border-top:1px solid #002200; padding-top:10px; line-height:1.7;">
+                        OP.SEC NOTICE:<br>
+                        Use Tor. Never<br>
+                        your real IP.<br>
+                        No exceptions.
+                    </div>
+                </div>
+
+                <!-- Main content -->
+                <div style="flex:1; padding:16px 20px; overflow-y:auto;">
+                    <div style="color:#006600; font-size:10px; margin-bottom:16px; border-bottom:1px dashed #002200; padding-bottom:8px;">
+                        // Catalog // All Products // Showing 8 of 31 listings // Sort: Popularity DESC
+                    </div>
+
+                    <!-- PRODUCT 1 -->
+                    <div class="virus-card">
+                        <table width="100%">
+                            <tr>
+                                <td>
+                                    <div style="font-size:13px; font-weight:bold; color:#00ff00;">LockShadow v3.2 <span class="virus-badge badge-hot">🔥 HOT</span></div>
+                                    <div style="color:#006600; font-size:10px; margin:4px 0;">TYPE: Ransomware &nbsp;|&nbsp; PLATFORM: Win32/64 &nbsp;|&nbsp; PAYLOAD: AES-256 File Encryption</div>
+                                    <div style="color:#00aa00; font-size:11px; margin-top:6px; line-height:1.5;">
+                                        Autonomous file encryptor. Targets documents, images and databases. Custom ransom note included. C2 panel pre-configured. 97% AV bypass rate (tested Jan 2001).
+                                    </div>
+                                    <div style="font-size:10px; color:#555; margin-top:6px;">Sold: 142 &nbsp;|&nbsp; Rating: ★★★★☆ &nbsp;|&nbsp; Last updated: 2001-03-12</div>
+                                </td>
+                                <td align="right" valign="top" style="min-width:110px; padding-left:15px;">
+                                    <div style="color:#00ff00; font-size:15px; font-weight:bold; margin-bottom:8px;">$280 USD</div>
+                                    <button class="virus-buy-btn" title="Coming soon">[BUY]</button>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <!-- PRODUCT 2 -->
+                    <div class="virus-card">
+                        <table width="100%">
+                            <tr>
+                                <td>
+                                    <div style="font-size:13px; font-weight:bold; color:#00ff00;">NetCrawler Worm 0.9b <span class="virus-badge badge-new">NEW</span></div>
+                                    <div style="color:#006600; font-size:10px; margin:4px 0;">TYPE: Worm &nbsp;|&nbsp; PLATFORM: Win98/2000/XP &nbsp;|&nbsp; PAYLOAD: LAN/WAN Self-Propagation</div>
+                                    <div style="color:#00aa00; font-size:11px; margin-top:6px; line-height:1.5;">
+                                        Network-aware worm that spreads via shared drives and open ports. Minimal footprint, survives reboots. Includes optional payload injector for secondary stage attacks.
+                                    </div>
+                                    <div style="font-size:10px; color:#555; margin-top:6px;">Sold: 61 &nbsp;|&nbsp; Rating: ★★★☆☆ &nbsp;|&nbsp; Last updated: 2001-01-28</div>
+                                </td>
+                                <td align="right" valign="top" style="min-width:110px; padding-left:15px;">
+                                    <div style="color:#00ff00; font-size:15px; font-weight:bold; margin-bottom:8px;">$90 USD</div>
+                                    <button class="virus-buy-btn" title="Coming soon">[BUY]</button>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <!-- PRODUCT 3 -->
+                    <div class="virus-card">
+                        <table width="100%">
+                            <tr>
+                                <td>
+                                    <div style="font-size:13px; font-weight:bold; color:#00ff00;">GhostRAT Basic <span class="virus-badge badge-rare">★ RARE</span></div>
+                                    <div style="color:#006600; font-size:10px; margin:4px 0;">TYPE: Remote Access Trojan &nbsp;|&nbsp; PLATFORM: Win32 &nbsp;|&nbsp; PAYLOAD: Full Remote Shell</div>
+                                    <div style="color:#00aa00; font-size:11px; margin-top:6px; line-height:1.5;">
+                                        Full-featured RAT with keylogger, screenshot capture, webcam access (if present), and remote command shell. Works behind NAT via reverse tunnel. Obfuscated binary — low detection.
+                                    </div>
+                                    <div style="font-size:10px; color:#555; margin-top:6px;">Sold: 39 &nbsp;|&nbsp; Rating: ★★★★★ &nbsp;|&nbsp; Last updated: 2001-02-14</div>
+                                </td>
+                                <td align="right" valign="top" style="min-width:110px; padding-left:15px;">
+                                    <div style="color:#00ff00; font-size:15px; font-weight:bold; margin-bottom:8px;">$450 USD</div>
+                                    <button class="virus-buy-btn" title="Coming soon">[BUY]</button>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <!-- PRODUCT 4 -->
+                    <div class="virus-card">
+                        <table width="100%">
+                            <tr>
+                                <td>
+                                    <div style="font-size:13px; font-weight:bold; color:#00ff00;">KeyPhantom v1.1</div>
+                                    <div style="color:#006600; font-size:10px; margin:4px 0;">TYPE: Keylogger &nbsp;|&nbsp; PLATFORM: Win95/98/2000 &nbsp;|&nbsp; PAYLOAD: Credential Harvesting</div>
+                                    <div style="color:#00aa00; font-size:11px; margin-top:6px; line-height:1.5;">
+                                        Silent keylogger that logs all keystrokes and periodically emails results to a configurable address. Survives antivirus scans via polymorphic loader. Captures bank sessions, passwords, chat logs.
+                                    </div>
+                                    <div style="font-size:10px; color:#555; margin-top:6px;">Sold: 208 &nbsp;|&nbsp; Rating: ★★★★☆ &nbsp;|&nbsp; Last updated: 2000-11-05</div>
+                                </td>
+                                <td align="right" valign="top" style="min-width:110px; padding-left:15px;">
+                                    <div style="color:#00ff00; font-size:15px; font-weight:bold; margin-bottom:8px;">$55 USD</div>
+                                    <button class="virus-buy-btn" title="Coming soon">[BUY]</button>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <!-- PRODUCT 5 -->
+                    <div class="virus-card">
+                        <table width="100%">
+                            <tr>
+                                <td>
+                                    <div style="font-size:13px; font-weight:bold; color:#00ff00;">ShadowRoot Pro <span class="virus-badge badge-rare">★ RARE</span></div>
+                                    <div style="color:#006600; font-size:10px; margin:4px 0;">TYPE: Rootkit &nbsp;|&nbsp; PLATFORM: WinNT/2000/XP &nbsp;|&nbsp; PAYLOAD: Kernel Level Persistence</div>
+                                    <div style="color:#00aa00; font-size:11px; margin-top:6px; line-height:1.5;">
+                                        Ring-0 rootkit with full process and file hiding capabilities. Allows any installed malware to become invisible to the OS. Survives reinstalls unless full disk wipe is performed. For advanced operators only.
+                                    </div>
+                                    <div style="font-size:10px; color:#555; margin-top:6px;">Sold: 18 &nbsp;|&nbsp; Rating: ★★★★★ &nbsp;|&nbsp; Last updated: 2001-03-30</div>
+                                </td>
+                                <td align="right" valign="top" style="min-width:110px; padding-left:15px;">
+                                    <div style="color:#00ff00; font-size:15px; font-weight:bold; margin-bottom:8px;">$900 USD</div>
+                                    <button class="virus-buy-btn" title="Coming soon">[BUY]</button>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <!-- PRODUCT 6 -->
+                    <div class="virus-card">
+                        <table width="100%">
+                            <tr>
+                                <td>
+                                    <div style="font-size:13px; font-weight:bold; color:#00ff00;">SpiderNet Botnet Starter</div>
+                                    <div style="color:#006600; font-size:10px; margin:4px 0;">TYPE: Botnet Client &nbsp;|&nbsp; PLATFORM: Win98/XP &nbsp;|&nbsp; PAYLOAD: DDoS / Spam / Mining</div>
+                                    <div style="color:#00aa00; font-size:11px; margin-top:6px; line-height:1.5;">
+                                        Includes 1 botnet node license + IRC C2 server access. Deploy on infected machines and issue commands remotely. Includes DDoS module and spam relay. Comes with 100 proxies.
+                                    </div>
+                                    <div style="font-size:10px; color:#555; margin-top:6px;">Sold: 77 &nbsp;|&nbsp; Rating: ★★★☆☆ &nbsp;|&nbsp; Last updated: 2001-02-02</div>
+                                </td>
+                                <td align="right" valign="top" style="min-width:110px; padding-left:15px;">
+                                    <div style="color:#00ff00; font-size:15px; font-weight:bold; margin-bottom:8px;">$175 USD</div>
+                                    <button class="virus-buy-btn" title="Coming soon">[BUY]</button>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <!-- PRODUCT 7 -->
+                    <div class="virus-card">
+                        <table width="100%">
+                            <tr>
+                                <td>
+                                    <div style="font-size:13px; font-weight:bold; color:#00ff00;">EyeSpy Spyware Suite 2.0 <span class="virus-badge badge-new">NEW</span></div>
+                                    <div style="color:#006600; font-size:10px; margin:4px 0;">TYPE: Spyware &nbsp;|&nbsp; PLATFORM: Win98/2000/XP &nbsp;|&nbsp; PAYLOAD: Surveillance Package</div>
+                                    <div style="color:#00aa00; font-size:11px; margin-top:6px; line-height:1.5;">
+                                        Complete surveillance toolkit. Monitors browser history, clipboard, typed text, and active windows. Logs are encrypted and sent via SMTP tunnel. Runs silently as a system service. Ideal for targeted attacks.
+                                    </div>
+                                    <div style="font-size:10px; color:#555; margin-top:6px;">Sold: 53 &nbsp;|&nbsp; Rating: ★★★★☆ &nbsp;|&nbsp; Last updated: 2001-04-01</div>
+                                </td>
+                                <td align="right" valign="top" style="min-width:110px; padding-left:15px;">
+                                    <div style="color:#00ff00; font-size:15px; font-weight:bold; margin-bottom:8px;">$120 USD</div>
+                                    <button class="virus-buy-btn" title="Coming soon">[BUY]</button>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <!-- PRODUCT 8 -->
+                    <div class="virus-card">
+                        <table width="100%">
+                            <tr>
+                                <td>
+                                    <div style="font-size:13px; font-weight:bold; color:#00ff00;">MailBlast Mass Mailer v4</div>
+                                    <div style="color:#006600; font-size:10px; margin:4px 0;">TYPE: Social Engineering / Spreader &nbsp;|&nbsp; PLATFORM: Any &nbsp;|&nbsp; PAYLOAD: Email Worm Spreader</div>
+                                    <div style="color:#00aa00; font-size:11px; margin-top:6px; line-height:1.5;">
+                                        Generates mass emails with weaponized attachments. Uses harvested contact lists from compromised Outlook installations. Built-in sender spoofing and fake corporate templates included. Avg spread: 12,000 hosts / day.
+                                    </div>
+                                    <div style="font-size:10px; color:#555; margin-top:6px;">Sold: 321 &nbsp;|&nbsp; Rating: ★★★☆☆ &nbsp;|&nbsp; Last updated: 2001-01-15</div>
+                                </td>
+                                <td align="right" valign="top" style="min-width:110px; padding-left:15px;">
+                                    <div style="color:#00ff00; font-size:15px; font-weight:bold; margin-bottom:8px;">$35 USD</div>
+                                    <button class="virus-buy-btn" title="Coming soon">[BUY]</button>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div style="text-align:center; color:#003300; font-size:10px; border-top:1px dashed #002200; padding-top:12px; margin-top:8px;">
+                        // Showing 8 of 31 products // <span style="color:#006600; cursor:not-allowed;">[NEXT PAGE]</span> //
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div style="background:#000900; border-top:2px double #003300; padding:10px 20px; font-size:9px; color:#003300; line-height:1.8;">
+                © 1999–2001 V1RU5-M4RK3T. All transactions are anonymous and untraceable. By accessing this node you agree to our no-log policy. 
+                Seller holds no liability. PGP public key: 4A9F-8B21-33DC-FFAB. &nbsp;|&nbsp; 
+                Disputes: contact via secure drop only. &nbsp;|&nbsp; Powered by relay-9 anonymous infrastructure.
+            </div>
+        </div>
+        `;
+
     } else if (url === 'http://dark.web/search' || url === 'dark.web/search') {
         darknetContent.innerHTML = `
             <div style="max-width:600px; margin:0 auto; padding:20px;">
@@ -662,9 +941,9 @@ function handleDarkNetURL(url) {
                 <h3 style="color:#d33c3c; border-bottom:1px dashed #d33c3c; padding-bottom:5px; margin-top:30px; font-size:14px;">Recent Directory Updates</h3>
                 <ul style="list-style:none; padding:0; display:flex; flex-direction:column; gap:15px; margin-top:15px;">
                     <li>
-                        <a href="#" onclick="document.getElementById('darknet-url-bar').value='onion.web/laundering_service'; document.getElementById('btn-darknet-go').click(); return false;" style="color:#ff6b6b; font-weight:bold; font-size:13px; text-decoration:none;">Laundering Gateway Access</a>
-                        <p style="margin:2px 0 0 0; font-size:11px; color:#a85b5b;">onion.web/laundering_service</p>
-                        <p style="margin:4px 0 0 0; font-size:11px; color:#888;">Secure digital asset washer. Fast transactions. Low fees.</p>
+                        <a href="#" onclick="document.getElementById('darknet-url-bar').value='onion.web/v3_access'; document.getElementById('btn-darknet-go').click(); return false;" style="color:#ff6b6b; font-weight:bold; font-size:13px; text-decoration:none;">Laundering Gateway Access [V3]</a>
+                        <p style="margin:2px 0 0 0; font-size:11px; color:#a85b5b;">onion.web/v3_access</p>
+                        <p style="margin:4px 0 0 0; font-size:11px; color:#888;">Encrypted entry point for financial mixing services. Status: UNSTABLE.</p>
                     </li>
                     <li>
                         <a href="#" style="color:#ff6b6b; font-weight:bold; font-size:13px; text-decoration:none;">Unregistered Firearms & Ammunition</a>

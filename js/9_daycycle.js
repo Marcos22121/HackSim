@@ -187,6 +187,7 @@ function startDayAfterLogin() {
         setTimeout(() => {
             if (typeof checkAndSendRentEmail === 'function') checkAndSendRentEmail();
             if (typeof checkAndSendRentReminderEmail === 'function') checkAndSendRentReminderEmail();
+            if (typeof receiveDay2SpecialMail === 'function') receiveDay2SpecialMail();
         }, 2000);
     }, 4000);
 }
@@ -232,9 +233,10 @@ function tickDayCycle() {
     if (typeof gameState !== 'undefined' && gameState.pcParts && gameState.pcParts.gpu && gameState.pcParts.gpu.level > 0) {
         const gpuLevel = gameState.pcParts.gpu.level;
         const mbLevel = (gameState.pcParts.mb && gameState.pcParts.mb.level) || 0;
-        const mbBonus = 1 + (mbLevel * 0.05); // Motherboard gives small % to all upgrades except RAM and Gabinete 
-        // Generates 0.2 blueCoins per tick per GPU level
-        gameState.blueCoins += (gpuLevel * 0.2) * mbBonus;
+        const mbBonus = 1 + (mbLevel * 0.05); 
+        // Generates 0.1 blueCoins per 30 seconds (6 ticks) per GPU level
+        // (0.1 / 6) = ~0.016667 per tick
+        gameState.blueCoins += (gpuLevel * 0.016667) * mbBonus;
         
         const gpuStatus = document.getElementById('bluecoin-gpu-status');
         if (gpuStatus) gpuStatus.textContent = `Active (Lvl ${gpuLevel})`;
